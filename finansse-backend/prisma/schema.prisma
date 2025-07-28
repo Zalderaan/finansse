@@ -1,0 +1,115 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+//* === ENUMS ===
+enum TransactionType {
+  INCOME
+  EXPENSE
+  TRANSFER
+}
+
+enum AccountType {
+  CHECKING
+  SAVINGS
+  CASH
+  CREDIT
+  INVESTMENT
+}
+
+// more account types later
+
+enum BudgetPeriodType {
+  MONTHLY
+  YEARLY
+  CUSTOM
+}
+
+model User {
+  user_id            Int           @id @default(autoincrement())
+  user_username      String
+  user_email         String
+  user_password_hash String
+  user_created_at    DateTime
+  Transactions       Transaction[]
+  Accounts           Account[]
+  Category           Category[]
+  Budget             Budget[]
+  Transfer           Transfer[]
+}
+
+model Account {
+  account_id              Int           @id @default(autoincrement())
+  account_name            String
+  account_type            AccountType
+  account_initial_balance Decimal
+  account_current_balance Decimal
+  account_currency        String
+  created_at              DateTime
+  updated_at              DateTime
+  user_id                 Int
+  user                    User          @relation(fields: [user_id], references: [user_id])
+  Transaction             Transaction[]
+  outgoing_transfers      Transfer[]    @relation("OutgoingTransfers")
+  incoming_transfers      Transfer[]    @relation("IncomingTransfers")
+}
+
+model Transaction {
+  transaction_id     Int             @id @default(autoincrement())
+  transaction_name   String
+  transaction_type   TransactionType
+  transaction_amount Decimal
+  transaction_date   DateTime
+  created_at         DateTime
+  updated_at         DateTime
+  account_id         Int
+  account            Account         @relation(fields: [account_id], references: [account_id])
+  user_id            Int
+  user               User            @relation(fields: [user_id], references: [user_id])
+}
+
+model Category {
+  category_id   Int      @id @default(autoincrement())
+  category_name String
+  user_id       Int
+  user          User     @relation(fields: [user_id], references: [user_id])
+  Budget        Budget[]
+}
+
+model Budget {
+  budget_id          Int              @id @default(autoincrement())
+  category           Category         @relation(fields: [category_id], references: [category_id])
+  category_id        Int
+  budget_limit       Decimal
+  budget_period_type BudgetPeriodType
+  budget_start_date  DateTime
+  budget_end_date    DateTime
+  created_at         DateTime
+  updated_at         DateTime
+  user_id            Int
+  user               User             @relation(fields: [user_id], references: [user_id])
+}
+
+model Transfer {
+  transfer_id           Int      @id @default(autoincrement())
+  user_id               Int
+  user                  User     @relation(fields: [user_id], references: [user_id])
+  from_account_id       Int
+  transfer_from_account Account  @relation("OutgoingTransfers", fields: [from_account_id], references: [account_id])
+  to_account_id         Int
+  transfer_to_account   Account  @relation("IncomingTransfers", fields: [to_account_id], references: [account_id])
+  transfer_amount       Decimal
+  transfer_date         DateTime
+}
