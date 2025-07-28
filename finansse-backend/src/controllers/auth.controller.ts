@@ -37,8 +37,47 @@ export class AuthController {
             console.error('Registration error: ', error);
             res.status(500).json({
                 success: false,
-                message: "Internal server error"
+                message: "Internal server error."
             });
+        }
+    }
+
+    // POST /auth/login
+    static async login(req: Request, res: Response) {
+        try {
+            const { email, password } = req.body;
+            
+            // find user
+            const user = await AuthModel.findUserByEmail(email);
+            if (!user){
+                return res.status(404).json({
+                    success: false,
+                    message: "User not found."
+                });
+            }
+
+            // if exists, compare password
+            const isValidPassword = await AuthModel.validatePassword(password, user.user_password_hash)
+            if(!isValidPassword) {
+                return res.status(401).json({
+                    success: false,
+                    message: "Invalid credentials."
+                })
+            }
+
+            const {user_password_hash, ...userNoHash} = user;
+            return res.status(201).json({
+                success: true,
+                message: "User logged in successfully!",
+                data: userNoHash
+            });
+
+        } catch (error) {
+            console.error("Login error: ", error);
+            return res.status(500).json({
+                success: false,
+                message: "Internal server error"
+            })
         }
     }
 }

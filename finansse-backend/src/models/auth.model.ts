@@ -29,7 +29,7 @@ export class AuthModel {
     }
 
     static async validatePassword(orig_password: string, hashedPassword: string) {
-        return await argon2.verify(orig_password, hashedPassword);
+        return await argon2.verify(hashedPassword, orig_password);
     }
 
     
