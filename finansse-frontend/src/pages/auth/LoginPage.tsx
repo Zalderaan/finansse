@@ -1,11 +1,12 @@
-import { Button } from "@/components/ui/button";
 import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Link } from "react-router-dom";
-import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 
 const formSchema = z.object({
     email: z.string().email({
@@ -15,7 +16,7 @@ const formSchema = z.object({
 })
 
 export function LoginPage() {
-
+    
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -23,9 +24,15 @@ export function LoginPage() {
             password: "",
         },
     })
-
-    function onSubmit(values: z.infer<typeof formSchema>) {
+    
+    const { loginAsync, isLoggingIn, loginError, isAuthenticated } = useAuth();
+    async function onSubmit(values: z.infer<typeof formSchema>) {
         console.log("Login form vales: ", values);
+        try {
+            await loginAsync(values);
+        } catch (error) {
+            console.error('Login failed: ', error);
+        }
     }
 
     return (
