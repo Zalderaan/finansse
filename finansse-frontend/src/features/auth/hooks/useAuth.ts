@@ -5,6 +5,10 @@ import { isUint8Array } from 'util/types';
 
 export function useAuth() {
     const queryClient = useQueryClient();
+    const hasAuthCookie = () => {
+        return document.cookie.includes('authToken') || document.cookie.includes('auth');
+    };
+
     // query to get current user
     const {
         data: user,
@@ -13,6 +17,7 @@ export function useAuth() {
     } = useQuery({
         queryKey: ['auth', 'user'],
         queryFn: authApiService.getCurrentUser,
+        enabled: hasAuthCookie(), // Only run if auth cookie exists
         retry: false,
     });
 
@@ -20,10 +25,26 @@ export function useAuth() {
     const loginMutation = useMutation({
         mutationFn: authApiService.login,
         onSuccess: (data) => {
-            queryClient.setQueryData(['auth', 'user'], null);
-            queryClient.clear();
+            queryClient.setQueryData(['auth', 'user'], data.user);
         },
     });
+
+    // register mutation
+    const registerMutation = useMutation({
+        mutationFn: authApiService.register,
+        onSuccess: (data) => {
+            queryClient.setQueryData(['auth', 'user'], data.user);
+        },
+    });
+
+    // logout mutation
+    const logoutMutation = useMutation({
+        mutationFn: authApiService.logout,
+        onSuccess: () => {
+            queryClient.setQueryData(['auth', 'user'], null);
+            queryClient.clear();
+        }
+    })
 
     return {
         user,
@@ -36,8 +57,20 @@ export function useAuth() {
         isLoggingIn: loginMutation.isPending,
         loginError: loginMutation.error,
 
+        // Register
+        register: registerMutation.mutate,
+        registerAsync: registerMutation.mutateAsync,
+        isRegistering: registerMutation.isPending,
+        registerError: registerMutation.error,
+
+        // Logout
+        logout: logoutMutation.mutate,
+        logoutAsync: logoutMutation.mutateAsync,
+        isLoggingOut: logoutMutation.isPending,
+        logoutError: logoutMutation.error,
+
         // Computed states
         isAuthenticated: !!user,
-        isLoading: isLoadingUser || loginMutation.isPending
+        isLoading: isLoadingUser || loginMutation.isPending || registerMutation.isPending || logoutMutation.isPending
     }
 }
