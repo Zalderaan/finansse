@@ -1,46 +1,26 @@
-import type { User, LoginRequest, RegisterRequest } from "../auth.types";
-import axios from 'axios'
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/finansse-backend';
-
-// create axios instance
-const authApi = axios.create({
-    baseURL: `${API_BASE_URL}/auth`,
-    headers: {
-        'Content-Type': 'application/json',
-    },
-    withCredentials: true,
-});
-
-authApi.interceptors.response.use(
-    (response) => response,
-    (error) => {
-        if (error.response?.status === 401) {
-            // Don't manually clear cookies - let the server handle it
-            window.location.href = '/login';
-        }
-        return Promise.reject(error);
-    }
-);
+import type { User, LoginRequest, LoginResponse, RegisterRequest } from "../auth.types";
+import { axiosInstance } from "@/lib/axios";
 
 // API functions
+const prefix = 'auth';
+
 export const authApiService = {
-    login: async ( data: LoginRequest): Promise<{ user: User; token: string}> => {
-        const response = await authApi.post('/login', data);
+    login: async (data: LoginRequest): Promise<LoginResponse> => {
+        const response = await axiosInstance.post(`${prefix}/login`, data);
         return response.data;
     },
 
-    register: async ( data: RegisterRequest): Promise<{user: User; token: string}> => {
-        const response = await authApi.post('/register', data);
+    register: async (data: RegisterRequest): Promise<{ user: User; token: string }> => {
+        const response = await axiosInstance.post(`${prefix}/register`, data);
         return response.data;
     },
 
     getCurrentUser: async (): Promise<User> => {
-        const response = await authApi.get('/me');
+        const response = await axiosInstance.get(`${prefix}/me`);
         return response.data;
     },
 
     logout: async (): Promise<void> => {
-        await authApi.post('/logout');
+        await axiosInstance.post('/logout');
     },
 };

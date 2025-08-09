@@ -6,8 +6,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Link } from "react-router-dom";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
-import { useAuth } from "@/features/auth/hooks/useAuth";
-
+import { useRegister } from "@/features/auth/hooks/useRegister";
 const formSchema = z.object({
     email: z.string().email({
         message: "Input must be an email"
@@ -37,7 +36,7 @@ export function RegisterPage() {
         },
     })
 
-    const { registerAsync, isRegistering, registerError } = useAuth();
+    const { registerAsync, isRegistering, registerError } = useRegister();
     async function onSubmit(values: z.infer<typeof formSchema>) {
         console.log("Register form values: ", values);
         try {

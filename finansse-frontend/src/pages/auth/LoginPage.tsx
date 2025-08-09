@@ -6,7 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Link } from "react-router-dom";
-import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useLogin } from "@/features/auth/hooks/useLogin";
+import { useNavigate } from "react-router-dom";
 
 const formSchema = z.object({
     email: z.string().email({
@@ -16,7 +17,7 @@ const formSchema = z.object({
 })
 
 export function LoginPage() {
-    
+    const navigate = useNavigate();
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -25,11 +26,13 @@ export function LoginPage() {
         },
     })
     
-    const { loginAsync, isLoggingIn, loginError, isAuthenticated } = useAuth();
+    const { loginAsync, isLoggingIn, loginError } = useLogin();
     async function onSubmit(values: z.infer<typeof formSchema>) {
         console.log("Login form vales: ", values);
         try {
             await loginAsync(values);
+            navigate('/dashboard');
+            
         } catch (error) {
             console.error('Login failed: ', error);
         }
@@ -75,7 +78,7 @@ export function LoginPage() {
                         </CardContent>
                         <CardFooter className="flex flex-col">
                             <CardAction>
-                                <Button type='submit'>Login</Button>
+                                <Button type='submit'>{isLoggingIn ? 'Logging in...' : 'Login'}</Button>
                             </CardAction>
                             <Link to='/register'>Don't have an account yet? <span className="underline">Sign up instead</span></Link>
                         </CardFooter>
