@@ -42,7 +42,8 @@ model User {
   user_username      String
   user_email         String
   user_password_hash String
-  user_created_at    DateTime
+  user_created_at    DateTime      @default(now())
+  user_updated_at    DateTime      @updatedAt
   Transactions       Transaction[]
   Accounts           Account[]
   Category           Category[]
@@ -57,8 +58,8 @@ model Account {
   account_initial_balance Decimal
   account_current_balance Decimal
   account_currency        String
-  created_at              DateTime
-  updated_at              DateTime
+  created_at              DateTime      @default(now())
+  updated_at              DateTime      @updatedAt
   user_id                 Int
   user                    User          @relation(fields: [user_id], references: [user_id])
   Transaction             Transaction[]
@@ -72,8 +73,8 @@ model Transaction {
   transaction_type   TransactionType
   transaction_amount Decimal
   transaction_date   DateTime
-  created_at         DateTime
-  updated_at         DateTime
+  created_at         DateTime        @default(now())
+  updated_at         DateTime        @updatedAt
   account_id         Int
   account            Account         @relation(fields: [account_id], references: [account_id])
   user_id            Int
@@ -96,8 +97,8 @@ model Budget {
   budget_period_type BudgetPeriodType
   budget_start_date  DateTime
   budget_end_date    DateTime
-  created_at         DateTime
-  updated_at         DateTime
+  created_at         DateTime         @default(now())
+  updated_at         DateTime         @updatedAt
   user_id            Int
   user               User             @relation(fields: [user_id], references: [user_id])
 }
@@ -111,5 +112,5 @@ model Transfer {
   to_account_id         Int
   transfer_to_account   Account  @relation("IncomingTransfers", fields: [to_account_id], references: [account_id])
   transfer_amount       Decimal
-  transfer_date         DateTime
+  transfer_date         DateTime @default(now())
 }

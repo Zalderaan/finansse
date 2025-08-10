@@ -12,14 +12,8 @@ export function authenticateToken(req: AuthRequest, res: Response, next: NextFun
     try {
         // get from auth headers first
         let token = req.headers.authorization?.split(' ')[1]; // split space bar (Bearer <token>)
-
-        // check cookies
-        if (!token) {
-            console.log('No token from headers!')
-            token = req.cookies?.accessToken;
-        }
-
-        console.log('cookies: ', req.cookies);
+        console.log('token in middleware: ', token)
+        // console.log('cookies: ', req.cookies);
 
         if (!token) {
             console.log("No token from cookies!")
@@ -29,16 +23,16 @@ export function authenticateToken(req: AuthRequest, res: Response, next: NextFun
             });
         }
 
-        console.log('token in middleware: ', token);
+        // console.log('token in middleware: ', token);
         // verify token
         const verified = jwtUtil.verifyToken(token);
         req.user = verified;
         next();
     } catch (error) {
         console.error('Token verification error: ', error);
-        return res.status(403).json({
+        return res.status(401).json({
             success: false,
-            message: 'Invalid or expired token'
+            message: 'Unauthorized'
         });
     }
 }

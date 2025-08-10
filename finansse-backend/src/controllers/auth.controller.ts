@@ -68,6 +68,7 @@ export class AuthController {
 
             const tokenPayload = {
                 userId: user.user_id,
+                username: user.user_username,
                 userEmail: user.user_email
             }
 
@@ -79,19 +80,18 @@ export class AuthController {
                 // ! httpOnly cannot be accessed by browser JS if true
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
-                sameSite: 'strict',
-                maxAge: 7 * 24 * 600 * 60 * 1000,
-                path: '/auth/refresh'
+                sameSite: 'lax',
+                maxAge: 7 * 24 * 60 * 60 * 1000,
             });
             return res.status(201).json({
                 success: true,
                 message: "User logged in successfully!",
                 accessToken: tokens.accessToken,
-                refreshToken: tokens.refreshToken,
                 user_data: {
                     uid: user.user_id,
                     username: user.user_username,
                     email: user.user_email,
+                    created_at: user.user_created_at,
                 },
             });
         } catch (error) {
@@ -103,11 +103,101 @@ export class AuthController {
         }
     }
 
+    // POST /auth/logout
+    static async logout(req: Request, res: Response) {
+        try {
+            // clear cookies
+            res.clearCookie('refreshToken', {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax'
+            });
+
+            // * optional: implement token blacklisting
+
+            return res.status(200).json({
+                success: true,
+                message: 'User logged out successfully!'
+            });
+        } catch (error) {
+            console.error('Logout error: ', error);
+            return res.status(500).json({
+                success: false,
+                message: 'User logged out failed'
+            })
+        }
+    }
+
+    // POST /auth/refresh
+    static async refresh(req: Request, res: Response) {
+        // console.log('🚀 Refresh endpoint hit');
+        // console.log('🍪 Raw cookie header:', req.headers.cookie);
+        // console.log('🍪 Parsed cookies:', req.cookies);
+        // console.log('🔍 RefreshToken from cookies:', req.cookies.refreshToken);
+        try {
+            const refreshToken = req.cookies?.refreshToken;
+
+            if (!refreshToken) {
+                return res.status(401).json({
+                    success: false,
+                    message: 'No refresh token provided'
+                });
+            }
+
+            // Verify token (throws if invalid)
+            let validated;
+            try {
+                validated = jwtUtil.verifyToken(refreshToken);
+            } catch {
+                return res.status(403).json({
+                    success: false,
+                    message: 'Invalid refresh token'
+                });
+            }
+
+            // If verification returned a falsy payload
+            if (!validated) {
+                return res.status(403).json({
+                    success: false,
+                    message: 'Invalid refresh token'
+                });
+            }
+
+            const cleanPayload = {
+                userId: validated.userId,
+                username: validated.username,
+                userEmail: validated.userEmail,
+            }
+
+            // Refresh token rotation
+            const tokens = jwtUtil.generateTokenPair(cleanPayload);
+
+            res.cookie('refreshToken', tokens.refreshToken, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+            });
+
+            return res.status(200).json({
+                success: true,
+                message: 'Tokens refreshed successfully',
+                accessToken: tokens.accessToken,
+            });
+        } catch (error) {
+            console.error('Token refresh error:', error);
+            return res.status(403).json({
+                success: false,
+                message: 'Invalid or expired refresh token'
+            });
+        }
+    }
+
     // GET /auth/me
     static async getMe(req: AuthRequest, res: Response) {
         try {
             const userId = req.user?.userId;
-            console.log('userId: ', userId)
+            console.log('userId in getMe: ', userId)
 
             if (!userId) {
                 return res.status(401).json({ error: 'Unauthorized' });
@@ -124,7 +214,9 @@ export class AuthController {
             return res.json({
                 uid: user.user_id,
                 username: user.user_username,
-                email: user.user_email
+                email: user.user_email,
+                createdAt: user.user_created_at,
+                updatedAt: user.user_updated_at,
             });
 
         } catch (error) {
