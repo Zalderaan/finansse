@@ -8,7 +8,7 @@ export interface TokenPair {
 
 export class jwtUtil {
     private static readonly SECRET_KEY = process.env.JWT_SECRET || 'secret';
-    private static readonly token_expiry = '10s';
+    private static readonly token_expiry = '30m';
     private static readonly refresh_expiry = '7d';
 
 
