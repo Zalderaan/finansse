@@ -3,10 +3,9 @@ import { useIsAuthenticated } from "../hooks/useIsAuthenticated";
 
 export function ProtectedRoute() {
     const { isAuthenticated, isLoading } = useIsAuthenticated();
-    if (isLoading) return <div>Loading...</div>;
     if (!isAuthenticated) return <Navigate to="login" replace />
     console.log('is authenticated: ', isAuthenticated);
-    
+
     return (
         <Outlet />
     );

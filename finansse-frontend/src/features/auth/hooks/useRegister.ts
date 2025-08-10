@@ -7,7 +7,7 @@ export function useRegister() {
 
     // login mutation
     const registerMutation = useMutation({
-        mutationFn: authApiService.login,
+        mutationFn: authApiService.register,
         onSuccess: (data) => {
             queryClient.setQueryData(['auth', 'user'], data.user);
         },

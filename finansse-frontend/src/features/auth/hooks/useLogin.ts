@@ -5,6 +5,7 @@ import { useAuthStore } from '../stores/auth.store';
 export function useLogin() {
     const queryClient = useQueryClient();
     const setAuth = useAuthStore(state => state.setAuth);
+    const setUser = useAuthStore(state => state.setUser);
 
     // login mutation
     const loginMutation = useMutation({
@@ -12,7 +13,8 @@ export function useLogin() {
         onSuccess: (data) => {
             // console.log('🔍 Full API response:', data);
             // console.log('🔍 Access token:', data);
-            setAuth(data.accessToken) // store auth token in zustand
+            setAuth(data.accessToken); // store auth token in zustand
+            setUser(data.user_data); // store user in zustand
             queryClient.setQueryData(['auth', 'user'], data.user_data); // store/cache user data
         },
     });

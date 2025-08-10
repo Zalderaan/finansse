@@ -1,4 +1,4 @@
-import type { User, LoginRequest, LoginResponse, RegisterRequest } from "../auth.types";
+import type { User, LoginRequest, LoginResponse, RegisterRequest, RefreshTokenResponse } from "../auth.types";
 import { axiosInstance } from "@/lib/axios";
 
 // API functions
@@ -21,6 +21,11 @@ export const authApiService = {
     },
 
     logout: async (): Promise<void> => {
-        await axiosInstance.post('/logout');
+        await axiosInstance.post(`${prefix}/logout`);
     },
+
+    refreshToken: async (): Promise<RefreshTokenResponse> => {
+        const response = await axiosInstance.post(`${prefix}/refresh`);
+        return response.data;
+    }
 };
