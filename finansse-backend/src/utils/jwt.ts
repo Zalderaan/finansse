@@ -1,4 +1,3 @@
-// TODO: ADD JWT HERE
 import jwt from 'jsonwebtoken'
 
 export interface TokenPair {
@@ -15,6 +14,7 @@ export class jwtUtil {
     static generateTokenPair(payload: object): TokenPair {
         console.log('payload: ', payload);
         return {
+
             accessToken: this.generateAccessToken(payload),
             refreshToken: this.generateRefreshToken(payload),
         };

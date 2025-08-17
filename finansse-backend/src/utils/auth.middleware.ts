@@ -12,7 +12,7 @@ export function authenticateToken(req: AuthRequest, res: Response, next: NextFun
     try {
         // get from auth headers first
         let token = req.headers.authorization?.split(' ')[1]; // split space bar (Bearer <token>)
-        console.log('token in middleware: ', token)
+        // console.log('token in middleware: ', token)
         // console.log('cookies: ', req.cookies);
 
         if (!token) {
