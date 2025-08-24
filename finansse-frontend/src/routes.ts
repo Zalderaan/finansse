@@ -2,10 +2,13 @@ import { createBrowserRouter } from "react-router-dom";
 import { LandingPage } from "@/pages/LandingPage";
 import { NotFound } from "@/pages/NotFound";
 import { DashboardPage } from "./pages/dashboard/DashboardPage";
+import { DashboardLayout } from "./pages/dashboard/DashboardLayout";
 import { LoginPage } from "./pages/auth/LoginPage";
 import { RegisterPage } from "./pages/auth/RegisterPage";
 import { ProfilePage } from "./pages/profile/ProfilePage";
 import { ProtectedRoute } from "./features/auth/components/ProtectedRoute";
+import { AccountPage } from "./pages/accounts/AccountPage";
+import { BudgetPage } from "./pages/budgets/BudgetPage";
 
 
 export const router = createBrowserRouter([
@@ -18,13 +21,21 @@ export const router = createBrowserRouter([
         Component: ProtectedRoute,
         children: [
             {
-                path: "/dashboard",
+                Component: DashboardLayout,
                 children: [
-                    { index: true, Component: DashboardPage }, // Default dashboard view
-                    { path: "test", Component: LandingPage },       // /dashboard/test
-                ],
+                    {
+                        path: "/dashboard",
+                        children: [
+                            { index: true, Component: DashboardPage },
+                            { path: "accounts", Component: AccountPage },
+                            { path: "budgets", Component: BudgetPage },
+                        ]
+                    },
+
+                    { path: "/me", Component: ProfilePage },
+                ]
             },
-            { path: "/me", Component: ProfilePage },
         ]
     },
 ]);
+

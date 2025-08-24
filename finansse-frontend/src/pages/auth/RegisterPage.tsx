@@ -40,7 +40,7 @@ export function RegisterPage() {
     async function onSubmit(values: z.infer<typeof formSchema>) {
         console.log("Register form values: ", values);
         try {
-            await registerAsync(values); 
+            await registerAsync(values);
         } catch (error) {
             console.error("Register error: ", error);
         }
@@ -112,10 +112,15 @@ export function RegisterPage() {
                             />
                         </CardContent>
                         <CardFooter className="flex flex-col">
-                            <CardAction>
+                            <CardAction className="space-x-2">
                                 <Button type='submit'>Register</Button>
+                                <Button asChild variant={"outline"}>
+                                    <Link to='/'>
+                                        Go back
+                                    </Link>
+                                </Button>
                             </CardAction>
-                            <Link to='/login'>Already have an account? <span className="underline">Sign in instead</span></Link>
+                            <span>Already have an account? <Link to='/login' className="underline">Sign in instead</Link></span>
                         </CardFooter>
                     </form>
                 </Form>

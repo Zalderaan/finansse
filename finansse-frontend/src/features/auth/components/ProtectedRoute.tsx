@@ -7,6 +7,8 @@ export function ProtectedRoute() {
     console.log('is authenticated: ', isAuthenticated);
 
     return (
-        <Outlet />
+        <>
+            <Outlet />
+        </>
     );
 }

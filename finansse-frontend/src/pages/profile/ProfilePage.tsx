@@ -1,10 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { authApiService } from "@/features/auth/api/authApi";
 import { useCurrentUser } from "@/features/auth/hooks/useCurrentUser";
+import { useLogout } from '@/features/auth/hooks/useLogout'
 
 export function ProfilePage() {
     // TODO: call /me endpoint
     const { user } = useCurrentUser();
+    const { logout } = useLogout();
     const testRefreshDirectly = async () => {
         try {
             console.log('🧪 Testing refresh endpoint directly...');
@@ -24,10 +26,9 @@ export function ProfilePage() {
 
     return (
         <>
-            username: {user?.username}
-            <Button onClick={testRefreshDirectly}>Test Refresh Directly</Button>
-
-            <Button>Logout</Button>
+            <p>username: {user?.username}</p>
+            <p>createdAt: {user?.createdAt}</p>
+            {/* <Button onClick={testRefreshDirectly}>Test Refresh Directly</Button> */}
         </>
     );
 }

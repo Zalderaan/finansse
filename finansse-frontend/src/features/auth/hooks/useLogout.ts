@@ -3,7 +3,7 @@ import { authApiService } from '@/features/auth/api/authApi';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../stores/auth.store';
 
-export function useLogin() {
+export function useLogout() {
     const queryClient = useQueryClient();
     const navigate = useNavigate();
     const logout = useAuthStore(state => state.logout);
@@ -14,13 +14,13 @@ export function useLogin() {
         onSuccess: () => {
             logout();
             queryClient.clear();
-            navigate('/login', { replace: true })
+            navigate('/', { replace: true })
         },
         onError: (error) => {
             console.error('Logout API failed:', error);
             logout();
             queryClient.clear();
-            navigate('/login', { replace: true });
+            navigate('/', { replace: true });
         }
     });
 

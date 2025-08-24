@@ -25,14 +25,14 @@ export function LoginPage() {
             password: "",
         },
     })
-    
+
     const { loginAsync, isLoggingIn, loginError } = useLogin();
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log("Login form vales: ", values);
+        console.log("Login form values: ", values);
         try {
             await loginAsync(values);
             navigate('/dashboard');
-            
+
         } catch (error) {
             console.error('Login failed: ', error);
         }
@@ -77,10 +77,15 @@ export function LoginPage() {
                             />
                         </CardContent>
                         <CardFooter className="flex flex-col">
-                            <CardAction>
+                            <CardAction className="space-x-2">
                                 <Button type='submit'>{isLoggingIn ? 'Logging in...' : 'Login'}</Button>
+                                <Button asChild variant={'outline'}>
+                                    <Link to='/'>
+                                        Go back
+                                    </Link>
+                                </Button>
                             </CardAction>
-                            <Link to='/register'>Don't have an account yet? <span className="underline">Sign up instead</span></Link>
+                            <span>Don't have an account yet? <Link to='/register' className="underline">Sign up instead</Link></span>
                         </CardFooter>
                     </form>
                 </Form>
