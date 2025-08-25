@@ -1,3 +1,4 @@
+import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
     Dialog,
@@ -9,8 +10,16 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog'
-import { Plus } from 'lucide-react'
-
+import {
+    Sheet,
+    SheetTrigger,
+    SheetClose,
+    SheetContent,
+    SheetHeader,
+    SheetFooter,
+    SheetTitle,
+    SheetDescription,
+} from '@/components/ui/sheet'
 import {
     Form,
     FormItem,
@@ -23,6 +32,8 @@ import { z } from "zod";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Input } from '@/components/ui/input';
+import { useState } from 'react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const createAccountFormSchema = z.object({
     account_name: z.string()
@@ -31,22 +42,19 @@ const createAccountFormSchema = z.object({
         .refine(val => val.trim().length > 0, "Account name cannot be empty or whitespace"),
     currency: z.string()
         .min(3, { message: "Invalid currency." }),
-    type: z.enum(["Savings", "Checking", "Cash", "Credit", "Investment", "E-Wallet"], {
-        errorMap: () => ({ message: "Please select a valid account type." })
-    }),
+    type: z.enum(["Savings", "Checking", "Cash", "Credit", "Investment", "E-Wallet"]),
     initial_bal: z.number()
         .min(0, "Balance cannot be less than 0"),
 });
 
 export function CreateAccountModal() {
-
     const createAccountForm = useForm<z.infer<typeof createAccountFormSchema>>({
         resolver: zodResolver(createAccountFormSchema),
         defaultValues: {
             account_name: "",
             type: undefined,
             initial_bal: 0,
-            currency: "",
+            currency: "PHP",
         }
     })
 
@@ -66,7 +74,7 @@ export function CreateAccountModal() {
                 </DialogTrigger>
                 <Form {...createAccountForm}>
                     <DialogContent>
-                        <form onSubmit={createAccountForm.handleSubmit(onSubmit)} className='space-y-8'>
+                        <form onSubmit={createAccountForm.handleSubmit(onSubmit)} className='space-y-6'>
                             <DialogHeader>
                                 <DialogTitle>Create Account</DialogTitle>
                                 <DialogDescription>
@@ -74,62 +82,80 @@ export function CreateAccountModal() {
                                 </DialogDescription>
                             </DialogHeader>
 
-                            <FormField
-                                control={createAccountForm.control}
-                                name="account_name"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Account Name</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder='Account name' {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+                            <div className='flex flex-col space-y-4'>
+                                <FormField
+                                    control={createAccountForm.control}
+                                    name="account_name"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Account Name</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder='Account Name' {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
 
-                            <FormField
-                                control={createAccountForm.control}
-                                name="type"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Account Type</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder='Account name' {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+                                <FormField
+                                    control={createAccountForm.control}
+                                    name="type"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Account Type</FormLabel>
+                                            <FormControl>
+                                                <Select value={field.value} onValueChange={field.onChange}>
+                                                    <SelectTrigger className='w-full'>
+                                                        <SelectValue placeholder="Account Type" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="Cash">Cash</SelectItem>
+                                                        <SelectItem value="E-Wallet">E-Wallet</SelectItem>
+                                                        <SelectItem value="Savings">Savings</SelectItem>
+                                                        <SelectItem value="Checking">Checking</SelectItem>
+                                                        <SelectItem value="Investment">Investment</SelectItem>
+                                                        <SelectItem value="Credit">Credit</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
 
-                            <FormField
-                                control={createAccountForm.control}
-                                name="currency"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Currency</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder='Account name' {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+                                <FormField
+                                    control={createAccountForm.control}
+                                    name="currency"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Currency</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder='ex. PHP' {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
 
-                            <FormField
-                                control={createAccountForm.control}
-                                name="initial_bal"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Initial Balance</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder='Account name' {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
+                                <FormField
+                                    control={createAccountForm.control}
+                                    name="initial_bal"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Initial Balance</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    placeholder='0' {...field}
+                                                    type='number'
+                                                    value={field.value}
+                                                    onChange={e => field.onChange(e.target.value === "" ? 0 : Number(e.target.value))}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
                             <DialogFooter>
                                 <DialogClose asChild>
                                     <Button variant={'outline'}>
@@ -143,7 +169,7 @@ export function CreateAccountModal() {
                         </form>
                     </DialogContent>
                 </Form>
-            </Dialog>
+            </Dialog >
         </>
     )
 }
