@@ -10,16 +10,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog'
-import {
-    Sheet,
-    SheetTrigger,
-    SheetClose,
-    SheetContent,
-    SheetHeader,
-    SheetFooter,
-    SheetTitle,
-    SheetDescription,
-} from '@/components/ui/sheet'
+
 import {
     Form,
     FormItem,
@@ -32,7 +23,6 @@ import { z } from "zod";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Input } from '@/components/ui/input';
-import { useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const createAccountFormSchema = z.object({
@@ -53,7 +43,7 @@ export function CreateAccountModal() {
         defaultValues: {
             account_name: "",
             type: undefined,
-            initial_bal: 0,
+            initial_bal: undefined,
             currency: "PHP",
         }
     })
@@ -62,6 +52,21 @@ export function CreateAccountModal() {
         console.log("onsubmit called!")
         console.log("Values in createAccountFormSchema: ", values);
     }
+
+    function handleNumberChange(value: string, onChange: (value: number | undefined) => void) {
+        // handle empty inputs
+        if (value === "" || value === undefined){
+            onChange(undefined);
+            return;
+        }
+        // convert string to number
+        const numValue = parseFloat(value)
+        if (value) {
+            if(!isNaN(numValue)) {
+                onChange(numValue);
+            }
+        };
+    };
 
     return (
         <>
@@ -145,11 +150,12 @@ export function CreateAccountModal() {
                                             <FormLabel>Initial Balance</FormLabel>
                                             <FormControl>
                                                 <Input
-                                                    placeholder='0' {...field}
-                                                    type='number'
-                                                    value={field.value}
-                                                    onChange={e => field.onChange(e.target.value === "" ? 0 : Number(e.target.value))}
-                                                />
+                                                type="number"
+                                                placeholder="Enter initial bal."
+                                                {...field}
+                                                value={field.value ?? ''}
+                                                onChange={(e) => handleNumberChange(e.target.value, field.onChange)}
+/>
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>

@@ -6,7 +6,7 @@ export function AccountPage() {
     return (
         <>
             Hello from Accounts Page!
-            <CreateAccountModal></CreateAccountModal>
+            <CreateAccountModal />
         </>
     )
 }

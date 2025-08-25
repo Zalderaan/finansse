@@ -9,6 +9,7 @@ import { ProfilePage } from "./pages/profile/ProfilePage";
 import { ProtectedRoute } from "./features/auth/components/ProtectedRoute";
 import { AccountPage } from "./pages/accounts/AccountPage";
 import { BudgetPage } from "./pages/budgets/BudgetPage";
+import TestPage from "./features/accounts/components/testpage";
 
 
 export const router = createBrowserRouter([
@@ -29,6 +30,7 @@ export const router = createBrowserRouter([
                             { index: true, Component: DashboardPage },
                             { path: "accounts", Component: AccountPage },
                             { path: "budgets", Component: BudgetPage },
+                            { path: "test", Component: TestPage },
                         ]
                     },
 
