@@ -19,5 +19,7 @@ router.post('/auth/refresh', AuthController.refresh); // no route protection her
 
 // ACCOUNTS
 router.post('/accounts/create', authenticateToken, AccountsController.postAccount);
+router.get('/accounts/:id', authenticateToken, AccountsController.getAccountDetails);
+router.get('/accounts', authenticateToken, AccountsController.getAccounts);
 
 export default router;
