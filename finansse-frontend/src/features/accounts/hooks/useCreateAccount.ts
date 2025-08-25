@@ -9,12 +9,16 @@ export function useCreateAccount() {
         mutationFn: accountApiService.createAccount,
         onSuccess: (data) => {
             // 1. Invalidate queries to then refetch accounts list
-
+            queryClient.invalidateQueries({queryKey: ['accounts']})
             // 2. Show success message (toast)
 
             // 3. Update cache for accounts list
-
+            queryClient.setQueryData(['account', data.data.account_id], data.data)
             // 4. Pre-fetch individual account data
+            queryClient.prefetchQuery({
+                queryKey: ['account', data.data.account_id],
+                queryFn: () => accountApiService.getAccountById(String(data.data.account_id)),
+            });
         },
         onError: (data) => {
             

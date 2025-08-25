@@ -24,6 +24,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useCreateAccount } from '../hooks/useCreateAccount';
+import type { CreateAccountRequest } from '../types/accounts.type';
 
 const createAccountFormSchema = z.object({
     account_name: z.string()
@@ -32,9 +34,10 @@ const createAccountFormSchema = z.object({
         .refine(val => val.trim().length > 0, "Account name cannot be empty or whitespace"),
     currency: z.string()
         .min(3, { message: "Invalid currency." }),
-    type: z.enum(["Savings", "Checking", "Cash", "Credit", "Investment", "E-Wallet"]),
+    type: z.enum(["SAVINGS", "CHECKING", "CASH", "CREDIT", "INVESTMENT", "E_WALLET"]),
     initial_bal: z.number()
-        .min(0, "Balance cannot be less than 0"),
+        .min(0, "Balance cannot be less than 0")
+        .optional(),
 });
 
 export function CreateAccountModal() {
@@ -48,21 +51,36 @@ export function CreateAccountModal() {
         }
     })
 
-    function onSubmit(values: z.infer<typeof createAccountFormSchema>) {
+    const { createAccAsync, isCreating, isError } = useCreateAccount();
+    async function onSubmit(values: z.infer<typeof createAccountFormSchema>) {
         console.log("onsubmit called!")
         console.log("Values in createAccountFormSchema: ", values);
+        const finalValues: CreateAccountRequest = {
+            name: values.account_name,
+            acc_type: values.type,
+            currency: values.currency,
+            initial_bal: values.initial_bal ?? 0
+        }
+
+        try {
+            await createAccAsync(finalValues);
+        } catch (error) {
+            console.error("Error creating account: ", error);
+        }
+        // await createAccAsync(finalValues)
+        console.log("final vals: ", finalValues);
     }
 
     function handleNumberChange(value: string, onChange: (value: number | undefined) => void) {
         // handle empty inputs
-        if (value === "" || value === undefined){
+        if (value === "" || value === undefined) {
             onChange(undefined);
             return;
         }
         // convert string to number
         const numValue = parseFloat(value)
         if (value) {
-            if(!isNaN(numValue)) {
+            if (!isNaN(numValue)) {
                 onChange(numValue);
             }
         };
@@ -95,7 +113,7 @@ export function CreateAccountModal() {
                                         <FormItem>
                                             <FormLabel>Account Name</FormLabel>
                                             <FormControl>
-                                                <Input placeholder='Account Name' {...field} />
+                                                <Input placeholder='Account name' {...field} />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -111,15 +129,15 @@ export function CreateAccountModal() {
                                             <FormControl>
                                                 <Select value={field.value} onValueChange={field.onChange}>
                                                     <SelectTrigger className='w-full'>
-                                                        <SelectValue placeholder="Account Type" />
+                                                        <SelectValue placeholder="Choose account type" />
                                                     </SelectTrigger>
                                                     <SelectContent>
-                                                        <SelectItem value="Cash">Cash</SelectItem>
-                                                        <SelectItem value="E-Wallet">E-Wallet</SelectItem>
-                                                        <SelectItem value="Savings">Savings</SelectItem>
-                                                        <SelectItem value="Checking">Checking</SelectItem>
-                                                        <SelectItem value="Investment">Investment</SelectItem>
-                                                        <SelectItem value="Credit">Credit</SelectItem>
+                                                        <SelectItem value="CASH">Cash</SelectItem>
+                                                        <SelectItem value="E_WALLET">E-Wallet</SelectItem>
+                                                        <SelectItem value="SAVINGS">Savings</SelectItem>
+                                                        <SelectItem value="CHECKING">Checking</SelectItem>
+                                                        <SelectItem value="INVESTMENT">Investment</SelectItem>
+                                                        <SelectItem value="CREDIT">Credit</SelectItem>
                                                     </SelectContent>
                                                 </Select>
                                             </FormControl>
@@ -150,12 +168,12 @@ export function CreateAccountModal() {
                                             <FormLabel>Initial Balance</FormLabel>
                                             <FormControl>
                                                 <Input
-                                                type="number"
-                                                placeholder="Enter initial bal."
-                                                {...field}
-                                                value={field.value ?? ''}
-                                                onChange={(e) => handleNumberChange(e.target.value, field.onChange)}
-/>
+                                                    type="number"
+                                                    placeholder="ex. 100, leave empty if none"
+                                                    {...field}
+                                                    value={field.value ?? ''}
+                                                    onChange={(e) => handleNumberChange(e.target.value, field.onChange)}
+                                                />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>

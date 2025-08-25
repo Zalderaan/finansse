@@ -14,16 +14,28 @@ export interface CreateAccountRequest {
 export interface CreateAccountResponse {
     success: string;
     message: string;
-    account_data: Account;
+    data: Account;
+}
+
+export interface GetAccountResponse {
+    sucess: string;
+    message: string;
+    data: Account;
+}
+
+export interface AccountsResponse {
+    success: string;
+    message: string;
+    data: Account[];
 }
 
 export interface Account {
-    id: number;
-    name: string;
-    currency: string;
-    type: string,
-    current_bal: number;
-    initial_bal: number;
+    account_id: number;
+    account_name: string;
+    account_currency: string;
+    account_type: string,
+    account_current_balance: number;
+    account_initial_balancee: number;
     created_at: Date;
-    update_at: Date;
+    updated_at: Date;
 }
