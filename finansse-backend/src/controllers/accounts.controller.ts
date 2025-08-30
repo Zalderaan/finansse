@@ -89,7 +89,26 @@ export class AccountsController {
     }
 
     // DELETE
-    static async deleteAccount() {
+    static async deleteAccount(req: AuthRequest, res: Response) {
+        try {
+            const acc_id = Number(req.params.id);
+            const user = req.user!.userId;
 
+            const deleted = await AccountsModel.deleteAccountById(acc_id, user);
+
+            return res.status(200).json({
+                success: false,
+                message: 'Internal server error',
+                data: {
+                    account_id: deleted.account_id
+                }
+            })
+
+        } catch (error) {
+            return res.status(500).json({
+                success: false,
+                message: 'Internal server error',
+            });
+        }
     }
 }

@@ -21,5 +21,6 @@ router.post('/auth/refresh', AuthController.refresh); // no route protection her
 router.post('/accounts/create', authenticateToken, AccountsController.postAccount);
 router.get('/accounts/:id', authenticateToken, AccountsController.getAccountDetails);
 router.get('/accounts', authenticateToken, AccountsController.getAccounts);
+router.delete('/accounts/:id', authenticateToken, AccountsController.deleteAccount);
 
 export default router;

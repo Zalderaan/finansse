@@ -66,5 +66,13 @@ export class AccountsModel {
 
     // TODO: accounts summary (for dashboard)
 
-    //
+    // DELETE
+    static async deleteAccountById(id: number, userId: number) {
+        return await prisma.account.delete({
+            where: {
+                account_id: id, 
+                user_id: userId, 
+            },
+        })
+    }
 }
