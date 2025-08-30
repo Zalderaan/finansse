@@ -29,6 +29,14 @@ export interface AccountsResponse {
     data: Account[];
 }
 
+export interface DeleteAccountResponse {
+    suuccess: string;
+    message: string;
+    data: {
+        account_id: number;
+    }
+}
+
 export interface Account {
     account_id: number;
     account_name: string;

@@ -1,4 +1,4 @@
-import { WalletCards, Home, HandCoins, } from "lucide-react"
+import { WalletCards, Home, HandCoins, PlusIcon, } from "lucide-react"
 import {
     Sidebar,
     SidebarContent,
@@ -10,6 +10,7 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
+    SidebarSeparator,
 } from "@/components/ui/sidebar"
 DropdownMenu
 import { Link } from "react-router-dom"
@@ -18,6 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { NavUser } from "@/components/nav-user"
 import { useAuthStore } from "@/features/auth/stores/auth.store"
+import { Button } from "@/components/ui/button"
 
 const dashboardPrefix = 'dashboard'
 // Menu items.
@@ -59,6 +61,15 @@ export function AppSidebar() {
             </SidebarHeader>
             <SidebarContent>
                 <SidebarGroup>
+                        <SidebarMenu>
+                            <SidebarMenuButton 
+                                className="flex flex-row items-center justify-center h-10
+                                        bg-purple-200 border-purple-300 border-1 text-purple-900 
+                                        hover:bg-purple-300 active:bg-purple-300 transition-colors ease-in-out duration-300"
+                            >
+                                <PlusIcon /> Add Expense
+                            </SidebarMenuButton>
+                        </SidebarMenu>
                     <SidebarGroupLabel>Application</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
@@ -80,7 +91,7 @@ export function AppSidebar() {
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton asChild>
-                            <NavUser username={user!.username} email={user!.email}/>
+                            <NavUser username={user!.username} email={user!.email} />
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>

@@ -1,5 +1,5 @@
 import { axiosInstance } from "@/lib/axios";
-import type { AccountsResponse, CreateAccountRequest, CreateAccountResponse, GetAccountResponse } from "../types/accounts.type";
+import type { AccountsResponse, CreateAccountRequest, CreateAccountResponse, DeleteAccountResponse, GetAccountResponse } from "../types/accounts.type";
 
 const prefix = 'accounts'
 export const accountApiService = {
@@ -18,9 +18,13 @@ export const accountApiService = {
     getAccounts: async (): Promise<AccountsResponse> => {
         const response = await axiosInstance.get(`${prefix}`);
         return response.data;
-    }
+    },
     
     // TODO: updateAccount:
     
-    // TODO: deleteAccount:
+    // DELETE
+    deleteAccount: async (id: string): Promise<DeleteAccountResponse> => {
+        const response = await axiosInstance.delete(`${prefix}/${id}`);
+        return response.data;
+    },
 }
