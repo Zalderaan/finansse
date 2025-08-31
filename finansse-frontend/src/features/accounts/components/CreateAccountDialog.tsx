@@ -26,6 +26,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useCreateAccount } from '../hooks/useCreateAccount';
 import type { CreateAccountRequest } from '../types/accounts.type';
+import { useAccountUiStore } from '../stores/accounts.uiStore';
 
 const createAccountFormSchema = z.object({
     account_name: z.string()
@@ -40,7 +41,9 @@ const createAccountFormSchema = z.object({
         .optional(),
 });
 
-export function CreateAccountModal() {
+export function CreateAccountDialog() {
+    const {createAccountDialogOpen, setCreateAccountDialogOpen} = useAccountUiStore(); 
+
     const createAccountForm = useForm<z.infer<typeof createAccountFormSchema>>({
         resolver: zodResolver(createAccountFormSchema),
         defaultValues: {
@@ -64,6 +67,7 @@ export function CreateAccountModal() {
 
         try {
             await createAccAsync(finalValues);
+            setCreateAccountDialogOpen(false);
         } catch (error) {
             console.error("Error creating account: ", error);
         }
@@ -88,7 +92,7 @@ export function CreateAccountModal() {
 
     return (
         <>
-            <Dialog>
+            <Dialog open={createAccountDialogOpen} onOpenChange={setCreateAccountDialogOpen}>
                 <DialogTrigger asChild>
                     <Button className='w-fit'>
                         <Plus />
@@ -186,8 +190,8 @@ export function CreateAccountModal() {
                                         Cancel
                                     </Button>
                                 </DialogClose>
-                                <Button type='submit'>
-                                    Confirm
+                                <Button type='submit' disabled={isCreating}>
+                                    {isCreating ? 'Creating account...' : 'Confirm' }
                                 </Button>
                             </DialogFooter>
                         </form>

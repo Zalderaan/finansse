@@ -17,7 +17,7 @@ import { useParams } from "react-router-dom";
 
 export function DeleteAccountDialog() {
     const { accountId } = useParams();
-    const {deleteAccAsync, isDeleting, isError, error} = useDeleteAccount();
+    const { deleteAccAsync, isDeleting, isError, error } = useDeleteAccount();
     const handleDelete = async () => {
         console.log('delete clicked')
         try {
@@ -44,7 +44,7 @@ export function DeleteAccountDialog() {
                         <DialogDescription>This action will remove this account from your user.</DialogDescription>
                     </DialogHeader>
                     <DialogFooter className="flex flex-row items-center justify-end space-x-1">
-                        <DialogClose>
+                        <DialogClose asChild>
                             <Button variant={'outline'}>Go back</Button>
                         </DialogClose>
                         <Button variant={'destructive'} onClick={handleDelete}>Delete</Button>
