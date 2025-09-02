@@ -12,7 +12,7 @@ export class jwtUtil {
 
 
     static generateTokenPair(payload: object): TokenPair {
-        console.log('payload: ', payload);
+        // console.log('payload: ', payload);
         return {
 
             accessToken: this.generateAccessToken(payload),

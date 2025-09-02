@@ -3,6 +3,7 @@ import express from "express";
 import { AuthController } from "../controllers/auth.controller";
 import { authenticateToken } from "../utils/auth.middleware";
 import { AccountsController } from "../controllers/accounts.controller";
+import { TransactionsController } from "../controllers/transactions.controller";
 
 
 const router = express.Router();
@@ -22,5 +23,8 @@ router.post('/accounts/create', authenticateToken, AccountsController.postAccoun
 router.get('/accounts/:id', authenticateToken, AccountsController.getAccountDetails);
 router.get('/accounts', authenticateToken, AccountsController.getAccounts);
 router.delete('/accounts/:id', authenticateToken, AccountsController.deleteAccount);
+
+// TRANSACTIONS
+router.post('/transactions/create', authenticateToken, TransactionsController.postTransaction);
 
 export default router;

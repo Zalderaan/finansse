@@ -96,11 +96,19 @@ export class AccountsController {
 
             const deleted = await AccountsModel.deleteAccountById(acc_id, user);
 
+            if (!deleted) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Account not found or unauthorized',
+                });
+            }
+
             return res.status(200).json({
-                success: false,
-                message: 'Internal server error',
+                success: true,
+                message: `Account ${deleted.account_name} deleted successfully`,
                 data: {
-                    account_id: deleted.account_id
+                    account_id: deleted.account_id,
+                    account_name: deleted.account_name
                 }
             })
 

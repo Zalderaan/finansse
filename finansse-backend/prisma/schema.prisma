@@ -73,7 +73,6 @@ model Transaction {
   transaction_name   String
   transaction_type   TransactionType
   transaction_amount Decimal
-  transaction_date   DateTime
   created_at         DateTime        @default(now())
   updated_at         DateTime        @updatedAt
   account_id         Int

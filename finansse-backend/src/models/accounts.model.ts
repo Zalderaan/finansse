@@ -21,7 +21,7 @@ export class AccountsModel {
                 account_current_balance: true,
                 account_initial_balance: true,
                 account_currency: true,
-                created_at: true
+                created_at: true,
             }
         });
         return created_account;
@@ -68,11 +68,20 @@ export class AccountsModel {
 
     // DELETE
     static async deleteAccountById(id: number, userId: number) {
-        return await prisma.account.delete({
-            where: {
-                account_id: id, 
-                user_id: userId, 
-            },
-        })
+        try {
+            const account = await prisma.account.findFirst({
+                where: {
+                    account_id: id,
+                    user_id: userId,
+                }
+            });
+            if (!account) return null; // return null if account not found / does not belong to the user
+            return await prisma.account.delete({
+                where: { account_id: id },
+            });
+        } catch (error) {
+            console.error('Error deleting account in model: ', error);
+            throw error;
+        }
     }
 }
