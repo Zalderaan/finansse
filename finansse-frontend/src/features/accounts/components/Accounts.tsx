@@ -18,7 +18,7 @@ export function Accounts() {
     return (
         <>  
             <div className="flex flex-col space-y-4">
-                {accounts?.data.map(account => (
+                {accounts?.map(account => (
                     <AccountCard key={account.account_id} {...account} />
                 ))}
             </div>

@@ -1,7 +1,7 @@
 // UI imports
 import {
     Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter,
-    DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger,
+    DialogHeader, DialogTitle, DialogTrigger,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { PlusIcon } from 'lucide-react';
@@ -9,12 +9,7 @@ import { Input } from '@/components/ui/input';
 import {
     Select,
     SelectContent,
-    SelectGroup,
     SelectItem,
-    SelectLabel,
-    SelectScrollDownButton,
-    SelectScrollUpButton,
-    SelectSeparator,
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
@@ -33,8 +28,10 @@ import { z } from "zod";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 
+import { useGetAccounts } from '@/features/accounts/hooks/useGetAccounts';
+
 const createTransactionFormSchema = z.object({
-    name: z.string(),
+    id: z.number(),
     amount: z.number(),
     type: z.enum(['INCOME', 'EXPENSE', 'TRANSFER']),
 })
@@ -43,7 +40,7 @@ export function AddTransactionDialog() {
     const createTransactionForm = useForm<z.infer<typeof createTransactionFormSchema>>({
         resolver: zodResolver(createTransactionFormSchema),
         defaultValues: {
-            name: "",
+            id: undefined,
             amount: 1,
             type: undefined,
         }
@@ -56,6 +53,10 @@ export function AddTransactionDialog() {
 
         // }
     }
+
+    const { accounts, isLoading, isError } = useGetAccounts();
+
+    console.log('This is accounts: ', accounts);
 
     return (
         <Dialog>
@@ -75,12 +76,26 @@ export function AddTransactionDialog() {
                         <div className='flex flex-col space-y-4'>
                             <FormField
                                 control={createTransactionForm.control}
-                                name="name"
+                                name="id"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Account Name</FormLabel>
                                         <FormControl>
-                                            <Input placeholder='Account name' {...field} />
+                                            <Select
+                                                value={field.value ? field.value.toString() : ""}
+                                                onValueChange={val => field.onChange(Number(val))}
+                                            >
+                                                <SelectTrigger className='w-full'>
+                                                    <SelectValue placeholder="Choose account" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {accounts?.map(
+                                                        (acc) => (
+                                                            <SelectItem key={acc.account_id} value={acc.account_id.toString()}>{acc.account_name}</SelectItem>
+                                                        )
+                                                    )}
+                                                </SelectContent>
+                                            </Select>
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -98,7 +113,7 @@ export function AddTransactionDialog() {
                                         <FormControl>
                                             <Select value={field.value} onValueChange={field.onChange}>
                                                 <SelectTrigger className='w-full'>
-                                                    <SelectValue placeholder="Choose transaction type"></SelectValue>
+                                                    <SelectValue placeholder="Choose transaction type" />
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     <SelectItem value='EXPENSE'>Expense</SelectItem>
