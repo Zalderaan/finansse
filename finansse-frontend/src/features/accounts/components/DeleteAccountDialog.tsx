@@ -12,29 +12,33 @@ import {
 import { Trash } from "lucide-react";
 import { useDeleteAccount } from "../hooks/useDeleteAccount";
 import { useParams } from "react-router-dom";
-
+import { useAccountUiStore } from '@/features/accounts/stores/accounts.uiStore';
+import { useNavigate } from "react-router-dom";
 
 
 export function DeleteAccountDialog() {
     const { accountId } = useParams();
+    const { deleteAccountDialogOpen, setDeleteAccountDialogOpen } = useAccountUiStore();
+    const navigate = useNavigate();
     const { deleteAccAsync, isDeleting, isError, error } = useDeleteAccount();
     const handleDelete = async () => {
-        console.log('delete clicked')
         try {
             if (accountId) {
-                await deleteAccAsync(accountId);
+                const deleted = await deleteAccAsync(accountId);
+                setDeleteAccountDialogOpen(false); // close dialog
+                navigate("/dashboard/accounts"); // navigate after deletion
             } else {
                 console.error('No account ID found in delete.')
             }
         } catch (error) {
             // error handling
+            console.error('Failed to delete account: ', error);
         }
     }
 
-
     return (
         <>
-            <Dialog>
+            <Dialog open={deleteAccountDialogOpen} onOpenChange={setDeleteAccountDialogOpen}>
                 <DialogTrigger asChild>
                     <Button variant={'destructive'}><Trash /></Button>
                 </DialogTrigger>
@@ -47,7 +51,11 @@ export function DeleteAccountDialog() {
                         <DialogClose asChild>
                             <Button variant={'outline'}>Go back</Button>
                         </DialogClose>
-                        <Button variant={'destructive'} onClick={handleDelete}>Delete</Button>
+                        <Button variant={'destructive'} onClick={handleDelete} disabled={isDeleting}>
+                            {
+                                isDeleting ? 'Deleting account...' : 'Delete'
+                            }
+                        </Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>

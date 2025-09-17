@@ -61,8 +61,8 @@ export function AccountDetails() {
                 <Separator />
                 <CardContent className="flex flex-col">
                     <span>Details: </span>
-                    <span>Account ID: {account?.account_id}</span>
                     <span>Current Balance: {account?.account_current_balance}</span>
+                    <span>Modified: {account?.updated_at.toLocaleString()}</span>
                     <span>Created At: {account?.created_at.toLocaleString()}</span>
                 </CardContent>
             </Card>
@@ -74,10 +74,7 @@ export function AccountDetails() {
                 </CardHeader>
                 <Separator />
                 <CardContent className="flex flex-col">
-                    <span>Transaction1</span>
-                    <span>Transaction1</span>
-                    <span>Transaction1</span>
-                    <span>Transaction1</span>
+                    <p>Show transactions here, JOIN transactions in account details</p>
                 </CardContent>
             </Card>
         </>

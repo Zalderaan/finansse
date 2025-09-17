@@ -20,6 +20,7 @@ import {
 import { NavUser } from "@/components/nav-user"
 import { useAuthStore } from "@/features/auth/stores/auth.store"
 import { Button } from "@/components/ui/button"
+import { AddTransactionDialog } from '@/features/transactions/components/AddTransactionDialog';
 
 const dashboardPrefix = 'dashboard'
 // Menu items.
@@ -61,15 +62,12 @@ export function AppSidebar() {
             </SidebarHeader>
             <SidebarContent>
                 <SidebarGroup>
-                        <SidebarMenu>
-                            <SidebarMenuButton 
-                                className="flex flex-row items-center justify-center h-10
-                                        bg-purple-200 border-purple-300 border-1 text-purple-900 
-                                        hover:bg-purple-300 active:bg-purple-300 transition-colors ease-in-out duration-300"
-                            >
-                                <PlusIcon /> Add Expense
-                            </SidebarMenuButton>
-                        </SidebarMenu>
+
+                    <SidebarMenu>
+                        <SidebarMenuButton asChild className="flex flex-row items-center justify-center h-10">
+                            <AddTransactionDialog />
+                        </SidebarMenuButton>
+                    </SidebarMenu>
                     <SidebarGroupLabel>Application</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>

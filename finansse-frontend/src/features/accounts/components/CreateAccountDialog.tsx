@@ -10,7 +10,13 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useCreateAccount } from '../hooks/useCreateAccount';
+import type { CreateAccountRequest } from '../types/accounts.type';
+import { useAccountUiStore } from '../stores/accounts.uiStore';
 
+// Forms imports
 import {
     Form,
     FormItem,
@@ -22,11 +28,6 @@ import {
 import { z } from "zod";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useCreateAccount } from '../hooks/useCreateAccount';
-import type { CreateAccountRequest } from '../types/accounts.type';
-import { useAccountUiStore } from '../stores/accounts.uiStore';
 
 const createAccountFormSchema = z.object({
     account_name: z.string()
@@ -42,7 +43,7 @@ const createAccountFormSchema = z.object({
 });
 
 export function CreateAccountDialog() {
-    const {createAccountDialogOpen, setCreateAccountDialogOpen} = useAccountUiStore(); 
+    const { createAccountDialogOpen, setCreateAccountDialogOpen } = useAccountUiStore();
 
     const createAccountForm = useForm<z.infer<typeof createAccountFormSchema>>({
         resolver: zodResolver(createAccountFormSchema),
@@ -99,8 +100,8 @@ export function CreateAccountDialog() {
                         Create
                     </Button>
                 </DialogTrigger>
-                <Form {...createAccountForm}>
-                    <DialogContent>
+                <DialogContent>
+                    <Form {...createAccountForm}>
                         <form onSubmit={createAccountForm.handleSubmit(onSubmit)} className='space-y-6'>
                             <DialogHeader>
                                 <DialogTitle>Create Account</DialogTitle>
@@ -191,12 +192,12 @@ export function CreateAccountDialog() {
                                     </Button>
                                 </DialogClose>
                                 <Button type='submit' disabled={isCreating}>
-                                    {isCreating ? 'Creating account...' : 'Confirm' }
+                                    {isCreating ? 'Creating account...' : 'Confirm'}
                                 </Button>
                             </DialogFooter>
                         </form>
-                    </DialogContent>
-                </Form>
+                    </Form>
+                </DialogContent>
             </Dialog >
         </>
     )
