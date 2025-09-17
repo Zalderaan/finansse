@@ -16,8 +16,16 @@ export class TransactionsController {
                 message: `Transaction ${newTransaction.transaction_name} created successfully`,
                 data: newTransaction
             })
-        } catch (error) {
+        } catch (error: unknown) {
             console.error('Error creating transaction in controller: ', error);
+            
+            if (error instanceof Error && error.message === 'Account does not belong to user or does not exist') {
+                return res.status(404).json({
+                    success: false,
+                    message: error.message
+                })
+            }
+            
             res.status(500).json({
                 success: false,
                 message: 'Internal server error'

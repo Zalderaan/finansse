@@ -1,8 +1,21 @@
 import prisma from "../db";
 import { CreateTransactionRequest } from "../types/transactions.types";
 export class TransactionsModel {
+
     // CREATE
     static async createTransaction(transactionData: CreateTransactionRequest, userId: number) {
+        // Validate that the account belongs to the user
+        const account = await prisma.account.findFirst({
+            where: {
+                account_id: transactionData.account_id,
+                user_id: userId
+            }
+        });
+
+        if (!account) {
+            throw new Error('Account does not belong to user or does not exist');
+        }
+        
         const created_transaction = await prisma.transaction.create({
             data: {
                 transaction_name: transactionData.name,
