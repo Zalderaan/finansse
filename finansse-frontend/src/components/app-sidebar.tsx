@@ -10,7 +10,6 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
-    SidebarSeparator,
 } from "@/components/ui/sidebar"
 DropdownMenu
 import { Link } from "react-router-dom"
@@ -19,7 +18,6 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { NavUser } from "@/components/nav-user"
 import { useAuthStore } from "@/features/auth/stores/auth.store"
-import { Button } from "@/components/ui/button"
 import { AddTransactionDialog } from '@/features/transactions/components/AddTransactionDialog';
 
 const dashboardPrefix = 'dashboard'

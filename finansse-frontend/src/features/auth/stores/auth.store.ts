@@ -29,7 +29,7 @@ export const useAuthStore = create<AuthStore>()(
                 localStorage.removeItem('auth-storage');
             },
             getToken: () => {
-                console.log('token from store: ', get().token);
+                // console.log('token from store: ', get().token);
                 return get().token;
             },
         }),

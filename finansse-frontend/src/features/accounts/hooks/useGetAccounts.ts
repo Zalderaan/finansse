@@ -10,7 +10,7 @@ export function useGetAccounts() {
         queryFn: () => accountApiService.getAccounts(),
     })
     return {
-        /**
+        /*
          * first data: object returned by React/Tanstack Query's useQuery hook (cannot be changed)
          * second data: property of the API response (coincidence that our API has a 'data' property)
          */

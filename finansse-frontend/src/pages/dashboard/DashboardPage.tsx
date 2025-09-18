@@ -1,5 +1,6 @@
 import { useAuthStore } from "@/features/auth/stores/auth.store";
 import { DashboardCard } from "./DashboardCard";
+import { Loader } from "@/components/loader";
 
 export function DashboardPage() {
 

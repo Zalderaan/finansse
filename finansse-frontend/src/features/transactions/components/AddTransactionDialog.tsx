@@ -28,11 +28,19 @@ import { z } from "zod";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 
+// hooks imports
 import { useGetAccounts } from '@/features/accounts/hooks/useGetAccounts';
+import { useCreateTransaction } from '@/features/transactions/hooks/useCreateTransaction';
+import { useTransactionUiStore } from '@/features/transactions/stores/transactions.uiStore';
+
+// types imports
+import type { CreateTransactionRequest } from '@/features/transactions/types/transactions.types';
 
 const createTransactionFormSchema = z.object({
     id: z.number(),
-    amount: z.number(),
+    amount: z
+        .number({ invalid_type_error: "Amount is required" })
+        .positive({ message: "Amount must be greater than 0" }),
     type: z.enum(['INCOME', 'EXPENSE', 'TRANSFER']),
 })
 
@@ -41,25 +49,45 @@ export function AddTransactionDialog() {
         resolver: zodResolver(createTransactionFormSchema),
         defaultValues: {
             id: undefined,
-            amount: 1,
+            amount: undefined,
             type: undefined,
-        }
+        },
+        mode: "onChange"
     })
 
     async function onSubmit(values: z.infer<typeof createTransactionFormSchema>) {
         console.log('transaction onSubmit() called!');
         console.log('values in createTransaction formSchema: ', values);
-        // const finalTransactionValues: CreateTransactionRequest = {
 
-        // }
+        // format name
+        const name = `${values.type} - on Account ID: ${values.id} - ${values.amount}`
+        const finalTransactionValues: CreateTransactionRequest = {
+            name: name,
+            account_id: values.id,
+            amount: values.amount,
+            type: values.type,
+        }
+
+        console.log('final values in createTransaction formSchema: ', finalTransactionValues);
+        try {
+            await createTransactionAsync(finalTransactionValues);
+            createTransactionForm.reset();
+            setCreateTransactionDialogOpen(false);
+        } catch ( error ) {
+            console.error("Error creating transaction: ", error);
+        }
+
+
     }
 
-    const { accounts, isLoading, isError } = useGetAccounts();
+    const { accounts, isLoading: accountsIsLoading, isError: accountsIsError } = useGetAccounts();
+    const { createTransactionDialogOpen, setCreateTransactionDialogOpen } = useTransactionUiStore();
+    const { createTransactionAsync, isCreating: isCreatingTransaction, isError: isErrorTransaction, error } = useCreateTransaction();
 
     console.log('This is accounts: ', accounts);
 
     return (
-        <Dialog>
+        <Dialog open={createTransactionDialogOpen} onOpenChange={setCreateTransactionDialogOpen}>
             <DialogTrigger asChild>
                 <Button>
                     <PlusIcon /> Add Transaction
@@ -89,9 +117,15 @@ export function AddTransactionDialog() {
                                                     <SelectValue placeholder="Choose account" />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    {accounts?.map(
-                                                        (acc) => (
-                                                            <SelectItem key={acc.account_id} value={acc.account_id.toString()}>{acc.account_name}</SelectItem>
+                                                    {accountsIsLoading ? (
+                                                        <SelectItem value="" disabled>Loading accounts</SelectItem>
+                                                    ) : accountsIsError ? (
+                                                        <SelectItem value="" disabled>Failed to load accounts</SelectItem>
+                                                    ) : (
+                                                        accounts?.map(
+                                                            (acc) => (
+                                                                <SelectItem key={acc.account_id} value={acc.account_id.toString()}>{acc.account_name}</SelectItem>
+                                                            )
                                                         )
                                                     )}
                                                 </SelectContent>
@@ -133,7 +167,12 @@ export function AddTransactionDialog() {
                                     <FormItem>
                                         <FormLabel>Amount</FormLabel>
                                         <FormControl>
-                                            <Input placeholder='Transaction Amount' {...field} />
+                                            <Input
+                                                placeholder='Transaction Amount' {...field}
+                                                type="number"
+                                                {...createTransactionForm.register("amount", { valueAsNumber: true })}
+                                                value={field.value ?? 0}
+                                            />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -146,7 +185,9 @@ export function AddTransactionDialog() {
                             <DialogClose asChild>
                                 <Button variant={'outline'}>Cancel</Button>
                             </DialogClose>
-                            <Button type='submit'>Submit</Button>
+                            <Button type='submit' disabled={isCreatingTransaction}>
+                                {isCreatingTransaction ? 'Creating Transaction...' : 'Add Transaction'}
+                            </Button>
                         </DialogFooter>
                     </form>
                 </Form>

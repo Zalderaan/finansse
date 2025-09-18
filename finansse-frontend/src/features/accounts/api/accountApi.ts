@@ -9,7 +9,6 @@ export const accountApiService = {
         return response.data;
     },
     
-    // TODO: getAccount:
     getAccountById: async (id: string): Promise<GetAccountResponse> => {
         const response = await axiosInstance.get(`${prefix}/${id}`);
         return response.data;
@@ -22,7 +21,6 @@ export const accountApiService = {
     
     // TODO: updateAccount:
     
-    // DELETE
     deleteAccount: async (id: string): Promise<DeleteAccountResponse> => {
         const response = await axiosInstance.delete(`${prefix}/${id}`);
         return response.data;

@@ -7,20 +7,20 @@ export function useCreateAccount() {
     // create account mutation
     const createAccountMutation = useMutation({
         mutationFn: accountApiService.createAccount,
-        onSuccess: (data) => {
+        onSuccess: (accountData) => {
             // 1. Invalidate queries to then refetch accounts list
             queryClient.invalidateQueries({queryKey: ['accounts']})
             // 2. Show success message (toast)
 
             // 3. Update cache for accounts list
-            queryClient.setQueryData(['account', data.data.account_id], data.data)
+            queryClient.setQueryData(['account', accountData.data.account_id], accountData.data)
             // 4. Pre-fetch individual account data
             queryClient.prefetchQuery({
-                queryKey: ['account', data.data.account_id],
-                queryFn: () => accountApiService.getAccountById(String(data.data.account_id)),
+                queryKey: ['account', accountData.data.account_id],
+                queryFn: () => accountApiService.getAccountById(String(accountData.data.account_id)),
             });
         },
-        onError: (data) => {
+        onError: (accountData) => {
             
         }
     });
@@ -30,5 +30,6 @@ export function useCreateAccount() {
         createAccAsync: createAccountMutation.mutateAsync,
         isCreating: createAccountMutation.isPending,
         isError: createAccountMutation.isError,
+        error: createAccountMutation.error?.message,
     }
 }

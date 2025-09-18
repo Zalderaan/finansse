@@ -25,7 +25,7 @@ export function setupInterceptors() {
     axiosInstance.interceptors.request.use(
         (config) => {
             const token = useAuthStore.getState().getToken();
-            console.log('token in req interceptor: ', token);
+            // console.log('token in req interceptor: ', token);
             if (token) config.headers.Authorization = `Bearer ${token}`;
             return config;
         },
@@ -45,7 +45,7 @@ export function setupInterceptors() {
             console.error('error in response interceptor:; ', error)
             // error should be 401 and not yet retried, else just reject as usual
             if (error.response?.status == 401 && !originalRequest._retry) {
-                console.log('first if called in interceptor!')
+                // console.log('first if called in interceptor!')
                 if (isRefreshing) { // for other untried requests, they will be pushed onto the queue and accessed later with processQueue after the first triggering req
                     console.log('isRefreshing triggered in response intercecptor!')
                     return new Promise((resolve, reject) => {
