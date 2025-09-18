@@ -26,6 +26,7 @@ export class TransactionsModel {
             },
 
             select: {
+                account_id: true,
                 transaction_id: true,
                 transaction_name: true,
                 transaction_amount: true,
