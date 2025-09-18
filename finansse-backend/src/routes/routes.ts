@@ -26,5 +26,5 @@ router.delete('/accounts/:id', authenticateToken, AccountsController.deleteAccou
 
 // TRANSACTIONS
 router.post('/transactions/create', authenticateToken, TransactionsController.postTransaction);
-
+router.get(`/transactions/account/:accountId`, authenticateToken, TransactionsController.getTransactionsByAcc);
 export default router;

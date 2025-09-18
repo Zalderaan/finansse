@@ -18,14 +18,36 @@ export class TransactionsController {
             })
         } catch (error: unknown) {
             console.error('Error creating transaction in controller: ', error);
-            
+
             if (error instanceof Error && error.message === 'Account does not belong to user or does not exist') {
                 return res.status(404).json({
                     success: false,
                     message: error.message
                 })
             }
-            
+
+            res.status(500).json({
+                success: false,
+                message: 'Internal server error'
+            });
+        }
+    }
+
+    // GET
+    static async getTransactionsByAcc(req: AuthRequest, res: Response) {
+        try {
+            const user = req.user!.userId;
+            const accountId = Number(req.params.accountId);
+
+            const transactions = await TransactionsModel.findTransactionsByAcc(accountId, user);
+
+            res.status(200).json({
+                success: true,
+                message: 'Transactions retrieved!',
+                data: transactions
+            });
+        } catch (error) {
+            console.error('Error getting transactions for account: ', error);
             res.status(500).json({
                 success: false,
                 message: 'Internal server error'

@@ -10,3 +10,7 @@ export interface CreateTransactionRequest {
     type: TransactionType,
     account_id: number 
 }
+
+export interface GetTransactionsByAccRequest {
+    
+}

@@ -20,3 +20,9 @@ export interface CreateAccountResponse {
     data: Transaction
 }
 
+export interface GetTransactionByAccResponse {
+    success: boolean,
+    message: string,
+    data: Transaction[]
+}
+

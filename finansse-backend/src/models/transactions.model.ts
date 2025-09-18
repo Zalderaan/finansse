@@ -15,7 +15,7 @@ export class TransactionsModel {
         if (!account) {
             throw new Error('Account does not belong to user or does not exist');
         }
-        
+
         const created_transaction = await prisma.transaction.create({
             data: {
                 transaction_name: transactionData.name,
@@ -37,6 +37,28 @@ export class TransactionsModel {
         return created_transaction;
     }
     // READ
+    static async findTransactionsByAcc(account_id: number, userId: number) {
+        // validate account
+        const account = await prisma.transaction.findFirst({
+            where: {
+                account_id: account_id,
+                user_id: userId
+            }
+        });
+
+        if (!account) {
+            throw new Error('Account does not belong to user or does not exist');
+        }
+
+        return await prisma.transaction.findMany({
+            where: {
+                account_id: account_id,
+                user_id: userId
+            },
+            orderBy: { created_at: 'desc' }
+        })
+
+    }
     // UPDATE
     // DELETE
 

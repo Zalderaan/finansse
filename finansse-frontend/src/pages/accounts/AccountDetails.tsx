@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { DeleteAccountDialog } from "@/features/accounts/components/DeleteAccountDialog";
+import { TransactionList } from "@/features/transactions/components/TransactionList";
 
 export function AccountDetails() {
     const { accountId } = useParams();
@@ -38,10 +39,6 @@ export function AccountDetails() {
 
     return (
         <>
-            {/**
-             * TODO: include details in transactions (start with backend)  
-             */
-            }
             <Card className="mb-6">
                 <CardHeader className="flex flex-row items-center justify-between space-x-4">
                     <div className="flex flex-row items-center space-x-4">
@@ -73,9 +70,9 @@ export function AccountDetails() {
                     <CardDescription>Money transactions made in this account</CardDescription>
                 </CardHeader>
                 <Separator />
-                <CardContent className="flex flex-col">
-                    <p>Show transactions here, JOIN transactions in account details</p>
-                </CardContent>
+                <TransactionList />
+                {/* <CardContent className="flex flex-col">
+                </CardContent> */}
             </Card>
         </>
     )
