@@ -1,4 +1,5 @@
 import prisma from "../db";
+import { Prisma, PrismaClient } from '@prisma/client';
 import { type CreateAccountRequest } from "../types/accounts.types";
 
 export class AccountsModel {
@@ -64,7 +65,13 @@ export class AccountsModel {
         })
     }
 
-    // TODO: accounts summary (for dashboard)
+    // UPDATE
+    static async updateAccountBalanceInTransaction(accountId: number, newBalance: number, tx: Prisma.TransactionClient) {
+        return await tx.account.update({
+            where: { account_id: accountId },
+            data: { account_current_balance: newBalance }
+        });
+    }
 
     // DELETE
     static async deleteAccountById(id: number, userId: number) {

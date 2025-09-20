@@ -4,13 +4,13 @@ import { useAuthStore } from "@/features/auth/stores/auth.store";
 import type { GetTransactionByAccResponse } from "../types/transactions.types";
 
 export function useGetTransactionsByAcc(accountId: string) {
-    const { user } = useAuthStore();
 
     const query = useQuery<GetTransactionByAccResponse>({
+        queryKey: ['transactions', Number(accountId)],
         queryFn: () => transactionApiService.getTransactionByAcc(accountId),
-        queryKey: ['transactions', user?.uid, accountId],
-        enabled: !!accountId
     })
+
+    console.log('account id in getbyacc: ', accountId);
 
     return {
         transactions: query.data?.data,

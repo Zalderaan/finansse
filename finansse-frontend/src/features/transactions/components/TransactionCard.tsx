@@ -26,9 +26,12 @@ export function TransactionCard(
                         <span>{date.toLocaleString()}</span>
                     </CardDescription>
                 </CardHeader>
-                <CardFooter className='flex flex-row justify-between items-start'>
+                <CardFooter className='flex flex-row justify-between items-start pt-2'>
                     <span className='text-sm text-gray-400'>Amount</span>
-                    <span className='font-bold'>{Number(amount).toFixed(2)}</span>
+                    <span className='font-bold'>
+                        {type === "EXPENSE" ? "-" : ""}
+                        {Number(amount).toFixed(2)}
+                    </span>
                 </CardFooter>
             </div>
         </>

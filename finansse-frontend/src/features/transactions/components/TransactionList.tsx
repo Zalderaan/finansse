@@ -1,4 +1,4 @@
-import { useGetTransactionsByAcc } from "@/features/transactions/hooks/useGetTransactions";
+import { useGetTransactionsByAcc } from "@/features/transactions/hooks/useGetTransactionsByAcc";
 import { useParams } from "react-router-dom";
 import { TransactionCard } from "./TransactionCard";
 
@@ -18,6 +18,7 @@ export function TransactionList() {
                 ) : (
                     transactions?.map((transaction) => (
                         <TransactionCard 
+                            key={transaction.transaction_id}
                             name={transaction.transaction_name}
                             type={transaction.transaction_type}
                             amount={transaction.transaction_amount}

@@ -62,7 +62,7 @@ model Account {
   created_at              DateTime      @default(now())
   updated_at              DateTime      @updatedAt
   user_id                 Int
-  user                    User          @relation(fields: [user_id], references: [user_id])
+  user                    User          @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
   Transaction             Transaction[]
   outgoing_transfers      Transfer[]    @relation("OutgoingTransfers")
   incoming_transfers      Transfer[]    @relation("IncomingTransfers")
@@ -76,7 +76,7 @@ model Transaction {
   created_at         DateTime        @default(now())
   updated_at         DateTime        @updatedAt
   account_id         Int
-  account            Account         @relation(fields: [account_id], references: [account_id])
+  account            Account         @relation(fields: [account_id], references: [account_id], onDelete: Cascade)
   user_id            Int
   user               User            @relation(fields: [user_id], references: [user_id])
 }
