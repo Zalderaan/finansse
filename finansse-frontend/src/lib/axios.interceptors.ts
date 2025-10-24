@@ -43,9 +43,19 @@ export function setupInterceptors() {
         async (error) => {
             const originalRequest = error.config;
             console.error('error in response interceptor:; ', error)
+
+            // 🔴 Handle refresh endpoint failure explicitly
+            if (error.response?.status === 401 && originalRequest?.url?.includes('auth/refresh')) {
+                console.log('Refresh token invalid or missing — redirecting to login');
+                useAuthStore.getState().logout();
+                window.location.href = '/login';
+                return Promise.reject(error);
+            }
+
             // error should be 401 and not yet retried, else just reject as usual
             if (error.response?.status == 401 && !originalRequest._retry) {
-                // console.log('first if called in interceptor!')
+                console.log('first if called in interceptor!')
+                console.log('error.response?.status:', error.response?.status, 'originalRequest._retry:', originalRequest._retry);
                 if (isRefreshing) { // for other untried requests, they will be pushed onto the queue and accessed later with processQueue after the first triggering req
                     console.log('isRefreshing triggered in response intercecptor!')
                     return new Promise((resolve, reject) => {
@@ -66,21 +76,20 @@ export function setupInterceptors() {
                     const response = await authApiService.refreshToken();
                     const { accessToken } = response;
 
-                    // update the access token in the auth store
-                    useAuthStore.getState().setAuth(accessToken);
+                    console.log("This is accessToken: ", accessToken);
+                    console.log("This is response from interceptor: ", response);
 
-                    // call the other queued reqs
-                    processQueue(null, accessToken);
+                    useAuthStore.getState().setAuth(accessToken); // update the access token in the auth store
+                    processQueue(null, accessToken); // call the other queued reqs
+                    originalRequest.headers.Authorization = `Bearer ${accessToken}`; // this is only for the first failed original request
 
-                    // this is only for the first failed original request
-                    originalRequest.headers.Authorization = `Bearer ${accessToken}`;
                     return axiosInstance(originalRequest);
-
-                } catch (refreshError) {
-                    processQueue(refreshError, null);
-                    // Clear auth state and redirect to login
-                    useAuthStore.getState().logout();
+                    // TODO: catch refreshError better
+                } catch (refreshError: any) {
+                    console.log('this is refresh error: ', refreshError);
+                    useAuthStore.getState().logout(); // Clear auth state and redirect to login
                     window.location.href = '/login';
+                    processQueue(refreshError, null);
                     return Promise.reject(refreshError);
                 } finally {
                     isRefreshing = false;

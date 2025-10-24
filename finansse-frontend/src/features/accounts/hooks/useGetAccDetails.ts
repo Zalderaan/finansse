@@ -6,7 +6,7 @@ import type { Account, GetAccountResponse } from "../types/accounts.type";
 export function useGetAccDetails(accountId: string) {
 
     const query = useQuery<GetAccountResponse>({
-        queryKey: ['account', accountId],
+        queryKey: ['account', Number(accountId)],
         queryFn: () => accountApiService.getAccountById(accountId),
         enabled: !!accountId,
         staleTime: 5 * 60 * 1000, // 5 minutes
@@ -22,7 +22,7 @@ export function useGetAccDetails(accountId: string) {
          * second data: property of the API response (coincidence that our API has a 'data' property)
          */
 
-        account: query.data?.data,
+        account: query.data?.data, // <---- first & seconnd data
         isLoading: query.isLoading,
         isError: query.isError,
         error: query.error,

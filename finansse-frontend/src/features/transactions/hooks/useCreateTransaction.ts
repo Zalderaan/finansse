@@ -13,7 +13,7 @@ export function useCreateTransaction() {
         onSuccess: (transactionData) => {
             // 1. Invalidate query
             queryClient.invalidateQueries(
-                { queryKey: ['transactions', transactionData.data.account_id] }
+                { queryKey: ['account', transactionData.data.account_id ] }
             )
 
             console.log('transactionData.data.account_id: ', transactionData.data.account_id);
