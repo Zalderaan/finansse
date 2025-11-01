@@ -17,31 +17,26 @@ export function useLogin() {
             setAuth(data.accessToken); // store auth token in zustand
             setUser(data.user_data); // store user in zustand
             queryClient.setQueryData(['auth', 'user'], data.user_data); // store/cache user data
-
-            // show success toast
-            // toast.success("Login successful", {
-            //     description: `Welcome back, ${data.user_data.username}!`,
-            //     style: {
-            //         backgroundColor: "#b9f8cf",
-            //         border: "1px solid #7bf1a8",
-            //         color: "#000000"
-            //     },
-            // })
-
             toast.success("Login successful", {
                 description: `Welcome back, ${data.user_data.username}!`,
-                style: {
-                    backgroundColor: "#b9f8cf",
-                    border: "1px solid #7bf1a8"
-                },
+                duration: 3000,
                 classNames: {
                     title: "!text-green-900",
-                    description: "!text-green-700",
+                    description: "!text-xs !text-green-700",
+                    toast: "!bg-green-200 !border-green-300",
                 }
             })
         },
-        onError: () => {
-            toast.error("Error logging in")
+        onError: (error: any) => {
+            toast.error("Error logging in", {
+                description: `${error.response.data.message}`,
+                duration: 3000,
+                classNames: {
+                    title: "!text-red-900",
+                    description: "!text-xs !text-red-700",
+                    toast: "!bg-red-200 !border-red-300",
+                }
+            })
         }
     });
 

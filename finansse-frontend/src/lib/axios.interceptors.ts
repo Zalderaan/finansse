@@ -44,6 +44,11 @@ export function setupInterceptors() {
             const originalRequest = error.config;
             console.error('error in response interceptor:; ', error)
 
+            // skip refresh logic for login endpoint
+            if (originalRequest?.url?.includes("auth/login")) {
+                return Promise.reject(error);
+            }
+
             // 🔴 Handle refresh endpoint failure explicitly
             if (error.response?.status === 401 && originalRequest?.url?.includes('auth/refresh')) {
                 console.log('Refresh token invalid or missing — redirecting to login');
