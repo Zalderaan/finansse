@@ -13,6 +13,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 
 
 // forms imports
@@ -73,26 +74,36 @@ export function AddTransactionDialog() {
             await createTransactionAsync(finalTransactionValues);
             createTransactionForm.reset();
             setCreateTransactionDialogOpen(false);
-        } catch ( error ) {
+        } catch (error) {
             console.error("Error creating transaction: ", error);
         }
-
-
     }
 
     const { accounts, isLoading: accountsIsLoading, isError: accountsIsError } = useGetAccounts();
     const { createTransactionDialogOpen, setCreateTransactionDialogOpen } = useTransactionUiStore();
     const { createTransactionAsync, isCreating: isCreatingTransaction, isError: isErrorTransaction, error } = useCreateTransaction();
 
+    const isDisabled = !accounts || accounts.length === 0;
     console.log('This is accounts: ', accounts);
 
     return (
         <Dialog open={createTransactionDialogOpen} onOpenChange={setCreateTransactionDialogOpen}>
-            <DialogTrigger asChild>
-                <Button>
-                    <PlusIcon /> Add Transaction
-                </Button>
-            </DialogTrigger>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <span className='w-full'>
+                        <DialogTrigger asChild disabled={isDisabled} className='w-full'>
+                            <Button>
+                                <PlusIcon /> Add Transaction
+                            </Button>
+                        </DialogTrigger>
+                    </span>
+                </TooltipTrigger>
+                {isDisabled && (
+                    <TooltipContent>
+                        <p>No accounts available. Please add an account first</p>
+                    </TooltipContent>
+                )}
+            </Tooltip>
             <DialogContent>
                 <Form {...createTransactionForm}>
                     <form onSubmit={createTransactionForm.handleSubmit(onSubmit)}>
