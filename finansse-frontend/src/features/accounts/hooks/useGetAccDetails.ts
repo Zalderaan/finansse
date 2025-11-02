@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { accountApiService } from '@/features/accounts/api/accountApi';
-import type { Account, GetAccountResponse } from "../types/accounts.type";
+import type { Account, GetAccountResponse } from '@/features/accounts/types/accounts.type';
 
 
 export function useGetAccDetails(accountId: string) {

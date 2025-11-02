@@ -28,9 +28,12 @@ enum AccountType {
   CREDIT
   INVESTMENT
   E_WALLET
-}
+} // more account types later
 
-// more account types later
+enum CategoryType {
+  EXPENSE
+  INCOME
+}
 
 enum BudgetPeriodType {
   MONTHLY
@@ -82,15 +85,19 @@ model Transaction {
 }
 
 model DefaultCategory {
-  d_category_id   Int    @id @default(autoincrement())
+  d_category_id   Int     @id @default(autoincrement())
   d_category_name String
+  d_category_type CategoryType
+  d_category_icon String?
 }
 
 model UserCategory {
-  u_category_id   Int    @id
+  u_category_id   Int     @id @default(autoincrement())
   u_category_name String
+  u_category_type CategoryType
+  u_category_icon String?
   user_id         Int
-  user            User   @relation(fields: [user_id], references: [user_id])
+  user            User    @relation(fields: [user_id], references: [user_id])
 }
 
 model Budget {

@@ -11,6 +11,6 @@ export interface CreateTransactionRequest {
     account_id: number 
 }
 
-export interface GetTransactionsByAccRequest {
+// export interface GetTransactionsByAccRequest {
     
-}
+// }
