@@ -39,17 +39,17 @@ enum BudgetPeriodType {
 }
 
 model User {
-  user_id            Int           @id @default(autoincrement())
+  user_id            Int            @id @default(autoincrement())
   user_username      String
   user_email         String
   user_password_hash String
-  user_created_at    DateTime      @default(now())
-  user_updated_at    DateTime      @updatedAt
+  user_created_at    DateTime       @default(now())
+  user_updated_at    DateTime       @updatedAt
   Transactions       Transaction[]
   Accounts           Account[]
-  Category           Category[]
   Budget             Budget[]
   Transfer           Transfer[]
+  UserCategory       UserCategory[]
 }
 
 model Account {
@@ -81,17 +81,20 @@ model Transaction {
   user               User            @relation(fields: [user_id], references: [user_id])
 }
 
-model Category {
-  category_id   Int      @id @default(autoincrement())
-  category_name String
-  user_id       Int
-  user          User     @relation(fields: [user_id], references: [user_id])
-  Budget        Budget[]
+model DefaultCategory {
+  d_category_id   Int    @id @default(autoincrement())
+  d_category_name String
+}
+
+model UserCategory {
+  u_category_id   Int    @id
+  u_category_name String
+  user_id         Int
+  user            User   @relation(fields: [user_id], references: [user_id])
 }
 
 model Budget {
   budget_id          Int              @id @default(autoincrement())
-  category           Category         @relation(fields: [category_id], references: [category_id])
   category_id        Int
   budget_limit       Decimal
   budget_period_type BudgetPeriodType
