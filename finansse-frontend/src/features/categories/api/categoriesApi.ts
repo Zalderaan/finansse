@@ -1,5 +1,5 @@
 import { axiosInstance } from "@/lib/axios";
-import type { DefaultCategoriesResponse, UserCategoriesResponse } from "@/features/categories/types/categories.types"
+import type { CategoriesResponse } from "@/features/categories/types/categories.types"
 
 const prefix = 'categories';
 
@@ -8,13 +8,8 @@ export const categoriesApiService = {
     // CREATE
 
     // READ
-    getDefaultCategories: async (): Promise<DefaultCategoriesResponse> => {
-        const response = await axiosInstance.get(`${prefix}/default`);
-        return response.data;
-    },
-
-    getUserCategories: async (): Promise<UserCategoriesResponse> => {
-        const response = await axiosInstance.get(`${prefix}/user`);
+    getCategories: async (): Promise<CategoriesResponse> => {
+        const response = await axiosInstance.get(`${prefix}`);
         return response.data;
     }
 }

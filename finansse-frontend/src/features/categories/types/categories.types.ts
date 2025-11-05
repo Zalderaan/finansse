@@ -1,29 +1,16 @@
-
-export interface DefaultCategory {
-    d_category_id: number;
-    d_category_name: string;
-    d_category_type: string;
-    d_category_icon?: string;
-}
-
-export interface DefaultCategoriesResponse {
-    success: string;
-    message: string;
-    data: DefaultCategory[];
-    count: number;
-}
-
-export interface UserCategory {
-    u_category_id: number;
-    u_category_name: string;
-    u_category_type: string;
-    u_category_icon?: string;
+export interface Category {
+    category_id: number;
+    category_name: string;
+    category_icon?: string;
+    category_type: string;
+    category_isDefault: boolean;
     user_id: number;
 }
 
-export interface UserCategoriesResponse {
+export interface CategoriesResponse {
     success: string;
     message: string;
-    data: UserCategory[];
+    data: Category[];
     count: number;
 }
+

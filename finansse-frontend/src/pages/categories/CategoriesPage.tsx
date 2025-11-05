@@ -1,21 +1,15 @@
-import { useGetDefaultCategories } from "@/features/categories/hooks/useGetDefaultCategories"
-import { useGetUserCategories } from "@/features/categories/hooks/useGetUserCategories";
+import { useGetCategories } from "@/features/categories/hooks/useGetCategories";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 export function CategoriesPage() {
-    const { default_categories, isLoading: isDefaultLoading, isError: isDefaultError, error: defaultError } = useGetDefaultCategories();
-    const { user_categories, isLoading, isError, error } = useGetUserCategories();
+    const { categories, isLoading, isError, error } = useGetCategories();
     const [selectedType, setSelectedType] = useState<'ALL' | 'EXPENSE' | 'INCOME'>('ALL');
 
-    const filteredDefaultCategories = selectedType === 'ALL'
-        ? default_categories
-        : default_categories?.filter(cat => cat.d_category_type === selectedType);
-
-    const filteredUserCategories = selectedType === 'ALL'
-        ? user_categories
-        : user_categories?.filter(cat => cat.u_category_type === selectedType);
+    const filteredCategories = selectedType === 'ALL'
+        ? categories
+        : categories?.filter(cat => cat.category_type === selectedType);
 
     return (
         <>
@@ -48,19 +42,19 @@ export function CategoriesPage() {
                 </div>
 
                 <TabsContent value="default">
-                    {filteredDefaultCategories?.map((category) => (
+                    {filteredCategories?.map((category) => (
                         <div className="flex flex-col p-2">
-                            <p>{category.d_category_name}</p>
-                            <p>{category.d_category_type}</p>
+                            <p>{category.category_name}</p>
+                            <p>{category.category_type}</p>
                         </div>
                     ))}
                 </TabsContent>
 
                 <TabsContent value="user">
-                    {filteredUserCategories?.map((category) => (
+                    {filteredCategories?.map((category) => (
                         <div className="flex flex-col p-2">
-                            <p>{category.u_category_name}</p>
-                            <p>{category.u_category_type}</p>
+                            <p>{category.category_name}</p>
+                            <p>{category.category_type}</p>
                         </div>
                     ))}
                 </TabsContent>

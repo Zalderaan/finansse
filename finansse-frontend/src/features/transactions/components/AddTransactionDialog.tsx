@@ -33,23 +33,25 @@ import { useForm } from 'react-hook-form';
 import { useGetAccounts } from '@/features/accounts/hooks/useGetAccounts';
 import { useCreateTransaction } from '@/features/transactions/hooks/useCreateTransaction';
 import { useTransactionUiStore } from '@/features/transactions/stores/transactions.uiStore';
+import { useGetCategories } from '@/features/categories/hooks/useGetCategories';
 
 // types imports
 import type { CreateTransactionRequest } from '@/features/transactions/types/transactions.types';
 
 const createTransactionFormSchema = z.object({
-    id: z.number(),
+    account_id: z.number(),
     amount: z
         .number({ invalid_type_error: "Amount is required" })
         .positive({ message: "Amount must be greater than 0" }),
     type: z.enum(['INCOME', 'EXPENSE', 'TRANSFER']),
+    category_id: z.number(),
 })
 
 export function AddTransactionDialog() {
     const createTransactionForm = useForm<z.infer<typeof createTransactionFormSchema>>({
         resolver: zodResolver(createTransactionFormSchema),
         defaultValues: {
-            id: undefined,
+            account_id: undefined,
             amount: undefined,
             type: undefined,
         },
@@ -61,12 +63,13 @@ export function AddTransactionDialog() {
         console.log('values in createTransaction formSchema: ', values);
 
         // format name
-        const name = `${values.type} - on Account ID: ${values.id} - ${values.amount}`
+        const name = `${values.type} - on Account ID: ${values.account_id} - ${values.amount}`
         const finalTransactionValues: CreateTransactionRequest = {
             name: name,
-            account_id: values.id,
+            account_id: values.account_id,
             amount: values.amount,
             type: values.type,
+            category_id: values.category_id,
         }
 
         console.log('final values in createTransaction formSchema: ', finalTransactionValues);
@@ -82,6 +85,7 @@ export function AddTransactionDialog() {
     const { accounts, isLoading: accountsIsLoading, isError: accountsIsError } = useGetAccounts();
     const { createTransactionDialogOpen, setCreateTransactionDialogOpen } = useTransactionUiStore();
     const { createTransactionAsync, isCreating: isCreatingTransaction, isError: isErrorTransaction, error } = useCreateTransaction();
+    const { categories, isLoading: categoriesIsLoading, isError: categoriesIsError } = useGetCategories();
 
     const isDisabled = !accounts || accounts.length === 0;
     console.log('This is accounts: ', accounts);
@@ -115,7 +119,7 @@ export function AddTransactionDialog() {
                         <div className='flex flex-col space-y-4'>
                             <FormField
                                 control={createTransactionForm.control}
-                                name="id"
+                                name="account_id"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Account Name</FormLabel>
@@ -184,6 +188,40 @@ export function AddTransactionDialog() {
                                                 {...createTransactionForm.register("amount", { valueAsNumber: true })}
                                                 value={field.value ?? 0}
                                             />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={createTransactionForm.control}
+                                name="category_id"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Category Name</FormLabel>
+                                        <FormControl>
+                                            <Select
+                                                value={field.value ? field.value.toString() : ""}
+                                                onValueChange={val => field.onChange(Number(val))}
+                                            >
+                                                <SelectTrigger className='w-full'>
+                                                    <SelectValue placeholder="Choose category" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {accountsIsLoading ? (
+                                                        <SelectItem value="" disabled>Loading accounts</SelectItem>
+                                                    ) : accountsIsError ? (
+                                                        <SelectItem value="" disabled>Failed to load accounts</SelectItem>
+                                                    ) : (
+                                                        categories?.map(
+                                                            (category) => (
+                                                                <SelectItem key={category.category_id} value={category.category_id.toString()}>{category.category_name}</SelectItem>
+                                                            )
+                                                        )
+                                                    )}
+                                                </SelectContent>
+                                            </Select>
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>

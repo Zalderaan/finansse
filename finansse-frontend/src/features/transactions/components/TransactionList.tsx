@@ -23,6 +23,7 @@ export function TransactionList() {
                             type={transaction.transaction_type}
                             amount={transaction.transaction_amount}
                             date={transaction.created_at}
+                            category={transaction.category?.category_name}
                         />
                             
                     ))

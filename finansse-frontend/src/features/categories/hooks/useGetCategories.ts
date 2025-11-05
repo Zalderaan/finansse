@@ -1,10 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { categoriesApiService } from "@/features/categories/api/categoriesApi";
-import type { UserCategoriesResponse } from "@/features/categories/types/categories.types";
-export function useGetUserCategories() {
-    const query = useQuery<UserCategoriesResponse>({
-        queryKey: ['categories', 'user'],
-        queryFn: () => categoriesApiService.getUserCategories(),
+import type { CategoriesResponse } from "@/features/categories/types/categories.types";
+
+export function useGetCategories() {
+    const query = useQuery<CategoriesResponse>({
+        queryKey: ['categories'],
+        queryFn: () => categoriesApiService.getCategories(),
         staleTime: 5 * 60 * 1000, // 5 minutes
         gcTime: 10 * 60 * 1000,
         refetchOnMount: "always",
@@ -12,7 +13,7 @@ export function useGetUserCategories() {
     })
 
     return {
-        user_categories: query.data?.data,
+        categories: query.data?.data,
         isLoading: query.isLoading,
         isError: query.isError,
         error: query.error,
