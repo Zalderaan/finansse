@@ -31,7 +31,8 @@ router.get(`/transactions/account/:accountId`, authenticateToken, TransactionsCo
 
 // CATEGORIES
 // router.post('/categories/create', authenticateToken, CategoriesController.postCategory);
-router.get('/categories/user', authenticateToken, CategoriesController.getUserCategories)
-router.get('/categories/default', authenticateToken, CategoriesController.getDefaultCategories)
+// router.get('/categories/user', authenticateToken, CategoriesController.getUserCategories)
+// router.get('/categories/default', authenticateToken, CategoriesController.getDefaultCategories)
+router.get('/categories', authenticateToken, CategoriesController.getCategories);
 
 export default router;

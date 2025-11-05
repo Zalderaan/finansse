@@ -8,7 +8,8 @@ export interface CreateTransactionRequest {
     name: string,
     amount: number,
     type: TransactionType,
-    account_id: number 
+    account_id: number,
+    category_id: number,
 }
 
 // export interface GetTransactionsByAccRequest {

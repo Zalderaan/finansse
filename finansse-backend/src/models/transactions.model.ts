@@ -5,6 +5,8 @@ export class TransactionsModel {
 
     // CREATE
     static async createTransaction(transactionData: CreateTransactionRequest, userId: number) {
+        console.log("transactionData in the model: ", transactionData);
+
         return await prisma.$transaction(async (tx) => {
             // Validate that the account belongs to the user
             const account = await tx.account.findFirst({
@@ -24,7 +26,8 @@ export class TransactionsModel {
                     transaction_type: transactionData.type,
                     transaction_amount: transactionData.amount,
                     user_id: userId,
-                    account_id: transactionData.account_id
+                    account_id: transactionData.account_id,
+                    category_id: transactionData.category_id
                 },
 
                 select: {
@@ -34,13 +37,14 @@ export class TransactionsModel {
                     transaction_amount: true,
                     transaction_type: true,
                     created_at: true,
+                    category_id: true,
                 }
             });
 
             // calculate new balance
             let newBalance = Number(account.account_current_balance);
             if (isNaN(newBalance)) throw new Error('Account balance is not a valid number');
-            
+
 
             if (transactionData.type === 'EXPENSE') {
                 newBalance = newBalance - transactionData.amount
@@ -61,7 +65,7 @@ export class TransactionsModel {
             where: {
                 account_id: account_id,
                 user_id: userId
-            }
+            },
         });
 
         if (!account) {
@@ -72,6 +76,13 @@ export class TransactionsModel {
             where: {
                 account_id: account_id,
                 user_id: userId
+            },
+            include: {
+                category: {
+                    select: {
+                        category_name: true,
+                    }
+                }
             },
             orderBy: { created_at: 'desc' }
         })
