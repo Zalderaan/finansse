@@ -2,6 +2,7 @@ import { useGetCategories } from "@/features/categories/hooks/useGetCategories";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { CategoryCard } from "@/features/categories/components/CategoryCard";
 
 export function CategoriesPage() {
     const { categories, isLoading, isError, error } = useGetCategories();
@@ -41,12 +42,9 @@ export function CategoriesPage() {
                     </Button>
                 </div>
 
-                <TabsContent value="default">
+                <TabsContent value="default" className="space-y-2">
                     {filteredCategories?.map((category) => (
-                        <div className="flex flex-col p-2">
-                            <p>{category.category_name}</p>
-                            <p>{category.category_type}</p>
-                        </div>
+                        <CategoryCard category={category} />
                     ))}
                 </TabsContent>
 

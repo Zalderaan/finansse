@@ -2,6 +2,7 @@ import { useAuthStore } from "@/features/auth/stores/auth.store";
 import { DashboardCard } from "./DashboardCard";
 import { Loader } from "@/components/loader";
 import { Button } from "@/components/ui/button";
+import { BalanceChart } from "@/features/dashboard_charts/components/BalanceCharts";
 import { toast } from "sonner";
 
 export function DashboardPage() {
@@ -23,18 +24,7 @@ export function DashboardPage() {
             <div>
                 <span className="font-normal text-2xl">Graphs</span>
             </div>
-
-            <Button
-                variant={"outline"}
-                onClick={() => toast.success("Transaction completed", {
-                    classNames: {
-                        toast: "bg-green-200",
-                        title: "font-2xl"
-                    }
-                })}
-            >
-                Show toast
-            </Button>
+            <BalanceChart />
         </div>
     )
 }
