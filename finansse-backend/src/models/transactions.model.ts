@@ -86,7 +86,19 @@ export class TransactionsModel {
             },
             orderBy: { created_at: 'desc' }
         })
+    }
 
+    // fetch user transactions
+    static async findTransactionsByUser(userId: number) {
+        return await prisma.transaction.findMany({
+            where: { user_id: userId },
+            select: {
+                created_at: true,
+                transaction_amount: true,
+                transaction_type: true
+            },
+            orderBy: { created_at: 'asc' }
+        })
     }
     // UPDATE
     // DELETE

@@ -2,7 +2,7 @@ import { useAuthStore } from "@/features/auth/stores/auth.store";
 import { DashboardCard } from "./DashboardCard";
 import { Loader } from "@/components/loader";
 import { Button } from "@/components/ui/button";
-import { BalanceChart } from "@/features/dashboard_charts/components/BalanceCharts";
+import { BalanceChart } from "@/features/reports/components/BalanceCharts";
 import { toast } from "sonner";
 
 export function DashboardPage() {
