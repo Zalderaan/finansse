@@ -5,6 +5,10 @@ export interface Transaction {
     transaction_amount: number,
     transaction_type: string,
     created_at: Date,
+    category_id?: number,
+    category?: {
+        category_name: string
+    }
 }
 
 export interface CreateTransactionRequest {
@@ -12,9 +16,10 @@ export interface CreateTransactionRequest {
     amount: number,
     type: string,
     account_id: number
+    category_id: number,
 }
 
-export interface CreateAccountResponse {
+export interface createTransactionResponse {
     success: boolean,
     message: string,
     data: Transaction

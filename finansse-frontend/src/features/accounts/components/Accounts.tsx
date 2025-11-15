@@ -1,6 +1,17 @@
 import { AccountCard } from "./AccountCard";
 import { useGetAccounts } from "../hooks/useGetAccounts";
 import { Loader } from "@/components/loader";
+import { Button } from "@/components/ui/button";
+import { CreateAccountDialog } from "./CreateAccountDialog";
+import {
+    Pagination,
+    PaginationContent,
+    PaginationLink,
+    PaginationItem,
+    PaginationPrevious,
+    PaginationNext,
+    PaginationEllipsis,
+} from "@/components/ui/pagination";
 
 export function Accounts() {
     const { accounts, isLoading, isError, error } = useGetAccounts();
@@ -20,13 +31,44 @@ export function Accounts() {
         return <div>Error: {error?.message}</div>
     }
 
+    if (accounts?.length === 0) {
+        return (
+            <div className="flex flex-col flex-1 items-center justify-center">
+                <span>No accounts found</span>
+            </div>
+        )
+    }
+
 
     return (
         <>
-            <div className="flex flex-col space-y-4">
+            <div className="flex flex-col flex-1 space-y-4 bg-red-200">
                 {accounts?.map(account => (
                     <AccountCard key={account.account_id} {...account} />
                 ))}
+                <Pagination>
+                    <PaginationContent>
+                        <PaginationItem>
+                            <PaginationPrevious to={`./?page=${1}`} />
+                        </PaginationItem>
+
+                        <PaginationItem>
+                            <PaginationLink to="#">1</PaginationLink>
+                        </PaginationItem>
+
+                        <PaginationItem>
+                            <PaginationLink to="#">2</PaginationLink>
+                        </PaginationItem>
+
+                        <PaginationItem>
+                            <PaginationLink to="#">3</PaginationLink>
+                        </PaginationItem>
+
+                        <PaginationEllipsis />
+                        <PaginationNext to="#" />
+
+                    </PaginationContent>
+                </Pagination>
             </div>
         </>
     )

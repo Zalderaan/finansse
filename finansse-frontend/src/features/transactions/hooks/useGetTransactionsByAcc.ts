@@ -6,7 +6,7 @@ import type { GetTransactionByAccResponse } from "../types/transactions.types";
 export function useGetTransactionsByAcc(accountId: string) {
 
     const query = useQuery<GetTransactionByAccResponse>({
-        queryKey: ['transactions', Number(accountId)],
+        queryKey: ['account', Number(accountId), 'transactions'],
         queryFn: () => transactionApiService.getTransactionByAcc(accountId),
     })
 
