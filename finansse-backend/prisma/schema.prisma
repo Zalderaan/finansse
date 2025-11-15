@@ -32,6 +32,11 @@ enum AccountType {
 
 // more account types later
 
+enum CategoryType {
+  EXPENSE
+  INCOME
+}
+
 enum BudgetPeriodType {
   MONTHLY
   YEARLY
@@ -47,9 +52,9 @@ model User {
   user_updated_at    DateTime      @updatedAt
   Transactions       Transaction[]
   Accounts           Account[]
-  Category           Category[]
   Budget             Budget[]
   Transfer           Transfer[]
+  Category           Category[]
 }
 
 model Account {
@@ -79,19 +84,23 @@ model Transaction {
   account            Account         @relation(fields: [account_id], references: [account_id], onDelete: Cascade)
   user_id            Int
   user               User            @relation(fields: [user_id], references: [user_id])
+  category_id        Int?
+  category           Category?        @relation(fields: [category_id], references: [category_id])
 }
 
 model Category {
-  category_id   Int      @id @default(autoincrement())
-  category_name String
-  user_id       Int
-  user          User     @relation(fields: [user_id], references: [user_id])
-  Budget        Budget[]
+  category_id        Int           @id @default(autoincrement())
+  category_name      String
+  category_icon      String?
+  category_type      CategoryType
+  category_isDefault Boolean
+  user_id            Int?
+  user               User?         @relation(fields: [user_id], references: [user_id])
+  Transaction        Transaction[]
 }
 
 model Budget {
   budget_id          Int              @id @default(autoincrement())
-  category           Category         @relation(fields: [category_id], references: [category_id])
   category_id        Int
   budget_limit       Decimal
   budget_period_type BudgetPeriodType

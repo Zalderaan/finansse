@@ -1,6 +1,9 @@
 import { useAuthStore } from "@/features/auth/stores/auth.store";
 import { DashboardCard } from "./DashboardCard";
 import { Loader } from "@/components/loader";
+import { Button } from "@/components/ui/button";
+import { BalanceChart } from "@/features/reports/components/BalanceCharts";
+import { toast } from "sonner";
 
 export function DashboardPage() {
 
@@ -12,15 +15,16 @@ export function DashboardPage() {
                 <p>Continue managing your finances today</p>
             </header>
             <div className="flex flex-row space-x-4">
-                <DashboardCard color="green" title="Total Income" value={1000}/>
-                <DashboardCard color="green" title="Total Income" value={99}/>
-                <DashboardCard color="green" title="Total Income" value={1234}/>
-                <DashboardCard color="green" title="Total Income" value={45678}/>
+                <DashboardCard color="green" title="Total Income" value={1000} />
+                <DashboardCard color="green" title="Total Income" value={99} />
+                <DashboardCard color="green" title="Total Income" value={1234} />
+                <DashboardCard color="green" title="Total Income" value={45678} />
             </div>
 
             <div>
                 <span className="font-normal text-2xl">Graphs</span>
             </div>
+            <BalanceChart />
         </div>
     )
 }

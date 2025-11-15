@@ -4,6 +4,8 @@ import { AuthController } from "../controllers/auth.controller";
 import { authenticateToken } from "../utils/auth.middleware";
 import { AccountsController } from "../controllers/accounts.controller";
 import { TransactionsController } from "../controllers/transactions.controller";
+import { CategoriesController } from "../controllers/categories.controller";
+import { ReportsController } from "../controllers/reports.controller";
 
 
 const router = express.Router();
@@ -27,4 +29,14 @@ router.delete('/accounts/:id', authenticateToken, AccountsController.deleteAccou
 // TRANSACTIONS
 router.post('/transactions/create', authenticateToken, TransactionsController.postTransaction);
 router.get(`/transactions/account/:accountId`, authenticateToken, TransactionsController.getTransactionsByAcc);
+
+// CATEGORIES
+// router.post('/categories/create', authenticateToken, CategoriesController.postCategory);
+// router.get('/categories/user', authenticateToken, CategoriesController.getUserCategories)
+// router.get('/categories/default', authenticateToken, CategoriesController.getDefaultCategories)
+router.get('/categories', authenticateToken, CategoriesController.getCategories);
+
+
+// RUNNING BALANCE
+router.get('/reports/balance-trend', authenticateToken, ReportsController.getRunningBalance);
 export default router;

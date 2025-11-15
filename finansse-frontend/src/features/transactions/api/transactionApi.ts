@@ -1,9 +1,9 @@
 import { axiosInstance } from "@/lib/axios";
-import type { CreateTransactionRequest, CreateAccountResponse, GetTransactionByAccResponse } from "../types/transactions.types";
+import type { CreateTransactionRequest, createTransactionResponse, GetTransactionByAccResponse } from "../types/transactions.types";
 
 const prefix = 'transactions'
 export const transactionApiService = {
-    createTransaction: async (data: CreateTransactionRequest): Promise<CreateAccountResponse> => {
+    createTransaction: async (data: CreateTransactionRequest): Promise<createTransactionResponse> => {
         const response = await axiosInstance.post(`${prefix}/create`, data);
         return response.data;
     },

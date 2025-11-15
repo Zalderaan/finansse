@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { authApiService } from '@/features/auth/api/authApi';
 import { useAuthStore } from '../stores/auth.store';
+import { toast } from 'sonner';
 
 export function useLogin() {
     const queryClient = useQueryClient();
@@ -16,7 +17,27 @@ export function useLogin() {
             setAuth(data.accessToken); // store auth token in zustand
             setUser(data.user_data); // store user in zustand
             queryClient.setQueryData(['auth', 'user'], data.user_data); // store/cache user data
+            toast.success("Login successful", {
+                description: `Welcome back, ${data.user_data.username}!`,
+                duration: 3000,
+                classNames: {
+                    title: "!text-green-900",
+                    description: "!text-xs !text-green-700",
+                    toast: "!bg-green-200 !border-green-300",
+                }
+            })
         },
+        onError: (error: any) => {
+            toast.error("Error logging in", {
+                description: `${error.response.data.message}`,
+                duration: 3000,
+                classNames: {
+                    title: "!text-red-900",
+                    description: "!text-xs !text-red-700",
+                    toast: "!bg-red-200 !border-red-300",
+                }
+            })
+        }
     });
 
     return {

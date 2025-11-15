@@ -30,7 +30,7 @@ export interface AccountsResponse {
 }
 
 export interface DeleteAccountResponse {
-    suuccess: string;
+    success: string;
     message: string;
     data: {
         account_id: number;

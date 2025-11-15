@@ -1,4 +1,4 @@
-import { WalletCards, Home, HandCoins, PlusIcon, } from "lucide-react"
+import { WalletCards, Home, HandCoins, Tags, } from "lucide-react"
 import {
     Sidebar,
     SidebarContent,
@@ -38,6 +38,11 @@ const items = [
         url: `${dashboardPrefix}/budgets`,
         icon: HandCoins,
     },
+    {
+        title: "Categories",
+        url: `${dashboardPrefix}/categories`,
+        icon: Tags,
+    }
 ]
 
 export function AppSidebar() {

@@ -25,7 +25,9 @@ export const authApiService = {
     },
 
     refreshToken: async (): Promise<RefreshTokenResponse> => {
+        console.log("refreshToken called")
         const response = await axiosInstance.post(`${prefix}/refresh`);
+        console.log("refreshToken response: ", response);
         return response.data;
     }
 };

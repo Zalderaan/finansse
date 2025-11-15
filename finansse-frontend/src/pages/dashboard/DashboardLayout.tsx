@@ -6,9 +6,9 @@ export function DashboardLayout() {
     return (
         <SidebarProvider>
             <AppSidebar />
-            <main className="w-full">
+            <main className="flex flex-col w-full">
                 <nav className="p-4 border-b-1"><SidebarTrigger /></nav>
-                <section className="flex flex-col p-4">
+                <section className="flex flex-col flex-1 p-4">
                     <Outlet />
                 </section>
             </main>

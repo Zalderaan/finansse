@@ -9,6 +9,7 @@ import { ProfilePage } from "@/pages/profile/ProfilePage";
 import { ProtectedRoute } from "@/features/auth/components/ProtectedRoute";
 import { AccountPage } from "@/pages/accounts/AccountPage";
 import { BudgetPage } from "@/pages/budgets/BudgetPage";
+import { CategoriesPage } from "@/pages/categories/CategoriesPage";
 import { AccountDetails } from "@/pages/accounts/AccountDetails";
 import TestPage from "@/features/accounts/components/testpage";
 
@@ -32,6 +33,7 @@ export const router = createBrowserRouter([
                             { path: "accounts", Component: AccountPage },
                             { path: "accounts/:accountId", Component: AccountDetails},
                             { path: "budgets", Component: BudgetPage },
+                            { path: "categories", Component: CategoriesPage },
                             { path: "test", Component: TestPage },
                         ]
                     },

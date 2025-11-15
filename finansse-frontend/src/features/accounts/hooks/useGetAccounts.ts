@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { accountApiService } from "../api/accountApi";
-import type { AccountsResponse } from "../types/accounts.type";
+import { accountApiService } from "@/features/accounts/api/accountApi";
+import type { AccountsResponse } from "@/features/accounts/types/accounts.type";
 import { useAuthStore } from "@/features/auth/stores/auth.store";
 
 export function useGetAccounts() {
