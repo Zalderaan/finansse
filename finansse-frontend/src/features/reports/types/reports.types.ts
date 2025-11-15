@@ -3,7 +3,11 @@ export interface BalanceTrendItem {
     total_balance: number
 }
 
-export interface UserBalanceTrendResponse{
+// export interface UserBalanceTrendRequest {
+//     period: string
+// }
+
+export interface UserBalanceTrendResponse {
     success: boolean,
     data: BalanceTrendItem[]
 }

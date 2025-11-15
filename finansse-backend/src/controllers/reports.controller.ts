@@ -1,12 +1,15 @@
-import { Response, Request } from 'express';
-import { BalanceModel } from "../models/balance.model"
+import { Response } from 'express';
+import { BalanceModel } from "../models/reports.model"
 import { AuthRequest } from '../utils/auth.middleware';
 
 export class ReportsController {
     static async getRunningBalance(req: AuthRequest, res: Response) {
         try {
             const user = req.user!.userId;
-            const trend = await BalanceModel.getUserBalanceTrend(user);
+            const period = req.body;
+            console.log(period);
+
+            const trend = await BalanceModel.getUserBalanceTrend(user, period);
 
             console.log(trend);
 
@@ -29,5 +32,9 @@ export class ReportsController {
                 message: 'Internal server error'
             })
         }
+    }
+
+    static async getUserSpending() {
+        
     }
 }

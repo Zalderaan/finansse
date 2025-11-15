@@ -3,7 +3,7 @@ import type { UserBalanceTrendResponse } from "@/features/reports/types/reports.
 
 const prefix = 'reports'
 export const reportsApiService = {
-    getBalanceTrend: async (): Promise<UserBalanceTrendResponse> => {
+    getBalanceTrend: async (period: string): Promise<UserBalanceTrendResponse> => {
         const response = await axiosInstance.get(`${prefix}/balance-trend`);
         return response.data;
     }
