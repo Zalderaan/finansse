@@ -4,10 +4,10 @@ import type { UserBalanceTrendResponse } from "@/features/reports/types/reports.
 import { useAuthStore } from "@/features/auth/stores/auth.store";
 
 export function useGetRunningBalance(period: string) {
-
+    console.log("period: ", period);
     const { user } = useAuthStore();
     const query = useQuery<UserBalanceTrendResponse>({
-        queryKey: ["balance-trend", user?.uid],
+        queryKey: ["balance-trend", period, user?.uid],
         queryFn: () => reportsApiService.getBalanceTrend(period)
     });
 

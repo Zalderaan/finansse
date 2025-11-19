@@ -6,10 +6,10 @@ export class ReportsController {
     static async getRunningBalance(req: AuthRequest, res: Response) {
         try {
             const user = req.user!.userId;
-            const period = req.body;
-            console.log(period);
+            const period = req.query.period as string;
+            console.log("period: ", period);
 
-            const trend = await BalanceModel.getUserBalanceTrend(user, period);
+            const trend = await BalanceModel.fetchUserBalanceTrend(user, period);
 
             console.log(trend);
 
@@ -35,6 +35,80 @@ export class ReportsController {
     }
 
     static async getUserSpending() {
-        
+
+    }
+
+    static async getUserBalance(req: AuthRequest, res: Response) {
+        try {
+            const user = Number(req.user?.userId);
+            const data = await BalanceModel.fetchUserBalance(user);
+
+            console.log("data: ", data);
+            if (!data) {
+                return res.status(404).json({
+                    success: false,
+                    message: "No user balance calculated"
+                })
+            }
+            return res.status(200).json({
+                success: true,
+                data: data
+            })
+
+        } catch (error) {
+            console.error("Error getting user balance in controller: ", error);
+            return res.status(500).json({
+                success: false,
+                message: `Internal server error: ${error}`
+            })
+        }
+    }
+
+
+    // get userIncome
+    static async getUserIncome(req: AuthRequest, res: Response) {
+        try {
+            const user = req.user!.userId;
+            const userIncome = await BalanceModel.fetchUserTotalncome(user)
+
+            console.log("userIncome: ", userIncome);
+
+            res.status(200).json({
+                success: true,
+                data: userIncome
+            })
+        } catch (error) {
+            console.error("Error in reports.controller, getUserIncome: ", error);
+            res.status(500).json({
+                success: false,
+                message: 'Internal server error'
+            });
+        }
+    }
+
+    static async getDashboardData(req: AuthRequest, res: Response) {
+        try {
+            const userId = Number(req.user?.userId);
+
+            const [totalIncome, totalExpense, currentBalance] = await Promise.all([
+                BalanceModel.fetchUserTotalncome(userId),
+                BalanceModel.fetchUserTotalExpense(userId),
+                BalanceModel.fetchUserBalance(userId)
+            ]);
+
+            return res.status(200).json({
+                success: true,
+                data: {
+                    totalIncome: Number(totalIncome),
+                    totalExpense: Number(totalExpense),
+                    currentBalance: Number(currentBalance),
+                }
+            })
+        } catch (error) {
+            return res.status(500).json({
+                success: false,
+                message: 'Internal server error: ', error
+            })
+        }
     }
 }

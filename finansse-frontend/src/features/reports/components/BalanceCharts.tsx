@@ -1,14 +1,24 @@
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useGetRunningBalance } from '@/features/reports/hooks/useGetRunningBalance';
+import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { ButtonGroup } from '@/components/ui/button-group';
+import { useSearchParams } from 'react-router-dom';
 
 type Period = 'week' | 'month' | 'quarter' | 'year';
 
 export function BalanceChart() {
-    const [period, setPeriod] = useState<Period>('month');
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    const allowedPeriods: Period[] = ['week', 'month', 'quarter', 'year'];
+    const rawPeriod = searchParams.get('period');
+    const period: Period = allowedPeriods.includes(rawPeriod as Period) ? (rawPeriod as Period) : 'month';
 
     const { balance_trend, isLoading, isError, error } = useGetRunningBalance(period);
+
+    const handlePeriodChange = (newPeriod: Period) => {
+        setSearchParams({ period: newPeriod });
+    }
 
     if (isLoading) {
         return <div>Loading balance data...</div>;
@@ -20,36 +30,45 @@ export function BalanceChart() {
 
     const latestBalance = balance_trend && balance_trend.length > 0 ? balance_trend[balance_trend.length - 1].total_balance : 0;
     return (
-        <div className='w-full'>
-            <div>
-                <h2>Balance</h2>
-                <p>{latestBalance}</p>
-            </div>
+        <Card className='w-full px-5 py-6'>
+            <CardHeader className='flex flex-row items-center justify-between w-full px-1'>
+                <div className=''>
+                    <CardTitle>Balance over time</CardTitle>
+                    <CardDescription className='text-xs'>A trend of your total balance: {latestBalance}</CardDescription>
+                </div>
 
-            <div className='flex flex-row gap-2'>
-                {
-                    (['week', 'month', 'quarter', 'year'] as Period[]).map((p) => (
-                        <Button
-                            onClick={() => setPeriod(p)}
-                            variant={period === p ? 'default' : 'outline'}
-                        >
-                            {p.charAt(0).toUpperCase() + p.slice(1)}
-                        </Button>
-                    ))
-                }
-            </div>
+                <ButtonGroup>
+                    {
+                        (['week', 'month', 'quarter', 'year'] as Period[]).map((p) => (
+                            <Button
+                                onClick={() => handlePeriodChange(p)}
+                                variant={period === p ? 'default' : 'outline'}
+                            >
+                                {p.charAt(0).toUpperCase() + p.slice(1)}
+                            </Button>
+                        ))
+                    }
+                </ButtonGroup>
+            </CardHeader>
 
             <AreaChart
                 responsive
-                style={{ width: '100%', maxWidth: '700px', maxHeight: '70vh', aspectRatio: 1.618 }}
+                style={{ width: '100%', maxWidth: '100%', maxHeight: '30vh', aspectRatio: 1.618 }}
                 data={balance_trend}
+                className='w-full'
             >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey={"date"} />
-                <YAxis width={"auto"} />
+                <defs>
+                    <linearGradient id="colorBalance" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#8884d8" stopOpacity={1.0} />
+                        <stop offset="95%" stopColor="#8884d8" stopOpacity={0.15} />
+                    </linearGradient>
+                </defs>
+                <CartesianGrid strokeOpacity={0.35} vertical={false} />
+                <XAxis dataKey={"date"} tick={{ fontSize: 12 }} tickFormatter={(value) => new Date(value).toLocaleDateString('en-PH', { weekday: 'short', day: '2-digit' })} />
+                <YAxis tick={{ fontSize: 12 }} width={"auto"} />
                 <Tooltip />
-                <Area type={"monotone"} dataKey={"total_balance"} stroke="#8884d8" fill="8884d8" />
+                <Area type={"monotone"} dataKey={"total_balance"} stroke="#8884d8" fill="url(#colorBalance)" />
             </AreaChart>
-        </div>
+        </Card>
     )
 }
