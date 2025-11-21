@@ -1,9 +1,19 @@
+import { useQuery } from "@tanstack/react-query";
+import { reportsApiService } from "@/features/reports/api/reportsApi";
+import type { DashboardDataResponse } from "../types/reports.types";
 import { useAuthStore } from "@/features/auth/stores/auth.store";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 export function useGetDashboardData() {
-    const queryClient = useQueryClient();
-    const user = useAuthStore();
+    const { user } = useAuthStore();
+    const query = useQuery<DashboardDataResponse>({
+        queryKey: ['dashboard-card-data', user?.uid],
+        queryFn: () => reportsApiService.getDashboardData(),
+    });
 
-    const query = useQuery
+    return {
+        dashboard_card_data: query.data?.data,
+        isLoading: query.isLoading,
+        isError: query.isError,
+        error: query.error
+    }
 }

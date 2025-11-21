@@ -11,3 +11,12 @@ export interface UserBalanceTrendResponse {
     success: boolean,
     data: BalanceTrendItem[]
 }
+
+export interface DashboardDataResponse {
+    success: boolean,
+    data: {
+        totalIncome: number,
+        totalExpense: number,
+        currentBalance: number,
+    }
+}
