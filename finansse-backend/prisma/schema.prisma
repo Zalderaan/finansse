@@ -9,9 +9,9 @@ generator client {
   output   = "../src/generated/prisma"
 }
 
+// ! - no longer supported in prisma v7
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 //* === ENUMS ===

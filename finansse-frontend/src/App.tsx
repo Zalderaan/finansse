@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Toaster } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import { ThemeProvider } from '@/providers/ThemeProvider';
 const queryClient = new QueryClient();
 
 function App() {
@@ -12,10 +13,12 @@ function App() {
   return (
     <>
       <QueryClientProvider client={queryClient}>
-        <ReactQueryDevtools initialIsOpen={false} />
-        <TooltipProvider>
-          <RouterProvider router={router} />
-        </TooltipProvider>
+        <ThemeProvider defaultTheme='dark' storageKey='vite-ui-theme'>
+          <ReactQueryDevtools initialIsOpen={false} />
+          <TooltipProvider>
+            <RouterProvider router={router} />
+          </TooltipProvider>
+        </ThemeProvider>
       </QueryClientProvider>
       <Toaster />
     </>

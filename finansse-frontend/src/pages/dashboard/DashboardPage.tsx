@@ -1,30 +1,38 @@
 import { useAuthStore } from "@/features/auth/stores/auth.store";
 import { DashboardCard } from "./DashboardCard";
-import { Loader } from "@/components/loader";
-import { Button } from "@/components/ui/button";
 import { BalanceChart } from "@/features/reports/components/BalanceCharts";
-import { toast } from "sonner";
+import { useGetDashboardData } from "@/features/reports/hooks/useGetDashboardData";
+import { SpendingByCategory } from "@/features/reports/components/SpendingByCategory";
+import { IncomeByCategory } from "@/features/reports/components/IncomeByCategory";
 
 export function DashboardPage() {
 
     const user = useAuthStore(state => state.user);
+
+    const { dashboard_card_data, isLoading, isError, error } = useGetDashboardData();
+    const { totalIncome = 0, totalExpense = 0, currentBalance = 0 } = dashboard_card_data ?? {};
     return (
-        <div className="flex flex-col space-y-8">
-            <header>
+        <div className="grid grid-cols-1 gap-8">
+            <header className="grid grid-cols-1 gap-2">
                 <h1 className="font-normal text-2xl">Hello, {user?.username}!</h1>
                 <p>Continue managing your finances today</p>
             </header>
-            <div className="flex flex-row space-x-4">
-                <DashboardCard color="green" title="Total Income" value={1000} />
-                <DashboardCard color="green" title="Total Income" value={99} />
-                <DashboardCard color="green" title="Total Income" value={1234} />
-                <DashboardCard color="green" title="Total Income" value={45678} />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <DashboardCard color="green" title="Total Income" value={totalIncome!} isLoading={isLoading} />
+                <DashboardCard color="red" title="Total Expenses" value={totalExpense!} isLoading={isLoading} />
+                <DashboardCard color="blue" title="Current Balance" value={currentBalance!} isLoading={isLoading} />
+                <DashboardCard color="yellow" title="Total Income" value={1234} isLoading={isLoading} />
             </div>
 
-            <div>
+            <div className="grid grid-cols-1 gap-4">
                 <span className="font-normal text-2xl">Graphs</span>
+                <BalanceChart />
+
+                <div className="flex flex-row items-center justify-between space-x-3">
+                    <SpendingByCategory />
+                    <IncomeByCategory />
+                </div>
             </div>
-            <BalanceChart />
         </div>
     )
 }
