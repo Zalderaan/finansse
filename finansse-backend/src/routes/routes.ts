@@ -39,4 +39,11 @@ router.get('/categories', authenticateToken, CategoriesController.getCategories)
 
 // RUNNING BALANCE
 router.get('/reports/balance-trend', authenticateToken, ReportsController.getRunningBalance);
+router.get('/reports/curr-balance', authenticateToken, ReportsController.getUserBalance);
+router.get('/reports/user-income', authenticateToken, ReportsController.getUserIncome);
+router.get('/reports/dashboard-data', authenticateToken, ReportsController.getDashboardData);
+router.get('/reports/spending-by-category', authenticateToken, ReportsController.getUserSpendingByCategory);
+router.get('/reports/income-by-category', authenticateToken, ReportsController.getUserIncomeByCategory);
+
+
 export default router;

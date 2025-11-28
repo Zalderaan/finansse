@@ -44,7 +44,7 @@ export function CategoriesPage() {
 
                 <TabsContent value="default" className="space-y-2">
                     {filteredCategories?.map((category) => (
-                        <CategoryCard category={category} />
+                        <CategoryCard key={category.category_id} category={category} />
                     ))}
                 </TabsContent>
 

@@ -37,6 +37,7 @@ import { useGetCategories } from '@/features/categories/hooks/useGetCategories';
 
 // types imports
 import type { CreateTransactionRequest } from '@/features/transactions/types/transactions.types';
+import { Link } from 'react-router-dom';
 
 const createTransactionFormSchema = z.object({
     account_id: z.number(),
@@ -103,8 +104,17 @@ export function AddTransactionDialog() {
                     </span>
                 </TooltipTrigger>
                 {isDisabled && (
-                    <TooltipContent>
-                        <p>No accounts available. Please add an account first</p>
+                    <TooltipContent side='bottom' align="center" className="ml-4">
+                        <div className="flex items-center gap-2">
+                            <PlusIcon className="h-4 w-4" />
+                            <span>No accounts found. Add one to get started:</span>
+                            <Link
+                                to="/dashboard/accounts"
+                                className="text-blue-500 underline hover:text-blue-700"
+                            >
+                                Go to Accounts
+                            </Link>
+                        </div>
                     </TooltipContent>
                 )}
             </Tooltip>
