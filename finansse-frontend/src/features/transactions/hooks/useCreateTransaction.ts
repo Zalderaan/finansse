@@ -16,6 +16,10 @@ export function useCreateTransaction() {
             queryClient.invalidateQueries({ queryKey: ['account', transactionData.data.account_id] });
             queryClient.invalidateQueries({ queryKey: ['balance-trend', user?.uid] });
             queryClient.invalidateQueries({ queryKey: ['dashboard-card-data', user?.uid] });
+            queryClient.invalidateQueries({ queryKey: ['pie-charts'] });
+            // queryClient.invalidateQueries({ queryKey: ['', user?.uid] });
+            // queryClient.invalidateQueries({ queryKey: ['dashboard-card-data', user?.uid] });
+
 
             console.log('transactionData.data.account_id: ', transactionData.data.account_id);
 

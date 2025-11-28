@@ -1,6 +1,6 @@
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import { Button } from '@/components/ui/button';
-import { useGetRunningBalance } from '@/features/reports/hooks/useGetRunningBalance';
+import { useGetRunningBalance, usePrefetchRunningBalance } from '@/features/reports/hooks/useGetRunningBalance';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ButtonGroup } from '@/components/ui/button-group';
 import { useSearchParams } from 'react-router-dom';
@@ -18,6 +18,14 @@ export function BalanceChart() {
 
     const handlePeriodChange = (newPeriod: Period) => {
         setSearchParams({ period: newPeriod });
+    }
+
+    const prefetchBalance = usePrefetchRunningBalance();
+    const handlePeriodHover = (p: Period) => {
+        console.log("handlePeriodHover() called!")
+        if (p !== period) {
+            prefetchBalance(p);
+        }
     }
 
     if (isLoading) {
@@ -41,6 +49,8 @@ export function BalanceChart() {
                     {
                         (['week', 'month', 'quarter', 'year'] as Period[]).map((p) => (
                             <Button
+                                key={p}
+                                onMouseEnter={() => handlePeriodHover(p)}
                                 onClick={() => handlePeriodChange(p)}
                                 variant={period === p ? 'default' : 'outline'}
                             >

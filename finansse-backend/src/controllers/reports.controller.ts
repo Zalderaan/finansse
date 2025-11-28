@@ -34,8 +34,58 @@ export class ReportsController {
         }
     }
 
-    static async getUserSpending() {
+    static async getUserSpendingByCategory(req: AuthRequest, res: Response) {
+        try {
+            const user = Number(req.user?.userId);
+            const userSpendByCategory = await BalanceModel.fetchSpendingByCategory(user);
 
+            if (!userSpendByCategory) {
+                return res.status(404).json({
+                    success: false,
+                    message: "User spending by category not found"
+                })
+            }
+
+            console.log("userSpendByCategory: ", userSpendByCategory);
+
+            return res.status(200).json({
+                success: true,
+                data: userSpendByCategory
+            })
+        } catch (error) {
+            console.error("Error getting user spend by category in reports.controller: ", error);
+            return res.status(500).json({
+                success: false,
+                message: `Internal server error: ${error}`
+            })
+        }
+    }
+
+        static async getUserIncomeByCategory(req: AuthRequest, res: Response) {
+        try {
+            const user = Number(req.user?.userId);
+            const userIncomeByCategory = await BalanceModel.fetchIncomeByCategory(user);
+
+            if (!userIncomeByCategory) {
+                return res.status(404).json({
+                    success: false,
+                    message: "User income by category not found"
+                })
+            }
+
+            console.log("userIncomeByCategory: ", userIncomeByCategory);
+
+            return res.status(200).json({
+                success: true,
+                data: userIncomeByCategory
+            })
+        } catch (error) {
+            console.error("Error getting user spend by category in reports.controller: ", error);
+            return res.status(500).json({
+                success: false,
+                message: `Internal server error: ${error}`
+            })
+        }
     }
 
     static async getUserBalance(req: AuthRequest, res: Response) {

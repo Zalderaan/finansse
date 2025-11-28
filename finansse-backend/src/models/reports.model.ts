@@ -61,8 +61,76 @@ export class BalanceModel {
         }));
     };
 
-    static async fetchSpendingByCategory() {
+    static async fetchSpendingByCategory(userId: number) {
+        const spending = await prisma.transaction.groupBy({
+            by: ['category_id'],
+            _sum: {
+                transaction_amount: true
+            },
+            where: {
+                user_id: userId,
+                transaction_type: 'EXPENSE'
+            }
+        });
 
+        // get category IDs
+        const categoryIds = spending.map(i => i.category_id).filter(id => id !== null);
+        const categories = await prisma.category.findMany({
+            where: {
+                category_id: {
+                    in: categoryIds as number[]
+                }
+            },
+            select: {
+                category_id: true,
+                category_name: true
+            }
+        })
+
+        // map categories to the items
+        const categoryMap = new Map(categories.map(c => [c.category_id, c.category_name]));
+
+        return spending.map(s => ({
+            category_id: s.category_id,
+            category_name: s.category_id ? categoryMap.get(s.category_id) : 'Uncategorized',
+            total_amount: Number(s._sum.transaction_amount ?? 0)
+        }));
+    };
+
+    static async fetchIncomeByCategory(userId: number) {
+        // group transactions by category
+        const income_flow = await prisma.transaction.groupBy({
+            by: ['category_id'],
+            _sum: {
+                transaction_amount: true
+            },
+            where: {
+                user_id: userId,
+                transaction_type: 'INCOME'
+            }
+        });
+
+        // get category details to match the category_id in previous query
+        const categoryIds = income_flow.map(i => i.category_id).filter(id => id !== null);
+        const categories = await prisma.category.findMany({
+            where: {
+                category_id: {
+                    in: categoryIds as number[]
+                }
+            },
+            select: {
+                category_id: true,
+                category_name: true
+            }
+        });
+
+        const categoryMap = new Map(categories.map(c => [c.category_id, c.category_name]));
+
+        return income_flow.map(s => ({
+            category_id: s.category_id,
+            category_name: s.category_id ? categoryMap.get(s.category_id) : 'Uncategorized',
+            total_amount: Number(s._sum.transaction_amount ?? 0)
+        }));
     };
 
     // DASHBOARD DATA (CurrBalance, TotalExpense, TotalIncome)

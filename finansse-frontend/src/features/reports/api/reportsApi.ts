@@ -1,5 +1,5 @@
 import { axiosInstance } from "@/lib/axios"
-import type { UserBalanceTrendResponse,DashboardDataResponse } from "@/features/reports/types/reports.types"
+import type { UserBalanceTrendResponse, DashboardDataResponse, IncomeByCategoryResponse, SpendingByCategoryResponse } from "@/features/reports/types/reports.types"
 
 const prefix = 'reports'
 export const reportsApiService = {
@@ -10,6 +10,16 @@ export const reportsApiService = {
 
     getDashboardData: async (): Promise<DashboardDataResponse> => {
         const response = await axiosInstance.get(`${prefix}/dashboard-data`);
+        return response.data;
+    },
+
+    getUserIncomeByCategory: async (): Promise<IncomeByCategoryResponse> => {
+        const response = await axiosInstance.get(`${prefix}/income-by-category`);
+        return response.data;
+    },
+
+    getUserSpendingByCategory: async (): Promise<SpendingByCategoryResponse> => {
+        const response = await axiosInstance.get(`${prefix}/spending-by-category`);
         return response.data;
     }
 }
