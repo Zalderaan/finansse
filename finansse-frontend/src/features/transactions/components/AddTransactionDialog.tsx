@@ -55,6 +55,7 @@ export function AddTransactionDialog() {
             account_id: undefined,
             amount: undefined,
             type: undefined,
+            category_id: undefined
         },
         mode: "onChange"
     })
@@ -81,8 +82,12 @@ export function AddTransactionDialog() {
         } catch (error) {
             console.error("Error creating transaction: ", error);
         }
-    }
+    };
 
+    function handleReset() {
+        createTransactionForm.reset(); // Reset to default values
+        createTransactionForm.clearErrors(); // Clear any validation errors to prevent immediate display
+    }
     const { accounts, isLoading: accountsIsLoading, isError: accountsIsError } = useGetAccounts();
     const { createTransactionDialogOpen, setCreateTransactionDialogOpen } = useTransactionUiStore();
     const { createTransactionAsync, isCreating: isCreatingTransaction, isError: isErrorTransaction, error } = useCreateTransaction();
@@ -90,6 +95,9 @@ export function AddTransactionDialog() {
 
     const isDisabled = !accounts || accounts.length === 0;
     console.log('This is accounts: ', accounts);
+
+    const watchedAccountId = createTransactionForm.watch("account_id");
+    const watchedTransactionType = createTransactionForm.watch("type");
 
     return (
         <Dialog open={createTransactionDialogOpen} onOpenChange={setCreateTransactionDialogOpen}>
@@ -170,9 +178,16 @@ export function AddTransactionDialog() {
                                             Transaction Type
                                         </FormLabel>
                                         <FormControl>
-                                            <Select value={field.value} onValueChange={field.onChange}>
+                                            <Select
+                                                value={field.value ?? ""}
+                                                onValueChange={(val) => {
+                                                    field.onChange(val);
+                                                    createTransactionForm.setValue("category_id", undefined as unknown as number);
+                                                }}
+                                                disabled={!watchedAccountId}
+                                            >
                                                 <SelectTrigger className='w-full'>
-                                                    <SelectValue placeholder="Choose transaction type" />
+                                                    <SelectValue placeholder={!watchedAccountId ? "Pick an account first" : "Choose transaction type"} />
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     <SelectItem value='EXPENSE'>Expense</SelectItem>
@@ -193,10 +208,12 @@ export function AddTransactionDialog() {
                                         <FormLabel>Amount</FormLabel>
                                         <FormControl>
                                             <Input
-                                                placeholder='Transaction Amount' {...field}
+                                                {...field}
+                                                placeholder={!watchedAccountId ? "Pick an account first" : "Transaction Amount"}
                                                 type="number"
                                                 {...createTransactionForm.register("amount", { valueAsNumber: true })}
                                                 value={field.value ?? 0}
+                                                disabled={!watchedAccountId}
                                             />
                                         </FormControl>
                                         <FormMessage />
@@ -214,9 +231,14 @@ export function AddTransactionDialog() {
                                             <Select
                                                 value={field.value ? field.value.toString() : ""}
                                                 onValueChange={val => field.onChange(Number(val))}
+                                                disabled={!watchedAccountId || !watchedTransactionType}
                                             >
                                                 <SelectTrigger className='w-full'>
-                                                    <SelectValue placeholder="Choose category" />
+                                                    <SelectValue placeholder={
+                                                        !watchedAccountId ? "Pick an account first"
+                                                            : !watchedTransactionType ? "Pick a transaction type first"
+                                                                : "Choose category"
+                                                    } />
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     {accountsIsLoading ? (
@@ -224,7 +246,7 @@ export function AddTransactionDialog() {
                                                     ) : accountsIsError ? (
                                                         <SelectItem value="" disabled>Failed to load accounts</SelectItem>
                                                     ) : (
-                                                        categories?.map(
+                                                        categories?.filter((i) => i.category_type === watchedTransactionType).map(
                                                             (category) => (
                                                                 <SelectItem key={category.category_id} value={category.category_id.toString()}>{category.category_name}</SelectItem>
                                                             )
@@ -237,13 +259,15 @@ export function AddTransactionDialog() {
                                     </FormItem>
                                 )}
                             />
-
                         </div>
 
                         <DialogFooter>
-                            <DialogClose asChild>
+                            {/* <DialogClose asChild>
                                 <Button variant={'outline'}>Cancel</Button>
-                            </DialogClose>
+                            </DialogClose> */}
+                            <Button type="button" variant={'outline'} onClick={handleReset}>
+                                Reset
+                            </Button>
                             <Button type='submit' disabled={isCreatingTransaction}>
                                 {isCreatingTransaction ? 'Creating Transaction...' : 'Add Transaction'}
                             </Button>

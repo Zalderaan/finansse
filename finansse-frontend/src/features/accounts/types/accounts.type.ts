@@ -47,3 +47,4 @@ export interface Account {
     created_at: Date;
     updated_at: Date;
 }
+
