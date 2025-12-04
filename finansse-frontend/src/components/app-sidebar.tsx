@@ -68,7 +68,7 @@ export function AppSidebar() {
 
                     <SidebarMenu>
                         <SidebarMenuButton asChild className="flex flex-row items-center justify-center h-10">
-                            <AddTransactionDialog />
+                            <AddTransactionDialog width="full"/>
                         </SidebarMenuButton>
                     </SidebarMenu>
                     <SidebarGroupLabel>Application</SidebarGroupLabel>

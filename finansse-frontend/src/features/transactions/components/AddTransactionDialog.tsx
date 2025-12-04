@@ -38,6 +38,7 @@ import { useGetCategories } from '@/features/categories/hooks/useGetCategories';
 // types imports
 import type { CreateTransactionRequest } from '@/features/transactions/types/transactions.types';
 import { Link } from 'react-router-dom';
+import type { ReactNode } from 'react';
 
 const createTransactionFormSchema = z.object({
     account_id: z.number(),
@@ -48,7 +49,11 @@ const createTransactionFormSchema = z.object({
     category_id: z.number(),
 })
 
-export function AddTransactionDialog() {
+export function AddTransactionDialog({ children, className, width }: { 
+    children?: ReactNode, 
+    className?: string, 
+    width: "full" | "fit" 
+}) {
     const createTransactionForm = useForm<z.infer<typeof createTransactionFormSchema>>({
         resolver: zodResolver(createTransactionFormSchema),
         defaultValues: {
@@ -103,10 +108,15 @@ export function AddTransactionDialog() {
         <Dialog open={createTransactionDialogOpen} onOpenChange={setCreateTransactionDialogOpen}>
             <Tooltip>
                 <TooltipTrigger asChild>
-                    <span className='w-full'>
+                    <span className={width === "full" ? "w-full" : "w-fit"}>
                         <DialogTrigger asChild disabled={isDisabled} className='w-full'>
-                            <Button>
-                                <PlusIcon /> Add Transaction
+                            <Button variant={'outline'}>
+                                {children ?? (
+                                    <span className={className ?? 'flex flex-row items-center'}>
+                                        <PlusIcon /> Add Transaction
+                                    </span>
+                                )
+                                }
                             </Button>
                         </DialogTrigger>
                     </span>
