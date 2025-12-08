@@ -49,10 +49,10 @@ const createTransactionFormSchema = z.object({
     category_id: z.number(),
 })
 
-export function AddTransactionDialog({ children, className, width }: { 
-    children?: ReactNode, 
-    className?: string, 
-    width: "full" | "fit" 
+export function AddTransactionDialog({ children, className, width }: {
+    children?: ReactNode,
+    className?: string,
+    width: "full" | "fit"
 }) {
     const createTransactionForm = useForm<z.infer<typeof createTransactionFormSchema>>({
         resolver: zodResolver(createTransactionFormSchema),
@@ -110,13 +110,12 @@ export function AddTransactionDialog({ children, className, width }: {
                 <TooltipTrigger asChild>
                     <span className={width === "full" ? "w-full" : "w-fit"}>
                         <DialogTrigger asChild disabled={isDisabled} className='w-full'>
-                            <Button variant={'outline'}>
+                            <Button>
                                 {children ?? (
                                     <span className={className ?? 'flex flex-row items-center'}>
                                         <PlusIcon /> Add Transaction
                                     </span>
-                                )
-                                }
+                                )}
                             </Button>
                         </DialogTrigger>
                     </span>
