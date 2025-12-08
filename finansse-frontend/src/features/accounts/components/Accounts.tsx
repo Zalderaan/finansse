@@ -44,8 +44,8 @@ export function Accounts() {
                 </div>
                 <CreateAccountDialog>Create an account</CreateAccountDialog>
             </div>
-        )
-    }
+    )
+}
 
 
     return (

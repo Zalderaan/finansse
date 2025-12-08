@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Link } from "react-router-dom";
 import { useLogin } from "@/features/auth/hooks/useLogin";
+import { useAuthRedirect } from "@/features/auth/hooks/useAuthRedirect"; 
 
 const formSchema = z.object({
     email: z.string().email({
@@ -33,6 +34,9 @@ export function LoginPage() {
             console.error('Login failed: ', error);
         }
     }
+
+    const authRedirect = useAuthRedirect("/"); // Redirect to "/" if authenticated
+    if (authRedirect) return authRedirect;
 
     return (
         <>
