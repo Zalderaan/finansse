@@ -58,9 +58,8 @@ export function useCreateTransaction() {
             })
         },
 
-        onError: (data) => {
-
-        }
+        // onError: (data) => {
+        // }
     });
 
     return {

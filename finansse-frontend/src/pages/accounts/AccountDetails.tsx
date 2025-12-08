@@ -1,19 +1,18 @@
 import { Link, useParams } from "react-router-dom"
 import { useGetAccDetails } from "@/features/accounts//hooks/useGetAccDetails";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, PencilLine, Trash } from "lucide-react";
+import { ArrowLeft, PencilLine } from "lucide-react";
 import {
     Card,
     CardHeader,
-    CardFooter,
     CardTitle,
-    CardAction,
     CardDescription,
     CardContent,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { DeleteAccountDialog } from "@/features/accounts/components/DeleteAccountDialog";
 import { TransactionList } from "@/features/transactions/components/TransactionList";
+import { EditAccountDialog } from "@/features/accounts/components/EditAccountDialog";
 
 export function AccountDetails() {
     const { accountId } = useParams();
@@ -51,7 +50,7 @@ export function AccountDetails() {
                         </div>
                     </div>
                     <div className="space-x-2">
-                        <Button><PencilLine /></Button>
+                        <EditAccountDialog />
                         <DeleteAccountDialog />
                     </div>
                 </CardHeader>

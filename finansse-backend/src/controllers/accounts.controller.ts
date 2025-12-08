@@ -7,25 +7,51 @@ export class AccountsController {
     // POST
     static async postAccount(req: AuthRequest, res: Response) {
         try {
-            // validate user auth
             const user = req.user!.userId;
             const accountData: CreateAccountRequest = req.body;
 
-            // TODO: validate user input
+            // TODO: Add input validation here (e.g., using Zod) before calling the model
 
-            // call model to create account
             const newAccount = await AccountsModel.createAccount(accountData, user);
             return res.status(201).json({
                 success: true,
                 message: `Account ${newAccount.account_name} created successfully`,
                 data: newAccount
             });
-        } catch (error) {
-            console.error('Error creating account in controller: ', error);
-            res.status(500).json({
+        } catch (error: any) {
+            console.error('Error creating account in controller:', error);
+
+            // Handle specific model errors
+            // if (error.message.includes('unique')) {
+            //     return res.status(409).json({
+            //         success: false,
+            //         message: 'Account name must be unique for this user.'
+            //     });
+            // }
+            if (error.message.includes('Invalid user')) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Invalid user or related data provided.'
+                });
+            }
+            if (error.message.includes('Invalid data')) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Invalid data provided (e.g., unsupported account type or currency).'
+                });
+            }
+            if (error.message.includes('Database connection')) {
+                return res.status(503).json({
+                    success: false,
+                    message: 'Service temporarily unavailable. Please try again later.'
+                });
+            }
+
+            // Default to internal server error
+            return res.status(500).json({
                 success: false,
                 message: 'Internal server error'
-            })
+            });
         }
     }
 
@@ -84,8 +110,30 @@ export class AccountsController {
     }
 
     // UPDATE
-    static async updateAccount() {
+    static async updateAccountDetails(req: AuthRequest, res: Response) {
+        try {
+            // NEED account id
+            // NEED user id
+            const acc_id = Number(req.params.id);
+            const user = req.user!.userId;
+            const updateData: CreateAccountRequest = req.body;
+            const updatedAccount = await AccountsModel.changeAccountDetails(acc_id, user, updateData);
 
+            if (!updatedAccount) {
+                return res.status(404).json({
+                    success: false,
+                    message: ""
+                }
+                );
+            }
+
+
+        } catch (error) {
+            return res.status(500).json({
+                success: false,
+                message: 'Internal server error'
+            })
+        }
     }
 
     // DELETE
