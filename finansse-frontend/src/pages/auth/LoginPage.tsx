@@ -7,7 +7,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Link } from "react-router-dom";
 import { useLogin } from "@/features/auth/hooks/useLogin";
-import { useNavigate } from "react-router-dom";
 
 const formSchema = z.object({
     email: z.string().email({
@@ -17,7 +16,6 @@ const formSchema = z.object({
 })
 
 export function LoginPage() {
-    const navigate = useNavigate();
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -28,11 +26,9 @@ export function LoginPage() {
 
     const { loginAsync, isLoggingIn, loginError } = useLogin();
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log("Login form values: ", values);
+        // console.log("Login form values: ", values);
         try {
             await loginAsync(values);
-            navigate('/dashboard');
-
         } catch (error) {
             console.error('Login failed: ', error);
         }
@@ -76,9 +72,16 @@ export function LoginPage() {
                                 )}
                             />
                         </CardContent>
+
+                        {loginError && (
+                            <p className="text-destructive text-sm px-6">
+                                {loginError.message || "Invalid email or password"}
+                            </p>
+                        )}
+
                         <CardFooter className="flex flex-col">
                             <CardAction className="space-x-2">
-                                <Button type='submit'>{isLoggingIn ? 'Logging in...' : 'Login'}</Button>
+                                <Button type='submit' disabled={isLoggingIn}>{isLoggingIn ? 'Logging in...' : 'Login'}</Button>
                                 <Button asChild variant={'outline'}>
                                     <Link to='/'>
                                         Go back

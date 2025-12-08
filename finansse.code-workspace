@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"path": "finansse-frontend"
+		},
+		{
+			"path": "finansse-backend"
+		},
+		{
+			"path": "."
+		}
+	],
+
+	"settings": {}
+}
