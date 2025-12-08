@@ -28,6 +28,7 @@ import {
 import { z } from "zod";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import type { ReactNode } from 'react';
 
 const createAccountFormSchema = z.object({
     account_name: z.string()
@@ -42,7 +43,7 @@ const createAccountFormSchema = z.object({
         .optional(),
 });
 
-export function CreateAccountDialog() {
+export function CreateAccountDialog({ children }: { children?: ReactNode }) {
     const { createAccountDialogOpen, setCreateAccountDialogOpen } = useAccountUiStore();
 
     const createAccountForm = useForm<z.infer<typeof createAccountFormSchema>>({
@@ -96,8 +97,12 @@ export function CreateAccountDialog() {
             <Dialog open={createAccountDialogOpen} onOpenChange={setCreateAccountDialogOpen}>
                 <DialogTrigger asChild>
                     <Button className='w-fit'>
-                        <Plus />
-                        Create
+                        {children ?? (
+                            <>
+                                <Plus />
+                                <span>Create</span>
+                            </>
+                        )}
                     </Button>
                 </DialogTrigger>
                 <DialogContent>

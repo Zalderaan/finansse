@@ -51,9 +51,9 @@ export class AuthController {
             // find user
             const user = await AuthModel.findUserByEmail(email);
             if (!user) {
-                return res.status(404).json({
+                return res.status(401).json({
                     success: false,
-                    message: "User not found."
+                    message: "Invalid email or password."
                 });
             }
 
@@ -62,7 +62,7 @@ export class AuthController {
             if (!isValidPassword) {
                 return res.status(401).json({
                     success: false,
-                    message: "Invalid credentials."
+                    message: "Invalid email or password."
                 })
             }
 
