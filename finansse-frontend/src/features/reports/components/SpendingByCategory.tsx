@@ -7,8 +7,13 @@ import {
     CardDescription,
     CardContent,
 } from "@/components/ui/card";
-import { PieChart, Pie, Label, Tooltip, Legend, Cell } from "recharts";
+import { PieChart, Pie, Tooltip, Legend, Cell } from "recharts";
 import { useGetUserSpendingByCategory } from "@/features/reports/hooks/useGetUserSpendingByCategory";
+import { useHasAccounts } from "@/features/accounts/hooks/useHasAccounts";
+import { Button } from "@/components/ui/button";
+import { DollarSign } from "lucide-react";
+import { Link } from "react-router-dom";
+import { AddTransactionDialog } from "@/features/transactions/components/AddTransactionDialog";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8", "#82ca9d"];
 
@@ -16,6 +21,8 @@ const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8", "#82ca9d"
 export function SpendingByCategory() {
     const { userSpendByCategory, isLoading, isError, error } = useGetUserSpendingByCategory();
     // console.log("userSpendByCategory: ", userSpendByCategory);
+    const hasAccounts = useHasAccounts();
+
     return (
         <Card className="w-full">
             <CardHeader>
@@ -26,6 +33,7 @@ export function SpendingByCategory() {
                     Your spending
                 </CardDescription>
             </CardHeader>
+
             <CardContent>
                 <PieChart width={300} height={300}>
                     <Pie
@@ -43,8 +51,8 @@ export function SpendingByCategory() {
                     </Pie>
                     <Tooltip formatter={(value: number) => `${value.toLocaleString("en-PH", { style: "currency", currency: "PHP" })}`} />
                     <Legend />
-                </PieChart>
-            </CardContent>
-        </Card>
+                </PieChart >
+            </CardContent >
+        </Card >
     )
 }

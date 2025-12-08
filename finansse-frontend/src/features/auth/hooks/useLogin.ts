@@ -2,8 +2,10 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { authApiService } from '@/features/auth/api/authApi';
 import { useAuthStore } from '../stores/auth.store';
 import { toast } from 'sonner';
+import { useNavigate } from "react-router-dom";
 
 export function useLogin() {
+    const navigate = useNavigate();
     const queryClient = useQueryClient();
     const setAuth = useAuthStore(state => state.setAuth);
     const setUser = useAuthStore(state => state.setUser);
@@ -25,7 +27,8 @@ export function useLogin() {
                     description: "!text-xs !text-green-700",
                     toast: "!bg-green-200 !border-green-300",
                 }
-            })
+            });
+            navigate('/dashboard');
         },
         onError: (error: any) => {
             toast.error("Error logging in", {
