@@ -3,6 +3,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { CategoryCard } from "@/features/categories/components/CategoryCard";
+import { AddCategoryDialog } from "@/features/categories/components/AddCategoryDialog";
 
 export function CategoriesPage() {
     const { categories, isLoading, isError, error } = useGetCategories();
@@ -14,7 +15,10 @@ export function CategoriesPage() {
 
     return (
         <>
-            <h1 className="text-2xl font-medium">Categories</h1>
+            <div className="w-full flex flex-row items-center justify-between pb-8">
+                <h1 className="text-2xl font-medium">Categories</h1>
+                <AddCategoryDialog />
+            </div>
             <Tabs defaultValue="default">
                 <TabsList className="w-full">
                     <TabsTrigger value="default">Default</TabsTrigger>

@@ -1,4 +1,4 @@
-import { WalletCards, Home, HandCoins, Tags, } from "lucide-react"
+import { WalletCards, Home, HandCoins, Tags, Plus } from "lucide-react"
 import {
     Sidebar,
     SidebarContent,
@@ -10,12 +10,9 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
+    SidebarSeparator,
 } from "@/components/ui/sidebar"
-DropdownMenu
 import { Link } from "react-router-dom"
-import {
-    DropdownMenu,
-} from "@/components/ui/dropdown-menu"
 import { NavUser } from "@/components/nav-user"
 import { useAuthStore } from "@/features/auth/stores/auth.store"
 import { AddTransactionDialog } from '@/features/transactions/components/AddTransactionDialog';
@@ -46,35 +43,45 @@ const items = [
 ]
 
 export function AppSidebar() {
-    /**
-     * ! TOP PRIO
-     * TODO: account creation
-     * 
-     * ? Second prio
-     * TODO: fetch user accounts
-     */
-
     const { user } = useAuthStore();
 
     return (
-        <Sidebar>
+        <Sidebar collapsible="icon">
             <SidebarHeader>
-                <SidebarGroup>
-                    <SidebarGroupLabel>Finansse</SidebarGroupLabel>
-                </SidebarGroup>
+                <SidebarMenu>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton
+                            size="lg"
+                            className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                        >
+                            <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
+                                <HandCoins className="size-4" />
+                            </div>
+                            <div className="grid flex-1 text-left text-sm leading-tight">
+                                <span>Finansse</span>
+                            </div>
+                        </SidebarMenuButton>
+
+                    </SidebarMenuItem>
+                </SidebarMenu>
             </SidebarHeader>
+
             <SidebarContent>
                 <SidebarGroup>
+                    <SidebarGroupContent>
+                        <SidebarMenu>
+                            <SidebarMenuItem>
+                                <AddTransactionDialog />
+                            </SidebarMenuItem>
+                        </SidebarMenu>
+                    </SidebarGroupContent>
 
-                    <SidebarMenu>
-                        <AddTransactionDialog width="full" />
-                    </SidebarMenu>
                     <SidebarGroupLabel>Application</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
                             {items.map((item) => (
                                 <SidebarMenuItem key={item.title}>
-                                    <SidebarMenuButton asChild>
+                                    <SidebarMenuButton asChild tooltip={item.title}>
                                         <Link to={item.url}>
                                             <item.icon />
                                             <span>{item.title}</span>
