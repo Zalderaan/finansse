@@ -7,7 +7,7 @@ import { z } from "zod";
 import { Link } from "react-router-dom";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { useRegister } from "@/features/auth/hooks/useRegister";
-import { useAuthRedirect } from "@/features/auth/hooks/useAuthRedirect";
+// import { useAuthRedirect } from "@/features/auth/hooks/useAuthRedirect";
 
 const formSchema = z.object({
     email: z.string().email({
@@ -38,8 +38,8 @@ export function RegisterPage() {
         },
     })
 
-    const authRedirect = useAuthRedirect();
-    if (authRedirect) return authRedirect;
+    // const authRedirect = useAuthRedirect();
+    // if (authRedirect) return authRedirect;
     
     const { registerAsync, isRegistering, registerError } = useRegister();
     async function onSubmit(values: z.infer<typeof formSchema>) {

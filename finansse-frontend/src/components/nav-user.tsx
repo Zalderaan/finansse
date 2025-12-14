@@ -9,12 +9,13 @@ import {
 import { SidebarMenuButton } from "@/components/ui/sidebar";
 import { useLogout } from "@/features/auth/hooks/useLogout";
 import { Link } from "react-router-dom";
+import { LogOut } from "lucide-react";
 
 export function NavUser(user: {
     username: string,
     email: string,
 }) {
-    
+
     const { logout } = useLogout();
 
     return (
@@ -43,8 +44,12 @@ export function NavUser(user: {
                             Settings
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => logout()}>
-                            Logout
+                        <DropdownMenuItem 
+                            onClick={() => logout()} 
+                            className="text-destructive"
+                        >
+                            <LogOut className="flex items-center text-destructive"/>
+                            <span>Logout</span>
                         </DropdownMenuItem>
                     </DropdownMenuGroup>
                 </DropdownMenuContent>

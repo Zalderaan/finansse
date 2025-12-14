@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Link } from "react-router-dom";
 import { useLogin } from "@/features/auth/hooks/useLogin";
-import { useAuthRedirect } from "@/features/auth/hooks/useAuthRedirect"; 
+// import { useAuthRedirect } from "@/features/auth/hooks/useAuthRedirect";
 
 const formSchema = z.object({
     email: z.string().email({
@@ -25,18 +25,16 @@ export function LoginPage() {
         },
     })
 
-    const { loginAsync, isLoggingIn, loginError } = useLogin();
+    const { login, isLoggingIn, loginError } = useLogin();
     async function onSubmit(values: z.infer<typeof formSchema>) {
         // console.log("Login form values: ", values);
         try {
-            await loginAsync(values);
+            // await loginAsync(values);
+            login(values);
         } catch (error) {
             console.error('Login failed: ', error);
         }
     }
-
-    const authRedirect = useAuthRedirect("/"); // Redirect to "/" if authenticated
-    if (authRedirect) return authRedirect;
 
     return (
         <>
@@ -78,9 +76,15 @@ export function LoginPage() {
                         </CardContent>
 
                         {loginError && (
-                            <p className="text-destructive text-sm px-6">
-                                {loginError.message || "Invalid email or password"}
-                            </p>
+                            <div className="mx-6">
+                                <Card className="border-red-300 bg-red-50">
+                                    <CardContent className="px-6">
+                                        <p className="text-red-700 text-xs">
+                                            {loginError.response?.data?.message || loginError.message || "Invalid email or password"}
+                                        </p>
+                                    </CardContent>
+                                </Card>
+                            </div>
                         )}
 
                         <CardFooter className="flex flex-col">

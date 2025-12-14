@@ -1,6 +1,6 @@
 // UI imports
 import {
-    Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter,
+    Dialog, DialogContent, DialogDescription, DialogFooter,
     DialogHeader, DialogTitle, DialogTrigger,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -14,7 +14,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
-
+import { SidebarMenuButton, useSidebar } from '@/components/ui/sidebar';
 
 // forms imports
 import {
@@ -37,8 +37,6 @@ import { useGetCategories } from '@/features/categories/hooks/useGetCategories';
 
 // types imports
 import type { CreateTransactionRequest } from '@/features/transactions/types/transactions.types';
-import { Link } from 'react-router-dom';
-import type { ReactNode } from 'react';
 
 const createTransactionFormSchema = z.object({
     account_id: z.number(),
@@ -49,11 +47,10 @@ const createTransactionFormSchema = z.object({
     category_id: z.number(),
 })
 
-export function AddTransactionDialog({ children, className, width }: {
-    children?: ReactNode,
-    className?: string,
-    width: "full" | "fit"
-}) {
+export function AddTransactionDialog() {
+    const { state } = useSidebar();
+    const isCollapsed = state === "collapsed";
+
     const createTransactionForm = useForm<z.infer<typeof createTransactionFormSchema>>({
         resolver: zodResolver(createTransactionFormSchema),
         defaultValues: {
@@ -98,6 +95,7 @@ export function AddTransactionDialog({ children, className, width }: {
     const { createTransactionAsync, isCreating: isCreatingTransaction, isError: isErrorTransaction, error } = useCreateTransaction();
     const { categories, isLoading: categoriesIsLoading, isError: categoriesIsError } = useGetCategories();
 
+
     const isDisabled = !accounts || accounts.length === 0;
     console.log('This is accounts: ', accounts);
 
@@ -106,35 +104,26 @@ export function AddTransactionDialog({ children, className, width }: {
 
     return (
         <Dialog open={createTransactionDialogOpen} onOpenChange={setCreateTransactionDialogOpen}>
-            <Tooltip>
-                <TooltipTrigger asChild>
-                    <span className={width === "full" ? "w-full" : "w-fit"}>
-                        <DialogTrigger asChild disabled={isDisabled} className='w-full'>
-                            <Button>
-                                {children ?? (
-                                    <span className={className ?? 'flex flex-row items-center'}>
-                                        <PlusIcon /> Add Transaction
-                                    </span>
-                                )}
-                            </Button>
-                        </DialogTrigger>
-                    </span>
-                </TooltipTrigger>
-                {isDisabled && (
-                    <TooltipContent side='bottom' align="center" className="ml-4">
-                        <div className="flex items-center gap-2">
-                            <PlusIcon className="h-4 w-4" />
-                            <span>No accounts found. Add one to get started:</span>
-                            <Link
-                                to="/dashboard/accounts"
-                                className="text-blue-500 underline hover:text-blue-700"
-                            >
-                                Go to Accounts
-                            </Link>
-                        </div>
-                    </TooltipContent>
-                )}
-            </Tooltip>
+
+            <DialogTrigger asChild disabled={isDisabled} className='w-full'>
+                {/* {
+                    isCollapsed ? <AddTransactionSidebarTrigger /> : (
+                        <Button>
+                            {children ?? (
+                                <span className={className ?? 'flex flex-row items-center'}>
+                                    <PlusIcon /> Add Transaction
+                                    {!isCollapsed && <span className="ml-2">Add Transaction</span>}
+                                </span>
+                            )}
+                        </Button>
+                    )
+                } */}
+                <SidebarMenuButton className="font-bold flex justify-center items-center border-1">
+                    <PlusIcon />
+                    {!isCollapsed && <span className="ml-2">Add Transaction</span>}
+                </SidebarMenuButton>
+            </DialogTrigger>
+
             <DialogContent>
                 <Form {...createTransactionForm}>
                     <form onSubmit={createTransactionForm.handleSubmit(onSubmit)}>
@@ -286,4 +275,13 @@ export function AddTransactionDialog({ children, className, width }: {
             </DialogContent>
         </Dialog>
     );
+}
+
+export function AddTransactionSidebarTrigger() {
+    return (
+        <SidebarMenuButton className='bg-black text-white'>
+            <PlusIcon />
+            Add Transaction
+        </SidebarMenuButton>
+    )
 }

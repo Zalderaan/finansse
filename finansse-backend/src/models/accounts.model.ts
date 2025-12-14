@@ -43,8 +43,10 @@ export class AccountsModel {
                 }
                 // Handle other codes as needed, e.g., P2000 for value too long
             }
+            
+            // re-throw unknown
             console.error('Error creating account in model:', error);
-            throw new Error('Failed to create account. Please try again.');
+            throw error; 
         }
     }
 
