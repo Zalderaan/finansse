@@ -15,20 +15,40 @@ import {
 import { z } from 'zod';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from 'react-hook-form';
-import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+import { useAddCategory } from "@/features/categories/hooks/useAddCategory";
+import { useState } from "react";
+
 
 const addCategoryFormSchema = z.object({
-    category_name: z.string(),
+    category_name: z.string().min(1, "Please provide a category name"),
     category_type: z.enum(["EXPENSE", "INCOME", "TRANSFER"]),
     category_icon: z.string().optional(),
-    user_id: z.number()
 })
 
 export function AddCategoryDialog() {
+    const [open, setOpen] = useState(false);
+    const { createCategoryAsync, isCreating, isError, error } = useAddCategory();
+
     async function onSubmit(values: z.infer<typeof addCategoryFormSchema>) {
         console.log("onsubmit called1");
         console.log("values of add category form: ", values);
+
+        try {
+            await createCategoryAsync({ ...values, category_icon: values.category_icon === "" ? null : values.category_icon });
+            setOpen(false);
+        } catch (error) {
+            console.error("Error creating category: ", error);
+        }
+    }
+
+    function handleReset() {
+        console.log("handle reset called!")
+        addCategoryForm.reset(); // Reset to default values
+        addCategoryForm.clearErrors(); // Clear any validation errors to prevent immediate display
     }
 
     const addCategoryForm = useForm<z.infer<typeof addCategoryFormSchema>>({
@@ -37,25 +57,24 @@ export function AddCategoryDialog() {
             category_name: "",
             category_type: undefined,
             category_icon: "",
-            user_id: undefined
-        }
+        },
+        mode: "onSubmit"
     });
 
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button>Add Category</Button>
             </DialogTrigger>
 
             <DialogContent>
                 <Form {...addCategoryForm}>
-                    <form onSubmit={addCategoryForm.handleSubmit(onSubmit)}>
+                    <form className="space-y-4" onSubmit={addCategoryForm.handleSubmit(onSubmit)}>
                         <DialogHeader>
                             <DialogTitle>Add Category</DialogTitle>
                             <DialogDescription>Add a user-made category</DialogDescription>
                         </DialogHeader>
-
-                        <div>
+                        <div className="space-y-6">
                             <FormField
                                 control={addCategoryForm.control}
                                 name="category_name"
@@ -63,42 +82,62 @@ export function AddCategoryDialog() {
                                     <FormItem>
                                         <FormLabel>Category Name</FormLabel>
                                         <FormControl>
-                                            <Input placeholder='Category name' {...field} />
+                                            <Input placeholder='House Savings' {...field} />
                                         </FormControl>
+                                        <FormMessage />
                                     </FormItem>
                                 )}
                             />
 
-                            <FormField
-                                control={addCategoryForm.control}
-                                name="category_name"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Category Name</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder='Category name' {...field} />
-                                        </FormControl>
-                                    </FormItem>
-                                )}
-                            />
+                            <div className="grid grid-cols-4 gap-4">
+                                <FormField
+                                    control={addCategoryForm.control}
+                                    name="category_type"
+                                    render={({ field }) => (
+                                        <FormItem
+                                            className="col-start-1 col-span-2"
+                                        >
+                                            <FormLabel>Category Type</FormLabel>
+                                            <FormControl>
+                                                <Select
+                                                    value={field.value ? field.value.toString() : ""}
+                                                    onValueChange={(val) => { field.onChange(val) }}>
+                                                    <SelectTrigger className="w-full">
+                                                        <SelectValue placeholder="Choose transaction type" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="EXPENSE">Expense</SelectItem>
+                                                        <SelectItem value="INCOME">Income</SelectItem>
+                                                        <SelectItem value="TRANSFER">Transfer</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
 
-                            <FormField
-                                control={addCategoryForm.control}
-                                name="category_name"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Category Name</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder='Category name' {...field} />
-                                        </FormControl>
-                                    </FormItem>
-                                )}
-                            />
+                                <FormField
+                                    control={addCategoryForm.control}
+                                    name="category_icon"
+                                    render={({ field }) => (
+                                        <FormItem
+                                            className="col-span-2"
+                                        >
+                                            <FormLabel>Category Icon</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder='🏠' {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
                         </div>
 
                         <DialogFooter>
-                            <Button size={'sm'} variant={'outline'}>Clear</Button>
-                            <Button size={'sm'} >Add Category</Button>
+                            <Button type="button" size={'sm'} variant={'outline'} onClick={handleReset}>Clear</Button>
+                            <Button type="submit" size={'sm'} >Add Category</Button>
                         </DialogFooter>
                     </form>
                 </Form>
