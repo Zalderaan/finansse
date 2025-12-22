@@ -25,17 +25,19 @@
     "@types/morgan": "^1.9.10",
     "@types/node": "^24.1.0",
     "nodemon": "^3.1.10",
-    "prisma": "^6.18.0",
+    "prisma": "^7.2.0",
     "ts-node": "^10.9.2"
   },
   "dependencies": {
-    "@prisma/client": "^6.18.0",
+    "@prisma/adapter-pg": "^7.2.0",
+    "@prisma/client": "^7.2.0",
     "argon2": "^0.43.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
-    "morgan": "^1.10.1"
+    "morgan": "^1.10.1",
+    "pg": "^8.16.3"
   }
 }
