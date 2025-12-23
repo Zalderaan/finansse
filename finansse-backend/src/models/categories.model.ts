@@ -1,4 +1,6 @@
-import { PrismaClientKnownRequestError, PrismaClientValidationError } from "@prisma/client/runtime/library";
+// import { PrismaClientKnownRequestError, PrismaClientValidationError } from "@prisma/client/runtime/library";
+
+import { Prisma } from '../generated/prisma/client'
 import prisma from "../db";
 import { CreateCategoryRequest } from "../types/categories.types";
 
@@ -23,13 +25,13 @@ export class CategoryModel {
             return new_category;
 
         } catch (error) {
-            if (error instanceof PrismaClientKnownRequestError) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
                 if (error.code === "P2003") {
                     throw new Error(`Invalid user ID provided`);
                 }
             }
 
-            if (error instanceof PrismaClientValidationError) {
+            if (error instanceof Prisma.PrismaClientValidationError) {
                 throw new Error('Invalid category data provided');
             }
 
@@ -56,7 +58,7 @@ export class CategoryModel {
             return [...default_categories, ...user_categories];
 
         } catch (error) {
-            if (error instanceof PrismaClientKnownRequestError) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
                 // P2025: Record not found
                 if (error.code === "P2025") {
                     throw new Error('Categories not found');
@@ -67,7 +69,7 @@ export class CategoryModel {
                 }
             }
 
-            if (error instanceof PrismaClientValidationError) {
+            if (error instanceof Prisma.PrismaClientValidationError) {
                 throw new Error('Invalid query parameters');
             }
 
