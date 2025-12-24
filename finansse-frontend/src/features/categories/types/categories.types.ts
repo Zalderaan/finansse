@@ -30,3 +30,6 @@ export interface CategoriesResponse {
     count: number;
 }
 
+export type CategoryType = 'EXPENSE' | 'INCOME' | 'TRANSFER';
+export type CategoryTypeFilter = 'ALL' | CategoryType;
+export type CategoryTab = 'default' | 'user';

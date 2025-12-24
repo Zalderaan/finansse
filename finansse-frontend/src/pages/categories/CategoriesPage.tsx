@@ -1,17 +1,44 @@
+import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useGetCategories } from "@/features/categories/hooks/useGetCategories";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
 import { CategoryCard } from "@/features/categories/components/CategoryCard";
 import { AddCategoryDialog } from "@/features/categories/components/AddCategoryDialog";
+import { CategoryEmptyState } from "@/features/categories/components/CategoryEmptyState";
+import type { CategoryTypeFilter, CategoryTab } from "@/features/categories/types/categories.types";
 
 export function CategoriesPage() {
     const { categories, isLoading, isError, error } = useGetCategories();
-    const [selectedType, setSelectedType] = useState<'ALL' | 'EXPENSE' | 'INCOME'>('ALL');
+    const [searchParams, setSearchParams] = useSearchParams();
 
-    const filteredCategories = selectedType === 'ALL'
-        ? categories
-        : categories?.filter(cat => cat.category_type === selectedType);
+    // const [selectedType, setSelectedType] = useState<CategoryTypeFilter>('ALL');
+    // const [selectedTab, setSelectedTab] = useState<'default' | 'user'>('default');
+
+    const selectedType = (searchParams.get('type') as CategoryTypeFilter) || 'ALL';
+    const selectedTab = (searchParams.get('tab') as CategoryTab) || 'default';
+
+    const filteredCategories = categories?.filter(cat => {
+        const typeMatch = selectedType === 'ALL' || cat.category_type === selectedType;
+        const isDefaultMatch = selectedTab === 'default'
+            ? cat.category_isDefault === true
+            : cat.category_isDefault === false;
+        return typeMatch && isDefaultMatch;
+    });
+
+    const updateType = (type: CategoryTypeFilter) => {
+        setSearchParams(prev => {
+            prev.set('type', type);
+            return prev;
+        });
+    };
+
+    const updateTab = (tab: CategoryTab) => {
+        setSearchParams(prev => {
+            prev.set('tab', tab);
+            return prev;
+        });
+    };
 
     return (
         <>
@@ -19,7 +46,8 @@ export function CategoriesPage() {
                 <h1 className="text-2xl font-medium">Categories</h1>
                 <AddCategoryDialog />
             </div>
-            <Tabs defaultValue="default">
+            {/*  onValueChange={(value) => setSelectedTab(value as 'default' | 'user')} */}
+            <Tabs defaultValue="default" onValueChange={(value) => updateTab(value as CategoryTab)} className="h-full">
                 <TabsList className="w-full">
                     <TabsTrigger value="default">Default</TabsTrigger>
                     <TabsTrigger value="user">User-made</TabsTrigger>
@@ -28,37 +56,42 @@ export function CategoriesPage() {
                 <div className="flex flex-row space-x-2">
                     <Button
                         variant={selectedType === 'ALL' ? 'default' : 'outline'}
-                        onClick={() => setSelectedType('ALL')}
+                        onClick={() => updateType('ALL')}
                     >
                         All
                     </Button>
                     <Button
                         variant={selectedType === 'EXPENSE' ? 'default' : 'outline'}
-                        onClick={() => setSelectedType('EXPENSE')}
+                        onClick={() => updateType('EXPENSE')}
                     >
                         Expense
                     </Button>
                     <Button
                         variant={selectedType === 'INCOME' ? 'default' : 'outline'}
-                        onClick={() => setSelectedType('INCOME')}
+                        onClick={() => updateType('INCOME')}
                     >
                         Income
                     </Button>
                 </div>
 
-                <TabsContent value="default" className="space-y-2">
-                    {filteredCategories?.map((category) => (
-                        <CategoryCard key={category.category_id} category={category} />
-                    ))}
+                <TabsContent value="default" className="flex flex-col h-full space-y-2">
+                    {
+                        filteredCategories && filteredCategories?.length > 0 ? (
+                            filteredCategories?.map((category) => (<CategoryCard key={category.category_id} category={category} />))
+                        ) : (
+                            <CategoryEmptyState />
+                        )
+                    }
                 </TabsContent>
 
-                <TabsContent value="user">
-                    {filteredCategories?.map((category) => (
-                        <div className="flex flex-col p-2">
-                            <p>{category.category_name}</p>
-                            <p>{category.category_type}</p>
-                        </div>
-                    ))}
+                <TabsContent value="user" className="flex flex-col h-full space-y-2">
+                    {
+                        filteredCategories && filteredCategories?.length > 0 ? (
+                            filteredCategories?.map((category) => (<CategoryCard key={category.category_id} category={category} />))
+                        ) : (
+                            <CategoryEmptyState />
+                        )
+                    }
                 </TabsContent>
             </Tabs>
         </>
