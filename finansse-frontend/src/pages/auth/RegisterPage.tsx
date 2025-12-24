@@ -36,11 +36,12 @@ export function RegisterPage() {
             password: "",
             confirm_password: "",
         },
+        mode: "onChange"
     })
 
     // const authRedirect = useAuthRedirect();
     // if (authRedirect) return authRedirect;
-    
+
     const { registerAsync, isRegistering, registerError } = useRegister();
     async function onSubmit(values: z.infer<typeof formSchema>) {
         console.log("Register form values: ", values);
@@ -118,8 +119,8 @@ export function RegisterPage() {
                         </CardContent>
                         <CardFooter className="flex flex-col">
                             <CardAction className="space-x-2">
-                                <Button type='submit'>{!isRegistering ? 'Register' : "Creating your account..."}</Button>
-                                <Button asChild variant={"outline"}>
+                                <Button type='submit' disabled={isRegistering}>{!isRegistering ? 'Register' : "Creating your account..."}</Button>
+                                <Button asChild disabled={isRegistering} variant={"outline"}>
                                     <Link to='/'>
                                         Go back
                                     </Link>
