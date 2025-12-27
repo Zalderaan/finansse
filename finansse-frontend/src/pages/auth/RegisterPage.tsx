@@ -52,8 +52,8 @@ export function RegisterPage() {
         }
     }
     return (
-        <>
-            <Card>
+        <div className="flex items-center justify-center h-screen">
+            <Card className="w-full sm:w-11/12 md:w-3/4 lg:w-1/2 xl:w-1/4">
                 <CardHeader>
                     <CardTitle>Register</CardTitle>
                     <CardDescription>Start tracking your finances with Finansse.</CardDescription>
@@ -117,8 +117,8 @@ export function RegisterPage() {
                                 )}
                             />
                         </CardContent>
-                        <CardFooter className="flex flex-col">
-                            <CardAction className="space-x-2">
+                        <CardFooter className="flex flex-col space-y-4">
+                            <CardAction className="flex flex-col w-full space-y-2">
                                 <Button type='submit' disabled={isRegistering}>{!isRegistering ? 'Register' : "Creating your account..."}</Button>
                                 <Button asChild disabled={isRegistering} variant={"outline"}>
                                     <Link to='/'>
@@ -126,11 +126,11 @@ export function RegisterPage() {
                                     </Link>
                                 </Button>
                             </CardAction>
-                            <span>Already have an account? <Link to='/login' className="underline">Sign in instead</Link></span>
+                            <span className="text-xs">Already have an account? <Link to='/login' className="underline">Sign in instead</Link></span>
                         </CardFooter>
                     </form>
                 </Form>
             </Card>
-        </>
+        </div>
     );
 }
