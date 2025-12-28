@@ -28,7 +28,7 @@ export function DashboardPage() {
                 <span className="font-normal text-2xl">Graphs</span>
                 <BalanceChart />
 
-                <div className="flex flex-row items-center justify-between space-x-3">
+                <div className="flex flex-col sm:flex-row items-center justify-between space-x-3">
                     <SpendingByCategory />
                     <IncomeByCategory />
                 </div>
