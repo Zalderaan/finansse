@@ -8,6 +8,10 @@ import { AddCategoryDialog } from "@/features/categories/components/AddCategoryD
 import { CategoryEmptyState } from "@/features/categories/components/CategoryEmptyState";
 import type { CategoryTypeFilter, CategoryTab } from "@/features/categories/types/categories.types";
 
+import { DataTable } from "@/components/ui/data-table";
+// import { CategoryTable } from "@/features/categories/components/CategoryTable";
+import { columns } from "@/features/categories/components/columns";
+
 export function CategoriesPage() {
     const { categories, isLoading, isError, error } = useGetCategories();
     const [searchParams, setSearchParams] = useSearchParams();
@@ -77,7 +81,10 @@ export function CategoriesPage() {
                 <TabsContent value="default" className="flex flex-col h-full space-y-2">
                     {
                         filteredCategories && filteredCategories?.length > 0 ? (
-                            filteredCategories?.map((category) => (<CategoryCard key={category.category_id} category={category} />))
+                            // filteredCategories?.map((category) => (<CategoryCard key={category.category_id} category={category} />))
+                            
+                            // * Categories Table
+                            <DataTable columns={columns} data={filteredCategories} />
                         ) : (
                             <CategoryEmptyState />
                         )
@@ -87,7 +94,10 @@ export function CategoriesPage() {
                 <TabsContent value="user" className="flex flex-col h-full space-y-2">
                     {
                         filteredCategories && filteredCategories?.length > 0 ? (
-                            filteredCategories?.map((category) => (<CategoryCard key={category.category_id} category={category} />))
+                            // filteredCategories?.map((category) => (<CategoryCard key={category.category_id} category={category} />))
+
+                            // * Categories Table
+                            <DataTable columns={columns} data={filteredCategories} />
                         ) : (
                             <CategoryEmptyState />
                         )

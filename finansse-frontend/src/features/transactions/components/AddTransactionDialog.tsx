@@ -97,7 +97,7 @@ export function AddTransactionDialog() {
 
 
     const isDisabled = !accounts || accounts.length === 0;
-    console.log('This is accounts: ', accounts);
+    // console.log('This is accounts: ', accounts);
 
     const watchedAccountId = createTransactionForm.watch("account_id");
     const watchedTransactionType = createTransactionForm.watch("type");
