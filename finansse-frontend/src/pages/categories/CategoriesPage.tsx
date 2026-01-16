@@ -1,23 +1,21 @@
-import { useState } from "react";
+// import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useGetCategories } from "@/features/categories/hooks/useGetCategories";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { CategoryCard } from "@/features/categories/components/CategoryCard";
+// import { CategoryCard } from "@/features/categories/components/CategoryCard";
 import { AddCategoryDialog } from "@/features/categories/components/AddCategoryDialog";
 import { CategoryEmptyState } from "@/features/categories/components/CategoryEmptyState";
 import type { CategoryTypeFilter, CategoryTab } from "@/features/categories/types/categories.types";
 
 import { DataTable } from "@/components/ui/data-table";
 // import { CategoryTable } from "@/features/categories/components/CategoryTable";
-import { columns } from "@/features/categories/components/columns";
+import { columns } from "@/features/categories/components/CategoryColumns";
+import { CategoryTable } from "@/features/categories/components/CategoryTable";
 
 export function CategoriesPage() {
     const { categories, isLoading, isError, error } = useGetCategories();
     const [searchParams, setSearchParams] = useSearchParams();
-
-    // const [selectedType, setSelectedType] = useState<CategoryTypeFilter>('ALL');
-    // const [selectedTab, setSelectedTab] = useState<'default' | 'user'>('default');
 
     const selectedType = (searchParams.get('type') as CategoryTypeFilter) || 'ALL';
     const selectedTab = (searchParams.get('tab') as CategoryTab) || 'default';
@@ -97,7 +95,7 @@ export function CategoriesPage() {
                             // filteredCategories?.map((category) => (<CategoryCard key={category.category_id} category={category} />))
 
                             // * Categories Table
-                            <DataTable columns={columns} data={filteredCategories} />
+                            <CategoryTable columns={columns} data={filteredCategories} />
                         ) : (
                             <CategoryEmptyState />
                         )
