@@ -106,19 +106,7 @@ export function AddTransactionDialog() {
         <Dialog open={createTransactionDialogOpen} onOpenChange={setCreateTransactionDialogOpen}>
 
             <DialogTrigger asChild disabled={isDisabled} className='w-full'>
-                {/* {
-                    isCollapsed ? <AddTransactionSidebarTrigger /> : (
-                        <Button>
-                            {children ?? (
-                                <span className={className ?? 'flex flex-row items-center'}>
-                                    <PlusIcon /> Add Transaction
-                                    {!isCollapsed && <span className="ml-2">Add Transaction</span>}
-                                </span>
-                            )}
-                        </Button>
-                    )
-                } */}
-                <SidebarMenuButton className="font-bold flex justify-center items-center border-1">
+                <SidebarMenuButton tooltip="Add Transaction" className="font-bold flex justify-center items-center border">
                     <PlusIcon />
                     {!isCollapsed && <span className="ml-2">Add Transaction</span>}
                 </SidebarMenuButton>
