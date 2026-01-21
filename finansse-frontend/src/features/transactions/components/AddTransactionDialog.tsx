@@ -37,6 +37,7 @@ import { useGetCategories } from '@/features/categories/hooks/useGetCategories';
 
 // types imports
 import type { CreateTransactionRequest } from '@/features/transactions/types/transactions.types';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 const createTransactionFormSchema = z.object({
     account_id: z.number(),
@@ -114,7 +115,7 @@ export function AddTransactionDialog() {
 
             <DialogContent>
                 <Form {...createTransactionForm}>
-                    <form onSubmit={createTransactionForm.handleSubmit(onSubmit)}>
+                    <form onSubmit={createTransactionForm.handleSubmit(onSubmit)} className='space-y-4'>
                         <DialogHeader>
                             <DialogTitle>Add Transaction</DialogTitle>
                             <DialogDescription>Testing</DialogDescription>
@@ -136,6 +137,7 @@ export function AddTransactionDialog() {
                                                     <SelectValue placeholder="Choose account" />
                                                 </SelectTrigger>
                                                 <SelectContent>
+
                                                     {accountsIsLoading ? (
                                                         <SelectItem value="" disabled>Loading accounts</SelectItem>
                                                     ) : accountsIsError ? (
@@ -226,7 +228,7 @@ export function AddTransactionDialog() {
                                                                 : "Choose category"
                                                     } />
                                                 </SelectTrigger>
-                                                <SelectContent>
+                                                {/* <SelectContent>
                                                     {accountsIsLoading ? (
                                                         <SelectItem value="" disabled>Loading accounts</SelectItem>
                                                     ) : accountsIsError ? (
@@ -238,6 +240,43 @@ export function AddTransactionDialog() {
                                                             )
                                                         )
                                                     )}
+                                                </SelectContent> */}
+
+                                                <SelectContent side='top'>
+                                                    <Tabs defaultValue='default'>
+                                                        <TabsList>
+                                                            <TabsTrigger value="user">User-made</TabsTrigger>
+                                                            <TabsTrigger value="default">Default</TabsTrigger>
+                                                        </TabsList>
+
+                                                        <TabsContent value="user">
+                                                            {categoriesIsLoading ? (
+                                                                <SelectItem value="" disabled>Loading categories</SelectItem>
+                                                            ) : categoriesIsError ? (
+                                                                <SelectItem value="" disabled>Failed to load categories</SelectItem>
+                                                            ) : (
+                                                                categories?.filter(cat => cat.category_type === watchedTransactionType && cat.category_isDefault === false).map(
+                                                                    (category) => (
+                                                                        <SelectItem key={category.category_id} value={category.category_id.toString()}>{category.category_name}</SelectItem>
+                                                                    )
+                                                                )
+                                                            )}
+                                                        </TabsContent>
+
+                                                        <TabsContent value="default">
+                                                            {categoriesIsLoading ? (
+                                                                <SelectItem value="" disabled>Loading categories</SelectItem>
+                                                            ) : categoriesIsError ? (
+                                                                <SelectItem value="" disabled>Failed to load categories</SelectItem>
+                                                            ) : (
+                                                                categories?.filter(cat => cat.category_type === watchedTransactionType && cat.category_isDefault === true).map(
+                                                                    (category) => (
+                                                                        <SelectItem key={category.category_id} value={category.category_id.toString()}>{category.category_name}</SelectItem>
+                                                                    )
+                                                                )
+                                                            )}
+                                                        </TabsContent>
+                                                    </Tabs>
                                                 </SelectContent>
                                             </Select>
                                         </FormControl>
