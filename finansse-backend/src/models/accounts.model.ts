@@ -1,5 +1,5 @@
 import prisma from "../db";
-import { Prisma } from '../generated/prisma/client';
+import { Prisma, TransactionType } from '../generated/prisma/client';
 import { type CreateAccountRequest } from "../types/accounts.types";
 
 export class AccountsModel {
@@ -141,6 +141,10 @@ export class AccountsModel {
 
     // UPDATE
     static async updateAccountBalanceInTransaction(accountId: number, newBalance: number, tx: Prisma.TransactionClient) {
+        if (newBalance < 0) {
+            throw new Error("Insufficient funds in account");
+        }
+
         return await tx.account.update({
             where: { account_id: accountId },
             data: { account_current_balance: newBalance }
