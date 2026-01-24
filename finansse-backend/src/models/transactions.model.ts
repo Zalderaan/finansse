@@ -37,7 +37,7 @@ export class TransactionsModel {
 
             const created_transaction = await tx.transaction.create({
                 data: {
-                    transaction_name: transactionData.name,
+                    transaction_name: transactionData.name ? transactionData.name : `${transactionData.type} - `,
                     transaction_type: transactionData.type,
                     transaction_amount: transactionData.amount,
                     user_id: userId,
@@ -68,15 +68,28 @@ export class TransactionsModel {
             } else if (transactionData.type === 'INCOME') {
                 sourceNewBalance += transactionData.amount
             } else if (transactionData.type === 'TRANSFER') {
-                
+
                 sourceNewBalance -= transactionData.amount; // Subtract from source
                 let destNewBalance = Number(transfer_account?.account_current_balance);
                 if (isNaN(destNewBalance)) throw new Error('Destination account balance is not a valid number');
                 destNewBalance += transactionData.amount; // Add to destination
-                
+
                 // ensures transfer_account_id always exists
                 if (!transactionData.transfer_account_id) throw new Error('Transfer account ID is required for TRANSFER');
-                
+
+                // Create the reciprocal transaction for the destination account
+                await tx.transaction.create({
+                    data: {
+                        transaction_name: `Transfer from ${account.account_name}`,
+                        transaction_type: 'TRANSFER',
+                        transaction_amount: transactionData.amount,
+                        user_id: userId,
+                        account_id: transactionData.transfer_account_id, // Destination is now the main account
+                        transfer_account_id: transactionData.account_id, // Source becomes the transfer account
+                        category_id: transactionData.category_id
+                    }
+                });
+
                 await AccountsModel.updateAccountBalanceInTransaction(transactionData.transfer_account_id, destNewBalance, tx);
             }
 

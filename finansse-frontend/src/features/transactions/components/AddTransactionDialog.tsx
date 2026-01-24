@@ -24,6 +24,7 @@ import {
     FormControl,
     FormMessage,
     FormField,
+    FormDescription,
 } from '@/components/ui/form';
 import { z } from "zod";
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -41,12 +42,14 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 const createTransactionFormSchema = z.object({
     account_id: z.number(),
-    transfer_account_id: z.number(),
+    transfer_account_id: z.number().optional(),
     amount: z
         .number({ invalid_type_error: "Amount is required" })
         .positive({ message: "Amount must be greater than 0" }),
     type: z.enum(['INCOME', 'EXPENSE', 'TRANSFER']),
     category_id: z.number(),
+}).superRefine((data, ctx) => {
+
 })
 
 export function AddTransactionDialog() {
@@ -58,6 +61,7 @@ export function AddTransactionDialog() {
         defaultValues: {
             account_id: undefined,
             amount: undefined,
+            transfer_account_id: undefined,
             type: undefined,
             category_id: undefined
         },
@@ -104,6 +108,15 @@ export function AddTransactionDialog() {
 
     const watchedAccountId = createTransactionForm.watch("account_id");
     const watchedTransactionType = createTransactionForm.watch("type");
+    const watchedAmount = createTransactionForm.watch("amount");
+
+
+    const selectedAccount = accounts?.find(acc => acc.account_id === watchedAccountId);
+    const accountBalance = selectedAccount?.account_current_balance ?? 0;
+
+    const wouldExceedBalance = watchedTransactionType === 'EXPENSE' || watchedTransactionType === 'TRANSFER'
+        ? watchedAmount > accountBalance
+        : false;
 
     return (
         <Dialog open={createTransactionDialogOpen} onOpenChange={setCreateTransactionDialogOpen}>
@@ -234,6 +247,15 @@ export function AddTransactionDialog() {
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Amount</FormLabel>
+                                        <FormDescription className='text-xs'>
+                                            Available balance: ₱{accountBalance.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                        </FormDescription>
+
+                                        {selectedAccount && (watchedTransactionType === 'EXPENSE' || watchedTransactionType === 'TRANSFER') && (
+                                            <FormDescription className='text-xs'>
+                                                Available balance: ₱{accountBalance.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                            </FormDescription>
+                                        )}
                                         <FormControl>
                                             <Input
                                                 {...field}
