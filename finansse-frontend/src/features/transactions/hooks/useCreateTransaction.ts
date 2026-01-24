@@ -3,6 +3,7 @@ import { transactionApiService } from "@/features/transactions/api/transactionAp
 import { useAuthStore } from "@/features/auth/stores/auth.store";
 import { toast } from 'sonner';
 import type { GetTransactionByAccResponse } from "../types/transactions.types";
+import type { AxiosError } from "axios";
 
 export function useCreateTransaction() {
     const queryClient = useQueryClient();
@@ -39,7 +40,7 @@ export function useCreateTransaction() {
                 // Calculate new balance based on transaction type
                 const transactionAmount = transaction_amount;
                 const transactionType = transaction_type; // e.g., 'income' or 'expense'
-                const newBalance = transactionType === 'income'
+                const newBalance = transactionType === 'INCOME'
                     ? latestBalance + transactionAmount
                     : latestBalance - transactionAmount;
 
@@ -68,8 +69,17 @@ export function useCreateTransaction() {
             });
         },
 
-        // onError: (data) => {
-        // }
+        onError: (transactionErrorData: AxiosError<{ message: string }>) => {
+            toast.error("Error creating transaction", {
+                description: `${transactionErrorData.response?.data.message ?? 'An error occurred'}`,
+                duration: 3000,
+                classNames: {
+                    title: "!text-red-900",
+                    description: "!text-xs !text-red-700",
+                    toast: "!bg-red-200 !border-red-300",
+                }
+            })
+        }
     });
 
     return {

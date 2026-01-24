@@ -186,6 +186,10 @@ export function AddTransactionDialog() {
                                                 onValueChange={(val) => {
                                                     field.onChange(val);
                                                     createTransactionForm.setValue("category_id", undefined as unknown as number);
+                                                    // reset transfer_account_id when transfer type changes
+                                                    if (val !== "TRANSFER") {
+                                                        createTransactionForm.setValue("transfer_account_id", undefined);
+                                                    }
                                                 }}
                                                 disabled={!watchedAccountId}
                                             >
@@ -240,17 +244,12 @@ export function AddTransactionDialog() {
                                 />
                             )}
 
-
                             <FormField
                                 control={createTransactionForm.control}
                                 name="amount"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Amount</FormLabel>
-                                        <FormDescription className='text-xs'>
-                                            Available balance: ₱{accountBalance.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                                        </FormDescription>
-
                                         {selectedAccount && (watchedTransactionType === 'EXPENSE' || watchedTransactionType === 'TRANSFER') && (
                                             <FormDescription className='text-xs'>
                                                 Available balance: ₱{accountBalance.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
