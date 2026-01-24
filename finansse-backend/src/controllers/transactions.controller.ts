@@ -19,11 +19,29 @@ export class TransactionsController {
         } catch (error: unknown) {
             console.error('Error creating transaction in controller: ', error);
 
-            if (error instanceof Error && error.message === 'Account does not belong to user or does not exist') {
-                return res.status(404).json({
-                    success: false,
-                    message: error.message
-                })
+            if (error instanceof Error) {
+                // Handle specific business logic errors
+                if (error.message.includes('does not belong to user or does not exist')) {
+                    return res.status(404).json({
+                        success: false,
+                        message: error.message
+                    });
+                }
+
+                if (error.message === 'Insufficient funds in account') {
+                    return res.status(400).json({
+                        success: false,
+                        message: error.message
+                    });
+                }
+
+                if (error.message.includes('Transfer account ID is required') ||
+                    error.message.includes('balance is not a valid number')) {
+                    return res.status(400).json({
+                        success: false,
+                        message: error.message
+                    });
+                }
             }
 
             res.status(500).json({

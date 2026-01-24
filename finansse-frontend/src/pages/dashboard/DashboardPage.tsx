@@ -15,7 +15,7 @@ export function DashboardPage() {
         <div className="grid grid-cols-1 gap-8">
             <header className="grid grid-cols-1 gap-2">
                 <h1 className="font-normal text-2xl">Hello, {user?.username}!</h1>
-                <p>Continue managing your finances today</p>
+                <p>Keep tracking your finances today</p>
             </header>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <DashboardCard color="green" title="Total Income" value={totalIncome!} isLoading={isLoading} />
@@ -28,7 +28,7 @@ export function DashboardPage() {
                 <span className="font-normal text-2xl">Graphs</span>
                 <BalanceChart />
 
-                <div className="flex flex-row items-center justify-between space-x-3">
+                <div className="flex flex-col sm:flex-row items-center justify-between space-x-3">
                     <SpendingByCategory />
                     <IncomeByCategory />
                 </div>

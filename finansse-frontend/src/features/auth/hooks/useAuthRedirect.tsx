@@ -14,5 +14,6 @@ import { Navigate } from 'react-router-dom';
  */
 export function useAuthRedirect(redirectTo: string = "/") {
     const { isAuthenticated } = useIsAuthenticated();
+    console.log("isAuthenticated in useAuthRedirect: ", isAuthenticated);
     return isAuthenticated ? <Navigate to={redirectTo} replace /> : null;
 }

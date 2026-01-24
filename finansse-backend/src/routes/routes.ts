@@ -10,6 +10,12 @@ import { ReportsController } from "../controllers/reports.controller";
 
 const router = express.Router();
 
+// TEST
+// Simple test route
+router.get('/ping', (req, res) => {
+    res.send('Pong! Router is working.');
+});
+
 // AUTH ROUTES
 router.post('/auth/register', AuthController.register);
 router.post('/auth/login', AuthController.login);
@@ -32,10 +38,10 @@ router.post('/transactions/create', authenticateToken, TransactionsController.po
 router.get(`/transactions/account/:accountId`, authenticateToken, TransactionsController.getTransactionsByAcc);
 
 // CATEGORIES
-// router.post('/categories/create', authenticateToken, CategoriesController.postCategory);
-// router.get('/categories/user', authenticateToken, CategoriesController.getUserCategories)
-// router.get('/categories/default', authenticateToken, CategoriesController.getDefaultCategories)
+router.post('/categories/create', authenticateToken, CategoriesController.postCategory);
 router.get('/categories', authenticateToken, CategoriesController.getCategories);
+router.get('/categories/user', authenticateToken, CategoriesController.getUserCategories)
+// router.get('/categories/default', authenticateToken, CategoriesController.getDefaultCategories)
 
 
 // RUNNING BALANCE

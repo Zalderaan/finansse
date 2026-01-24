@@ -28,8 +28,14 @@ export function useLogin() {
                     toast: "!bg-green-200 !border-green-300",
                 }
             });
-            navigate('/dashboard');
+            console.log('🚀 About to navigate to /dashboard');
+            // Delay navigation to allow toast to render
+            setTimeout(() => {
+                console.log('🚀 About to navigate to /dashboard');
+                navigate('/dashboard');
+            }, 100);
         },
+        
         onError: (error: any) => {
             toast.error("Error logging in", {
                 description: `${error.response.data.message}`,

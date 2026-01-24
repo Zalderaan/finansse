@@ -1,6 +1,6 @@
 // UI imports
 import {
-    Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter,
+    Dialog, DialogContent, DialogDescription, DialogFooter,
     DialogHeader, DialogTitle, DialogTrigger,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -14,7 +14,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
-
+import { SidebarMenuButton, useSidebar } from '@/components/ui/sidebar';
 
 // forms imports
 import {
@@ -24,6 +24,7 @@ import {
     FormControl,
     FormMessage,
     FormField,
+    FormDescription,
 } from '@/components/ui/form';
 import { z } from "zod";
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -37,28 +38,30 @@ import { useGetCategories } from '@/features/categories/hooks/useGetCategories';
 
 // types imports
 import type { CreateTransactionRequest } from '@/features/transactions/types/transactions.types';
-import { Link } from 'react-router-dom';
-import type { ReactNode } from 'react';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 const createTransactionFormSchema = z.object({
     account_id: z.number(),
+    transfer_account_id: z.number().optional(),
     amount: z
         .number({ invalid_type_error: "Amount is required" })
         .positive({ message: "Amount must be greater than 0" }),
     type: z.enum(['INCOME', 'EXPENSE', 'TRANSFER']),
     category_id: z.number(),
+}).superRefine((data, ctx) => {
+
 })
 
-export function AddTransactionDialog({ children, className, width }: {
-    children?: ReactNode,
-    className?: string,
-    width: "full" | "fit"
-}) {
+export function AddTransactionDialog() {
+    const { state } = useSidebar();
+    const isCollapsed = state === "collapsed";
+
     const createTransactionForm = useForm<z.infer<typeof createTransactionFormSchema>>({
         resolver: zodResolver(createTransactionFormSchema),
         defaultValues: {
             account_id: undefined,
             amount: undefined,
+            transfer_account_id: undefined,
             type: undefined,
             category_id: undefined
         },
@@ -74,6 +77,7 @@ export function AddTransactionDialog({ children, className, width }: {
         const finalTransactionValues: CreateTransactionRequest = {
             name: name,
             account_id: values.account_id,
+            transfer_account_id: values.transfer_account_id,
             amount: values.amount,
             type: values.type,
             category_id: values.category_id,
@@ -98,46 +102,35 @@ export function AddTransactionDialog({ children, className, width }: {
     const { createTransactionAsync, isCreating: isCreatingTransaction, isError: isErrorTransaction, error } = useCreateTransaction();
     const { categories, isLoading: categoriesIsLoading, isError: categoriesIsError } = useGetCategories();
 
+
     const isDisabled = !accounts || accounts.length === 0;
-    console.log('This is accounts: ', accounts);
+    // console.log('This is accounts: ', accounts);
 
     const watchedAccountId = createTransactionForm.watch("account_id");
     const watchedTransactionType = createTransactionForm.watch("type");
+    const watchedAmount = createTransactionForm.watch("amount");
+
+
+    const selectedAccount = accounts?.find(acc => acc.account_id === watchedAccountId);
+    const accountBalance = selectedAccount?.account_current_balance ?? 0;
+
+    const wouldExceedBalance = watchedTransactionType === 'EXPENSE' || watchedTransactionType === 'TRANSFER'
+        ? watchedAmount > accountBalance
+        : false;
 
     return (
         <Dialog open={createTransactionDialogOpen} onOpenChange={setCreateTransactionDialogOpen}>
-            <Tooltip>
-                <TooltipTrigger asChild>
-                    <span className={width === "full" ? "w-full" : "w-fit"}>
-                        <DialogTrigger asChild disabled={isDisabled} className='w-full'>
-                            <Button>
-                                {children ?? (
-                                    <span className={className ?? 'flex flex-row items-center'}>
-                                        <PlusIcon /> Add Transaction
-                                    </span>
-                                )}
-                            </Button>
-                        </DialogTrigger>
-                    </span>
-                </TooltipTrigger>
-                {isDisabled && (
-                    <TooltipContent side='bottom' align="center" className="ml-4">
-                        <div className="flex items-center gap-2">
-                            <PlusIcon className="h-4 w-4" />
-                            <span>No accounts found. Add one to get started:</span>
-                            <Link
-                                to="/dashboard/accounts"
-                                className="text-blue-500 underline hover:text-blue-700"
-                            >
-                                Go to Accounts
-                            </Link>
-                        </div>
-                    </TooltipContent>
-                )}
-            </Tooltip>
+
+            <DialogTrigger asChild disabled={isDisabled} className='w-full'>
+                <SidebarMenuButton tooltip="Add Transaction" className="font-bold flex justify-center items-center border">
+                    <PlusIcon />
+                    {!isCollapsed && <span className="ml-2">Add Transaction</span>}
+                </SidebarMenuButton>
+            </DialogTrigger>
+
             <DialogContent>
                 <Form {...createTransactionForm}>
-                    <form onSubmit={createTransactionForm.handleSubmit(onSubmit)}>
+                    <form onSubmit={createTransactionForm.handleSubmit(onSubmit)} className='space-y-4'>
                         <DialogHeader>
                             <DialogTitle>Add Transaction</DialogTitle>
                             <DialogDescription>Testing</DialogDescription>
@@ -159,6 +152,7 @@ export function AddTransactionDialog({ children, className, width }: {
                                                     <SelectValue placeholder="Choose account" />
                                                 </SelectTrigger>
                                                 <SelectContent>
+
                                                     {accountsIsLoading ? (
                                                         <SelectItem value="" disabled>Loading accounts</SelectItem>
                                                     ) : accountsIsError ? (
@@ -192,6 +186,10 @@ export function AddTransactionDialog({ children, className, width }: {
                                                 onValueChange={(val) => {
                                                     field.onChange(val);
                                                     createTransactionForm.setValue("category_id", undefined as unknown as number);
+                                                    // reset transfer_account_id when transfer type changes
+                                                    if (val !== "TRANSFER") {
+                                                        createTransactionForm.setValue("transfer_account_id", undefined);
+                                                    }
                                                 }}
                                                 disabled={!watchedAccountId}
                                             >
@@ -209,12 +207,54 @@ export function AddTransactionDialog({ children, className, width }: {
                                 )}
                             />
 
+                            {watchedTransactionType === "TRANSFER" && (
+                                <FormField
+                                    control={createTransactionForm.control}
+                                    name="transfer_account_id"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Transfer To</FormLabel>
+                                            <FormControl>
+                                                <Select
+                                                    value={field.value ? field.value.toString() : ""}
+                                                    onValueChange={val => field.onChange(Number(val))}
+                                                >
+                                                    <SelectTrigger className='w-full'>
+                                                        <SelectValue placeholder="Choose account to transfer to" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+
+                                                        {accountsIsLoading ? (
+                                                            <SelectItem value="" disabled>Loading accounts</SelectItem>
+                                                        ) : accountsIsError ? (
+                                                            <SelectItem value="" disabled>Failed to load accounts</SelectItem>
+                                                        ) : (
+                                                            accounts?.map(
+                                                                (acc) => (
+                                                                    <SelectItem key={acc.account_id} value={acc.account_id.toString()}>{acc.account_name}</SelectItem>
+                                                                )
+                                                            )
+                                                        )}
+                                                    </SelectContent>
+                                                </Select>
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            )}
+
                             <FormField
                                 control={createTransactionForm.control}
                                 name="amount"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Amount</FormLabel>
+                                        {selectedAccount && (watchedTransactionType === 'EXPENSE' || watchedTransactionType === 'TRANSFER') && (
+                                            <FormDescription className='text-xs'>
+                                                Available balance: ₱{accountBalance.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                            </FormDescription>
+                                        )}
                                         <FormControl>
                                             <Input
                                                 {...field}
@@ -249,7 +289,7 @@ export function AddTransactionDialog({ children, className, width }: {
                                                                 : "Choose category"
                                                     } />
                                                 </SelectTrigger>
-                                                <SelectContent>
+                                                {/* <SelectContent>
                                                     {accountsIsLoading ? (
                                                         <SelectItem value="" disabled>Loading accounts</SelectItem>
                                                     ) : accountsIsError ? (
@@ -261,6 +301,43 @@ export function AddTransactionDialog({ children, className, width }: {
                                                             )
                                                         )
                                                     )}
+                                                </SelectContent> */}
+
+                                                <SelectContent side='top'>
+                                                    <Tabs defaultValue='default'>
+                                                        <TabsList>
+                                                            <TabsTrigger value="user">User-made</TabsTrigger>
+                                                            <TabsTrigger value="default">Default</TabsTrigger>
+                                                        </TabsList>
+
+                                                        <TabsContent value="user">
+                                                            {categoriesIsLoading ? (
+                                                                <SelectItem value="" disabled>Loading categories</SelectItem>
+                                                            ) : categoriesIsError ? (
+                                                                <SelectItem value="" disabled>Failed to load categories</SelectItem>
+                                                            ) : (
+                                                                categories?.filter(cat => cat.category_type === watchedTransactionType && cat.category_isDefault === false).map(
+                                                                    (category) => (
+                                                                        <SelectItem key={category.category_id} value={category.category_id.toString()}>{category.category_name}</SelectItem>
+                                                                    )
+                                                                )
+                                                            )}
+                                                        </TabsContent>
+
+                                                        <TabsContent value="default">
+                                                            {categoriesIsLoading ? (
+                                                                <SelectItem value="" disabled>Loading categories</SelectItem>
+                                                            ) : categoriesIsError ? (
+                                                                <SelectItem value="" disabled>Failed to load categories</SelectItem>
+                                                            ) : (
+                                                                categories?.filter(cat => cat.category_type === watchedTransactionType && cat.category_isDefault === true).map(
+                                                                    (category) => (
+                                                                        <SelectItem key={category.category_id} value={category.category_id.toString()}>{category.category_name}</SelectItem>
+                                                                    )
+                                                                )
+                                                            )}
+                                                        </TabsContent>
+                                                    </Tabs>
                                                 </SelectContent>
                                             </Select>
                                         </FormControl>
@@ -286,4 +363,13 @@ export function AddTransactionDialog({ children, className, width }: {
             </DialogContent>
         </Dialog>
     );
+}
+
+export function AddTransactionSidebarTrigger() {
+    return (
+        <SidebarMenuButton className='bg-black text-white'>
+            <PlusIcon />
+            Add Transaction
+        </SidebarMenuButton>
+    )
 }

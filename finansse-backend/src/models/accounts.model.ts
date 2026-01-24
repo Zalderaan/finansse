@@ -1,7 +1,6 @@
 import prisma from "../db";
-import { Prisma, PrismaClient } from '@prisma/client';
+import { Prisma, TransactionType } from '../generated/prisma/client';
 import { type CreateAccountRequest } from "../types/accounts.types";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 export class AccountsModel {
     // CREATE
@@ -28,7 +27,7 @@ export class AccountsModel {
             });
             return created_account;
         } catch (error) {
-            if (error instanceof PrismaClientKnownRequestError) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
                 // if (error.code === 'P2002') {
                 //     throw new Error('Account name must be unique for this user.');
                 // }
@@ -43,8 +42,10 @@ export class AccountsModel {
                 }
                 // Handle other codes as needed, e.g., P2000 for value too long
             }
+
+            // re-throw unknown
             console.error('Error creating account in model:', error);
-            throw new Error('Failed to create account. Please try again.');
+            throw error;
         }
     }
 
@@ -140,6 +141,10 @@ export class AccountsModel {
 
     // UPDATE
     static async updateAccountBalanceInTransaction(accountId: number, newBalance: number, tx: Prisma.TransactionClient) {
+        if (newBalance < 0) {
+            throw new Error("Insufficient funds in account");
+        }
+
         return await tx.account.update({
             where: { account_id: accountId },
             data: { account_current_balance: newBalance }
