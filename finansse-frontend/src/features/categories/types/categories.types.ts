@@ -7,6 +7,22 @@ export interface Category {
     user_id: number;
 }
 
+export interface CreateCategoryRequest {
+    category_name: string,
+    category_type: string,
+    category_icon?: string | null,
+}
+
+export interface CreateCategoryResponse {
+    success: string,
+    message: string,
+    data: {
+        category_id: number,
+        category_name: string,
+        category_type: string
+    }
+}
+
 export interface CategoriesResponse {
     success: string;
     message: string;
@@ -14,3 +30,6 @@ export interface CategoriesResponse {
     count: number;
 }
 
+export type CategoryType = 'EXPENSE' | 'INCOME' | 'TRANSFER';
+export type CategoryTypeFilter = 'ALL' | CategoryType;
+export type CategoryTab = 'default' | 'user';
