@@ -12,7 +12,7 @@ import {
     SidebarMenuItem,
     SidebarSeparator,
 } from "@/components/ui/sidebar"
-import { Link } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 import { NavUser } from "@/components/nav-user"
 import { useAuthStore } from "@/features/auth/stores/auth.store"
 import { AddTransactionDialog } from '@/features/transactions/components/AddTransactionDialog';
@@ -44,6 +44,7 @@ const items = [
 
 export function AppSidebar() {
     const { user } = useAuthStore();
+    const location = useLocation();
 
     return (
         <Sidebar collapsible="icon">
@@ -75,13 +76,15 @@ export function AppSidebar() {
                             </SidebarMenuItem>
                         </SidebarMenu>
                     </SidebarGroupContent>
+                </SidebarGroup>
 
+                <SidebarGroup>
                     <SidebarGroupLabel>Application</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
                             {items.map((item) => (
                                 <SidebarMenuItem key={item.title}>
-                                    <SidebarMenuButton asChild tooltip={item.title}>
+                                    <SidebarMenuButton asChild isActive={location.pathname === `/${item.url}`} tooltip={item.title}>
                                         <Link to={item.url}>
                                             <item.icon />
                                             <span>{item.title}</span>

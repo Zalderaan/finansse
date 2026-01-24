@@ -23,6 +23,12 @@ app.use(express.json());
 app.use('/finansse-backend', routes)
 
 // server
-app.listen(port, () => {
+const server = app.listen(port, () => {
     console.log(`Server running from http://localhost:${port}`);
 })
+
+process.on('SIGINT', () => {
+    console.log('\nShutting down server...');
+    server.close();
+    process.exit(0);
+});

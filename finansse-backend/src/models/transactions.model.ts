@@ -20,6 +20,21 @@ export class TransactionsModel {
                 throw new Error('Account does not belong to user or does not exist');
             }
 
+            // check for transfer account (ONLY if TransactionType is transfer)
+            let transfer_account = null;
+            if (transactionData.type === 'TRANSFER') {
+                transfer_account = await tx.account.findFirst({
+                    where: {
+                        account_id: transactionData.transfer_account_id,  // Assuming schema updated to transfer_to_account_id
+                        user_id: userId
+                    }
+                });
+
+                if (!transfer_account) {
+                    throw new Error('Transfer account does not belong to user or does not exist');
+                }
+            }
+
             const created_transaction = await tx.transaction.create({
                 data: {
                     transaction_name: transactionData.name,
@@ -27,6 +42,7 @@ export class TransactionsModel {
                     transaction_amount: transactionData.amount,
                     user_id: userId,
                     account_id: transactionData.account_id,
+                    transfer_account_id: transactionData.transfer_account_id || null,
                     category_id: transactionData.category_id
                 },
 
@@ -38,22 +54,34 @@ export class TransactionsModel {
                     transaction_type: true,
                     created_at: true,
                     category_id: true,
+                    transfer_account_id: true,  // Include in select
                 }
             });
 
             // calculate new balance
-            let newBalance = Number(account.account_current_balance);
-            if (isNaN(newBalance)) throw new Error('Account balance is not a valid number');
+            let sourceNewBalance = Number(account.account_current_balance);
+            if (isNaN(sourceNewBalance)) throw new Error('Account balance is not a valid number');
 
 
             if (transactionData.type === 'EXPENSE') {
-                newBalance = newBalance - transactionData.amount
+                sourceNewBalance -= transactionData.amount
             } else if (transactionData.type === 'INCOME') {
-                newBalance = newBalance + transactionData.amount
+                sourceNewBalance += transactionData.amount
+            } else if (transactionData.type === 'TRANSFER') {
+                
+                sourceNewBalance -= transactionData.amount; // Subtract from source
+                let destNewBalance = Number(transfer_account?.account_current_balance);
+                if (isNaN(destNewBalance)) throw new Error('Destination account balance is not a valid number');
+                destNewBalance += transactionData.amount; // Add to destination
+                
+                // ensures transfer_account_id always exists
+                if (!transactionData.transfer_account_id) throw new Error('Transfer account ID is required for TRANSFER');
+                
+                await AccountsModel.updateAccountBalanceInTransaction(transactionData.transfer_account_id, destNewBalance, tx);
             }
 
             // update account balance using tx client
-            await AccountsModel.updateAccountBalanceInTransaction(transactionData.account_id, newBalance, tx);
+            await AccountsModel.updateAccountBalanceInTransaction(transactionData.account_id, sourceNewBalance, tx);
 
             return created_transaction;
         });

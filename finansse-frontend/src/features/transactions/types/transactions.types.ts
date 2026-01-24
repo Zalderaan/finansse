@@ -8,15 +8,17 @@ export interface Transaction {
     category_id?: number,
     category?: {
         category_name: string
-    }
+    },
+    transfer_account_id?: number
 }
 
 export interface CreateTransactionRequest {
     name: string,
     amount: number,
     type: string,
-    account_id: number
-    category_id: number,
+    account_id: number,
+    transfer_account_id?: number,
+    category_id?: number,
 }
 
 export interface createTransactionResponse {

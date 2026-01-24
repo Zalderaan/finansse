@@ -35,6 +35,7 @@ enum AccountType {
 enum CategoryType {
   EXPENSE
   INCOME
+  TRANSFER
 }
 
 enum BudgetPeriodType {
@@ -53,7 +54,6 @@ model User {
   Transactions       Transaction[]
   Accounts           Account[]
   Budget             Budget[]
-  Transfer           Transfer[]
   Category           Category[]
 }
 
@@ -69,23 +69,24 @@ model Account {
   user_id                 Int
   user                    User          @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
   Transaction             Transaction[]
-  outgoing_transfers      Transfer[]    @relation("OutgoingTransfers")
-  incoming_transfers      Transfer[]    @relation("IncomingTransfers")
+  transfers               Transaction[] @relation("TransferAccount")
 }
 
 model Transaction {
-  transaction_id     Int             @id @default(autoincrement())
-  transaction_name   String
-  transaction_type   TransactionType
-  transaction_amount Decimal
-  created_at         DateTime        @default(now())
-  updated_at         DateTime        @updatedAt
-  account_id         Int
-  account            Account         @relation(fields: [account_id], references: [account_id], onDelete: Cascade)
-  user_id            Int
-  user               User            @relation(fields: [user_id], references: [user_id])
-  category_id        Int?
-  category           Category?       @relation(fields: [category_id], references: [category_id])
+  transaction_id      Int             @id @default(autoincrement())
+  transaction_name    String
+  transaction_type    TransactionType
+  transaction_amount  Decimal
+  created_at          DateTime        @default(now())
+  updated_at          DateTime        @updatedAt
+  transfer_account_id Int?
+  transfer_account    Account?        @relation("TransferAccount", fields: [transfer_account_id], references: [account_id])
+  account_id          Int
+  account             Account         @relation(fields: [account_id], references: [account_id], onDelete: Cascade)
+  user_id             Int
+  user                User            @relation(fields: [user_id], references: [user_id])
+  category_id         Int?
+  category            Category?       @relation(fields: [category_id], references: [category_id])
 }
 
 model Category {
@@ -112,16 +113,4 @@ model Budget {
   updated_at         DateTime         @updatedAt
   user_id            Int
   user               User             @relation(fields: [user_id], references: [user_id])
-}
-
-model Transfer {
-  transfer_id           Int      @id @default(autoincrement())
-  user_id               Int
-  user                  User     @relation(fields: [user_id], references: [user_id])
-  from_account_id       Int
-  transfer_from_account Account  @relation("OutgoingTransfers", fields: [from_account_id], references: [account_id])
-  to_account_id         Int
-  transfer_to_account   Account  @relation("IncomingTransfers", fields: [to_account_id], references: [account_id])
-  transfer_amount       Decimal
-  transfer_date         DateTime @default(now())
 }

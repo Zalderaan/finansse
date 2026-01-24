@@ -41,6 +41,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 const createTransactionFormSchema = z.object({
     account_id: z.number(),
+    transfer_account_id: z.number(),
     amount: z
         .number({ invalid_type_error: "Amount is required" })
         .positive({ message: "Amount must be greater than 0" }),
@@ -72,6 +73,7 @@ export function AddTransactionDialog() {
         const finalTransactionValues: CreateTransactionRequest = {
             name: name,
             account_id: values.account_id,
+            transfer_account_id: values.transfer_account_id,
             amount: values.amount,
             type: values.type,
             category_id: values.category_id,
@@ -187,6 +189,44 @@ export function AddTransactionDialog() {
                                     </FormItem>
                                 )}
                             />
+
+                            {watchedTransactionType === "TRANSFER" && (
+                                <FormField
+                                    control={createTransactionForm.control}
+                                    name="transfer_account_id"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Transfer To</FormLabel>
+                                            <FormControl>
+                                                <Select
+                                                    value={field.value ? field.value.toString() : ""}
+                                                    onValueChange={val => field.onChange(Number(val))}
+                                                >
+                                                    <SelectTrigger className='w-full'>
+                                                        <SelectValue placeholder="Choose account to transfer to" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+
+                                                        {accountsIsLoading ? (
+                                                            <SelectItem value="" disabled>Loading accounts</SelectItem>
+                                                        ) : accountsIsError ? (
+                                                            <SelectItem value="" disabled>Failed to load accounts</SelectItem>
+                                                        ) : (
+                                                            accounts?.map(
+                                                                (acc) => (
+                                                                    <SelectItem key={acc.account_id} value={acc.account_id.toString()}>{acc.account_name}</SelectItem>
+                                                                )
+                                                            )
+                                                        )}
+                                                    </SelectContent>
+                                                </Select>
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            )}
+
 
                             <FormField
                                 control={createTransactionForm.control}
