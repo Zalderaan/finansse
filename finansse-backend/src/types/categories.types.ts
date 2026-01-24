@@ -1,5 +1,5 @@
-import { CategoryType } from "../generated/prisma";
-
+// import { CategoryType } from "../generated/prisma";
+import { CategoryType } from "../generated/prisma/enums"
 
 
 export interface CreateCategoryRequest {

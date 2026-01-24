@@ -15,7 +15,14 @@ export const columns: ColumnDef<Category>[] = [
         header: "Type",
         cell: ({ getValue }) => {
             const value = getValue() as string;
-            return <Badge variant={"outline"} className={value === 'EXPENSE' ? 'bg-red-200 border-red-500 text-red-950' : 'bg-green-200 border-green-500 text-green-950'}>{value}</Badge>
+            return <Badge variant={"outline"} className={
+                value === 'EXPENSE' ? 'bg-red-200 border-red-500 text-red-950' 
+                : value === 'TRANSFER' ? 'bg-yellow-200 border-yellow-500 text-yellow-950'
+                : value === 'INCOME' ? 'bg-green-200 border-green-500 text-green-950'
+                : 'bg-muted border-gray-500 text-black'
+            }>
+                {value}
+            </Badge>
         }
     }
 ]

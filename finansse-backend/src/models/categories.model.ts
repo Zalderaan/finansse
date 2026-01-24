@@ -1,5 +1,6 @@
 // import { PrismaClientKnownRequestError, PrismaClientValidationError } from "@prisma/client/runtime/library";
 
+// import { Prisma } from '../generated/prisma/client'
 import { Prisma } from '../generated/prisma/client'
 import prisma from "../db";
 import { CreateCategoryRequest } from "../types/categories.types";
@@ -7,6 +8,7 @@ import { CreateCategoryRequest } from "../types/categories.types";
 
 export class CategoryModel {
     static async addCategory(categoryData: CreateCategoryRequest, userId: number) {
+        console.log('categoryData received:', categoryData);  // Debug log
         try {
             const new_category = await prisma.category.create({
                 data: {
@@ -25,16 +27,22 @@ export class CategoryModel {
             return new_category;
 
         } catch (error) {
+            // Add this detailed logging
+            console.error("Full error object:", error);
+            // console.error("Error name:", error?.name);
+            // console.error("Error message:", error?.message);
+
             if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                console.error("Prisma error code:", error.code);
                 if (error.code === "P2003") {
                     throw new Error(`Invalid user ID provided`);
                 }
             }
 
             if (error instanceof Prisma.PrismaClientValidationError) {
+                console.error("Validation error details:", error);
                 throw new Error('Invalid category data provided');
             }
-
             // Re-throw unknown errors
             console.error("Error creating category from model:", error);
             throw error;

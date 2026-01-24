@@ -74,15 +74,21 @@ export function CategoriesPage() {
                     >
                         Income
                     </Button>
+                    <Button
+                        variant={selectedType === 'TRANSFER' ? 'default' : 'outline'}
+                        onClick={() => updateType('TRANSFER')}
+                    >
+                        Transfer
+                    </Button>
                 </div>
 
                 <TabsContent value="default" className="flex flex-col h-full space-y-2">
                     {
                         filteredCategories && filteredCategories?.length > 0 ? (
                             // filteredCategories?.map((category) => (<CategoryCard key={category.category_id} category={category} />))
-                            
+
                             // * Categories Table
-                            <DataTable columns={columns} data={filteredCategories} />
+                            <CategoryTable columns={columns} data={filteredCategories} />
                         ) : (
                             <CategoryEmptyState />
                         )
