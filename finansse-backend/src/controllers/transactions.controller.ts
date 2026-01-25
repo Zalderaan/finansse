@@ -1,3 +1,4 @@
+import { AuthModel } from "../models/auth.model";
 import { TransactionsModel } from "../models/transactions.model";
 import { CreateTransactionRequest } from "../types/transactions.types";
 import { AuthRequest } from "../utils/auth.middleware";
@@ -70,6 +71,25 @@ export class TransactionsController {
                 success: false,
                 message: 'Internal server error'
             });
+        }
+    }
+
+    static async getTransactionsByUser(req: AuthRequest, res: Response) {
+        try {
+            const user_id = req.user!.userId;
+            const user_transactions = await TransactionsModel.findTransactionsByUser(user_id);
+
+            res.status(200).json({
+                success: true,
+                message: 'User transactions retrieved!',
+                data: user_transactions
+            })
+        } catch (error) {
+            console.error('Error getting user\'s transactions: ', error);
+            res.status(500).json({
+                success: false,
+                message: 'Internal server error'
+            })
         }
     }
 }

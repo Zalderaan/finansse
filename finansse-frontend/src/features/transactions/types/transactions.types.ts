@@ -40,3 +40,8 @@ export interface GetTransactionByAccResponse {
     data: Transaction[]
 }
 
+export interface GetTransactionByUserResponse {
+    sucess: boolean,
+    message: string,
+    data: Transaction[]
+}

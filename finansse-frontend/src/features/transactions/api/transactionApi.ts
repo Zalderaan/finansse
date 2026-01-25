@@ -1,5 +1,5 @@
 import { axiosInstance } from "@/lib/axios";
-import type { CreateTransactionRequest, createTransactionResponse, GetTransactionByAccResponse } from "../types/transactions.types";
+import type { CreateTransactionRequest, createTransactionResponse, GetTransactionByAccResponse, GetTransactionByUserResponse } from "../types/transactions.types";
 
 const prefix = 'transactions'
 export const transactionApiService = {
@@ -10,6 +10,11 @@ export const transactionApiService = {
 
     getTransactionByAcc: async (id: string): Promise<GetTransactionByAccResponse> => {
         const response = await axiosInstance.get(`${prefix}/account/${id}`)
+        return response.data;
+    },
+
+    getTransactionByUser: async (): Promise<GetTransactionByUserResponse> => {
+        const response = await axiosInstance.get(`${prefix}`);
         return response.data;
     }
 }
