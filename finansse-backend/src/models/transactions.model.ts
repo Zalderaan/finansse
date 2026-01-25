@@ -133,12 +133,15 @@ export class TransactionsModel {
     static async findTransactionsByUser(userId: number) {
         return await prisma.transaction.findMany({
             where: { user_id: userId },
-            select: {
-                created_at: true,
-                transaction_amount: true,
-                transaction_type: true
+            include: {
+                category: {
+                    select: {
+                        category_name: true,
+                    }
+                }
             },
-            orderBy: { created_at: 'asc' }
+            orderBy: { created_at: 'desc' },
+            take: 10
         })
     }
     // UPDATE
