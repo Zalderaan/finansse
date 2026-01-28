@@ -16,6 +16,9 @@ export interface Transaction {
     category?: {
         category_name: string
     },
+    account?: {
+        account_name: string
+    },
     transfer_account_id?: number
 }
 

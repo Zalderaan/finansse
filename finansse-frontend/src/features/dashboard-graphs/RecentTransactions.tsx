@@ -1,31 +1,11 @@
 import {
     Card,
-    CardAction,
     CardContent,
     CardDescription,
-    CardFooter,
     CardHeader,
     CardTitle
 } from "@/components/ui/card"
-
-import {
-    type ColumnDef,
-    flexRender,
-    getCoreRowModel,
-    useReactTable
-} from "@tanstack/react-table";
-
-import {
-    Table,
-    TableHeader,
-    TableBody,
-    TableFooter,
-    TableHead,
-    TableRow,
-    TableCell,
-    TableCaption,
-} from "@/components/ui/table"
-
+import { type ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/ui/data-table"
 import type { Transaction } from "../transactions/types/transactions.types";
 import { useGetTransactionsByUser } from "../transactions/hooks/useGetTransactionsByUser";
@@ -42,7 +22,11 @@ export function RecentTransactions() {
             header: "Type"
         },
         {
-            accessorKey: "account_id",
+            accessorKey: "category.category_name",
+            header: "Category"
+        },
+        {
+            accessorKey: "account.account_name", // matches the Transaction type of user_transactions
             header: "Account"
         },
         {
@@ -62,7 +46,17 @@ export function RecentTransactions() {
                     style: "currency",
                     currency: "PHP",
                 }).format(amount);
-                return <span className={amount < 0 ? "text-red-500" : "text-green-500"}>{formatted}</span>;
+                return (
+                    <span
+                        className={
+                            row.original.transaction_type === "EXPENSE" ? "text-red-500" :
+                                row.original.transaction_type === "TRANSFER" ? "text-yellow-500"
+                                    : "text-green-600"
+                        }
+                    >
+                        {formatted}
+                    </span>
+                )
             }
         },
     ]

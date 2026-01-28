@@ -1,7 +1,7 @@
 import { Link, useParams } from "react-router-dom"
 import { useGetAccDetails } from "@/features/accounts//hooks/useGetAccDetails";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, PencilLine, Search } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import {
     Card,
     CardHeader,
