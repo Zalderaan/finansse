@@ -14,6 +14,7 @@ import { useDeleteAccount } from "../hooks/useDeleteAccount";
 import { useParams } from "react-router-dom";
 import { useAccountUiStore } from '@/features/accounts/stores/accounts.uiStore';
 import { useNavigate } from "react-router-dom";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 
 export function DeleteAccountDialog() {
@@ -24,7 +25,7 @@ export function DeleteAccountDialog() {
     const handleDelete = async () => {
         try {
             if (accountId) {
-                const deleted = await deleteAccAsync(accountId);
+                await deleteAccAsync(accountId);
                 setDeleteAccountDialogOpen(false); // close dialog
                 navigate("/dashboard/accounts"); // navigate after deletion
             } else {
@@ -47,6 +48,14 @@ export function DeleteAccountDialog() {
                         <DialogTitle>Are you sure?</DialogTitle>
                         <DialogDescription>This action will remove this account from your user.</DialogDescription>
                     </DialogHeader>
+
+                    {isError && (
+                        <Alert variant="destructive">
+                            <AlertDescription>
+                                Failed to delete account: {error?.message || "Please try again."}
+                            </AlertDescription>
+                        </Alert>
+                    )}
                     <DialogFooter className="flex flex-row items-center justify-end space-x-1">
                         <DialogClose asChild>
                             <Button variant={'outline'}>Go back</Button>

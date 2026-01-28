@@ -12,7 +12,7 @@ export function useAddCategory() {
             queryClient.invalidateQueries({ queryKey: ['categories'] });
 
             toast.success("Account created successfully", {
-                description: `${categoryData.data.category_name} has been created.`,
+                description: `Category ${categoryData.data.category_name} has been created.`,
                 duration: 3000,
                 classNames: {
                     title: "!text-green-900",

@@ -7,7 +7,6 @@ import {
     PaginationNext,
     PaginationEllipsis,
 } from "@/components/ui/pagination";
-import { useState } from "react";
 
 export function CustomPagination() {
     return (

@@ -5,6 +5,7 @@ import { useGetDashboardData } from "@/features/reports/hooks/useGetDashboardDat
 import { SpendingByCategory } from "@/features/reports/components/SpendingByCategory";
 import { IncomeByCategory } from "@/features/reports/components/IncomeByCategory";
 import { RecentTransactions } from "@/features/dashboard-graphs/RecentTransactions";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export function DashboardPage() {
 
@@ -19,6 +20,15 @@ export function DashboardPage() {
                 <h1 className="font-normal text-2xl">Hello, {user?.username}!</h1>
                 <p>Keep tracking your finances today</p>
             </header>
+
+            {isError && (
+                <Alert variant="destructive">
+                    <AlertDescription>
+                        Failed to load dashboard data: {error?.message || "Please try again."}
+                    </AlertDescription>
+                </Alert>
+            )}
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <DashboardCard color="green" title="Your income this month" value={totalIncome!} isLoading={isLoading} />
                 <DashboardCard color="red" title="Your expenses this month" value={totalExpense!} isLoading={isLoading} />

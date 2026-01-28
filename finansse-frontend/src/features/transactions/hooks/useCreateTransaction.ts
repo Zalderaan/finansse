@@ -2,7 +2,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { transactionApiService } from "@/features/transactions/api/transactionApi";
 import { useAuthStore } from "@/features/auth/stores/auth.store";
 import { toast } from 'sonner';
-import type { GetTransactionByAccResponse } from "../types/transactions.types";
 import type { AxiosError } from "axios";
 
 export function useCreateTransaction() {
@@ -22,6 +21,7 @@ export function useCreateTransaction() {
             queryClient.invalidateQueries({ queryKey: ['balance-trend', user?.uid] });
             queryClient.invalidateQueries({ queryKey: ['dashboard-card-data', user?.uid] });
             queryClient.invalidateQueries({ queryKey: ['pie-charts'] });
+            queryClient.invalidateQueries({ queryKey: ['account', 'transactions'], });
             // queryClient.invalidateQueries({ queryKey: ['', user?.uid] });
             // queryClient.invalidateQueries({ queryKey: ['dashboard-card-data', user?.uid] });
 
@@ -56,7 +56,7 @@ export function useCreateTransaction() {
             // 3. Show success message (toast)
             const description = transaction_type === 'TRANSFER' && transfer_account_id
                 ? `Transferred ${transaction_amount} from account ${account_id} to ${transfer_account_id}.`
-                : `Added ${transaction_amount} as ${transaction_type} to account ${account_id}.`;
+                : `Logged ${transaction_amount} as ${transaction_type} to account ${account_id}.`;
 
             toast.success("Transaction added successfully", {
                 description,
