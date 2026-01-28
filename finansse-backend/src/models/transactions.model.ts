@@ -134,6 +134,11 @@ export class TransactionsModel {
         return await prisma.transaction.findMany({
             where: { user_id: userId },
             include: {
+                account: {
+                    select: {
+                        account_name: true,
+                    }
+                },
                 category: {
                     select: {
                         category_name: true,

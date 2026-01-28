@@ -13,7 +13,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { SidebarMenuButton, useSidebar } from '@/components/ui/sidebar';
 
 // forms imports
@@ -40,22 +39,49 @@ import { useGetCategories } from '@/features/categories/hooks/useGetCategories';
 import type { CreateTransactionRequest } from '@/features/transactions/types/transactions.types';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
-const createTransactionFormSchema = z.object({
-    transaction_name: z.string().optional(),
-    account_id: z.number(),
-    transfer_account_id: z.number().optional(),
-    amount: z
-        .number({ invalid_type_error: "Amount is required" })
-        .positive({ message: "Amount must be greater than 0" }),
-    type: z.enum(['INCOME', 'EXPENSE', 'TRANSFER']),
-    category_id: z.number(),
-}).superRefine((data, ctx) => {
+// const createTransactionFormSchema = z.object({
+//     transaction_name: z.string().optional(),
+//     account_id: z.number(),
+//     transfer_account_id: z.number().optional(),
+//     amount: z
+//         .number({ invalid_type_error: "Amount is required" })
+//         .positive({ message: "Amount must be greater than 0" }),
+//     type: z.enum(['INCOME', 'EXPENSE', 'TRANSFER']),
+//     category_id: z.number(),
+// }).superRefine((data, ctx) => {
 
-})
+// })
 
 export function AddTransactionDialog() {
     const { state } = useSidebar();
     const isCollapsed = state === "collapsed";
+
+    const createTransactionFormSchema = z.object({
+        transaction_name: z.string().optional(),
+        account_id: z.number(),
+        transfer_account_id: z.number().optional(),
+        amount: z
+            .number({ invalid_type_error: "Amount is required" })
+            .positive({ message: "Amount must be greater than 0" }),
+        type: z.enum(['INCOME', 'EXPENSE', 'TRANSFER']),
+        category_id: z.number(),
+    }).superRefine((data, ctx) => {
+        // Only check for EXPENSE or TRANSFER
+        if (data.type === 'EXPENSE' || data.type === 'TRANSFER') {
+            // Find the selected account
+            const selectedAccount = accounts?.find(acc => acc.account_id === data.account_id);
+            const accountBalance = selectedAccount?.account_current_balance ?? 0;
+
+            // Check if amount exceeds balance
+            if (data.amount > accountBalance) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: `Amount exceeds available balance of ₱${accountBalance.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+                    path: ['amount'], // Attach error to the 'amount' field
+                });
+            }
+        }
+    });
 
     const createTransactionForm = useForm<z.infer<typeof createTransactionFormSchema>>({
         resolver: zodResolver(createTransactionFormSchema),
@@ -68,7 +94,7 @@ export function AddTransactionDialog() {
             category_id: undefined
         },
         mode: "onChange"
-    })
+    });
 
     async function onSubmit(values: z.infer<typeof createTransactionFormSchema>) {
         console.log('transaction onSubmit() called!');
@@ -77,11 +103,11 @@ export function AddTransactionDialog() {
         // format name
         const formattedAmount = `₱${values.amount.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
         const accountName = selectedAccount?.account_name || `Account ${values.account_id}`;
-        const name = `${values.type} of ${formattedAmount} on ${accountName}`; 
-        
+        const name = `${values.type} of ${formattedAmount} on ${accountName}`;
+
         console.log("Auto name: ", name);
         console.log("Actual name: ", values.transaction_name);
-        
+
         const finalTransactionValues: CreateTransactionRequest = {
             name: values.transaction_name || name,
             account_id: values.account_id,
@@ -289,7 +315,10 @@ export function AddTransactionDialog() {
                                                 {...field}
                                                 placeholder={!watchedAccountId ? "Pick an account first" : "Transaction Amount"}
                                                 type="number"
-                                                {...createTransactionForm.register("amount", { valueAsNumber: true })}
+                                                {...createTransactionForm.register("amount", {
+                                                    valueAsNumber: true,
+                                                    onChange: () => createTransactionForm.trigger()  // Trigger re-validation on amount change
+                                                })}
                                                 value={field.value ?? 0}
                                                 disabled={!watchedAccountId}
                                             />

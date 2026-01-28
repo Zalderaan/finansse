@@ -1,5 +1,3 @@
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogPortal } from "@/components/ui/dialog";
 import { AddCategoryDialog } from "./AddCategoryDialog";
 import { Wallet } from "lucide-react";
 
