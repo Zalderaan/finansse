@@ -1,6 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { authApiService } from '@/features/auth/api/authApi';
-import type { RegisterRequest } from '../auth.types';
 import { toast } from 'sonner';
 
 export function useRegister() {
@@ -12,9 +11,9 @@ export function useRegister() {
         onSuccess: (data) => {
             queryClient.setQueryData(['auth', 'user'], data.user);
 
-            toast.success("Register successful", {
+            toast.success("Registration successful", {
                 // description: `Welcome back, ${data.user_data.username}!`,
-                description: `Welcome to Finansse!`,
+                description: `Welcome to Finansse, ${data.user.username}!`,
                 duration: 3000,
                 classNames: {
                     title: "!text-green-900",

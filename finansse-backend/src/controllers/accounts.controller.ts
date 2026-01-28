@@ -15,7 +15,7 @@ export class AccountsController {
             const newAccount = await AccountsModel.createAccount(accountData, user);
             return res.status(201).json({
                 success: true,
-                message: `Account ${newAccount.account_name} created successfully`,
+                message: `${newAccount.account_type} account \"${newAccount.account_name}\" has been created.`,
                 data: newAccount
             });
         } catch (error: any) {
@@ -153,10 +153,11 @@ export class AccountsController {
 
             return res.status(200).json({
                 success: true,
-                message: `Account ${deleted.account_name} deleted successfully`,
+                message: `${deleted.account_type} account \"${deleted.account_name}\" deleted successfully`,
                 data: {
                     account_id: deleted.account_id,
-                    account_name: deleted.account_name
+                    account_name: deleted.account_name,
+                    account_type: deleted.account_type
                 }
             })
 

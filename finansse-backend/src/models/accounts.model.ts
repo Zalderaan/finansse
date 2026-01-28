@@ -163,6 +163,11 @@ export class AccountsModel {
             if (!account) return null; // return null if account not found / does not belong to the user
             return await prisma.account.delete({
                 where: { account_id: id },
+                select : {
+                    account_id: true,
+                    account_name: true,
+                    account_type: true
+                }
             });
         } catch (error) {
             console.error('Error deleting account in model: ', error);

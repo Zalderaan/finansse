@@ -1,82 +1,31 @@
-import {
-    type ColumnDef,
-    flexRender,
-    getCoreRowModel,
-    useReactTable
-} from "@tanstack/react-table";
+import { DataTable } from "@/components/ui/data-table"; // Assuming this is your shadcn DataTable
+import { Loader2 } from "lucide-react";
 
-import {
-    Table,
-    TableHeader,
-    TableBody,
-    TableFooter,
-    TableHead,
-    TableRow,
-    TableCell,
-    TableCaption,
-} from "@/components/ui/table"
-
-interface CategoryTableProps<TData, TValue> {
-    columns: ColumnDef<TData, TValue>[]
-    data: TData[]
+interface CategoryTableProps {
+    columns: any; // Replace with proper types
+    data: any[];
+    isLoading: boolean;
+    isError: boolean;
+    error: Error | null;
 }
 
-export function CategoryTable<TData, TValue>({ columns, data, }: CategoryTableProps<TData, TValue>) {
-    const category_table = useReactTable({
-        data,
-        columns,
-        getCoreRowModel: getCoreRowModel(),
-    })
+export function CategoryTable({ columns, data, isLoading, isError, error }: CategoryTableProps) {
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center h-32">
+                <Loader2 className="animate-spin" />
+                <span className="ml-2">Loading categories...</span>
+            </div>
+        );
+    }
 
-    return (
-        <div className="overflow-hidden rounded-md border">
-            <Table>
-                <TableHeader>
-                    {
-                        category_table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={headerGroup.id}>
-                                {headerGroup.headers.map((header) => {
-                                    return (
-                                        <TableHead key={header.id}>
-                                            {
-                                                header.isPlaceholder
-                                                    ? null
-                                                    : flexRender(
-                                                        header.column.columnDef.header,
-                                                        header.getContext()
-                                                    )
-                                            }
-                                        </TableHead>
-                                    )
-                                })}
-                            </TableRow>
-                        ))
-                    }
-                </TableHeader>
+    if (isError) {
+        return (
+            <div className="text-center text-red-500">
+                Error loading categories: {error?.message || "Unknown error"}
+            </div>
+        );
+    }
 
-                <TableBody>
-                    {category_table.getRowModel().rows?.length ? (
-                        category_table.getRowModel().rows.map((row) => (
-                            <TableRow
-                                key={row.id}
-                                data-state={row.getIsSelected() && "selected"}
-                            >
-                                {row.getVisibleCells().map((cell) => (
-                                    <TableCell key={cell.id}>
-                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                    </TableCell>
-                                ))}
-                            </TableRow>
-                        ))
-                    ) : (
-                        <TableRow>
-                            <TableCell colSpan={columns.length} className="h-24 text-center">
-                                No results.
-                            </TableCell>
-                        </TableRow>
-                    )}
-                </TableBody>
-            </Table>
-        </div>
-    )
+    return <DataTable columns={columns} data={data} />;
 }

@@ -1,7 +1,6 @@
 import { AccountCard } from "./AccountCard";
 import { useGetAccounts } from "../hooks/useGetAccounts";
 import { Loader } from "@/components/loader";
-import { Button } from "@/components/ui/button";
 import { CreateAccountDialog } from "@/features/accounts/components/CreateAccountDialog";
 import {
     Pagination,
@@ -13,6 +12,7 @@ import {
     PaginationEllipsis,
 } from "@/components/ui/pagination";
 import { Wallet } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export function Accounts() {
     const { accounts, isLoading, isError, error } = useGetAccounts();
@@ -29,7 +29,15 @@ export function Accounts() {
     }
 
     if (isError) {
-        return <div>Error: {error?.message}</div>
+        return (
+            <div className="flex flex-col items-center justify-center h-full w-full">
+                <Alert variant="destructive">
+                    <AlertDescription>
+                        Failed to load accounts: {error?.message || "Please try again."}
+                    </AlertDescription>
+                </Alert>
+            </div>
+        )
     }
 
     if (accounts?.length === 0) {
@@ -44,8 +52,8 @@ export function Accounts() {
                 </div>
                 <CreateAccountDialog>Create an account</CreateAccountDialog>
             </div>
-    )
-}
+        )
+    }
 
 
     return (

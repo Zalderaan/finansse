@@ -1,4 +1,4 @@
-import { WalletCards, Home, HandCoins, Tags, Plus } from "lucide-react"
+import { WalletCards, Home, HandCoins, Tags } from "lucide-react"
 import {
     Sidebar,
     SidebarContent,
@@ -9,8 +9,7 @@ import {
     SidebarHeader,
     SidebarMenu,
     SidebarMenuButton,
-    SidebarMenuItem,
-    SidebarSeparator,
+    SidebarMenuItem
 } from "@/components/ui/sidebar"
 import { Link, useLocation } from "react-router-dom"
 import { NavUser } from "@/components/nav-user"

@@ -41,6 +41,7 @@ import type { CreateTransactionRequest } from '@/features/transactions/types/tra
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 const createTransactionFormSchema = z.object({
+    transaction_name: z.string().optional(),
     account_id: z.number(),
     transfer_account_id: z.number().optional(),
     amount: z
@@ -59,6 +60,7 @@ export function AddTransactionDialog() {
     const createTransactionForm = useForm<z.infer<typeof createTransactionFormSchema>>({
         resolver: zodResolver(createTransactionFormSchema),
         defaultValues: {
+            transaction_name: "",
             account_id: undefined,
             amount: undefined,
             transfer_account_id: undefined,
@@ -73,9 +75,15 @@ export function AddTransactionDialog() {
         console.log('values in createTransaction formSchema: ', values);
 
         // format name
-        const name = `${values.type} - on Account ID: ${values.account_id} - ${values.amount}`
+        const formattedAmount = `₱${values.amount.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        const accountName = selectedAccount?.account_name || `Account ${values.account_id}`;
+        const name = `${values.type} of ${formattedAmount} on ${accountName}`; 
+        
+        console.log("Auto name: ", name);
+        console.log("Actual name: ", values.transaction_name);
+        
         const finalTransactionValues: CreateTransactionRequest = {
-            name: name,
+            name: values.transaction_name || name,
             account_id: values.account_id,
             transfer_account_id: values.transfer_account_id,
             amount: values.amount,
@@ -203,6 +211,27 @@ export function AddTransactionDialog() {
                                                 </SelectContent>
                                             </Select>
                                         </FormControl>
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={createTransactionForm.control}
+                                name="transaction_name"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Transaction Name <span className='text-xs text-gray-600'>(Optional)</span></FormLabel>
+                                        <FormDescription className='text-xs'>
+                                            Leave blank for auto-generated name.
+                                        </FormDescription>
+                                        <FormControl>
+                                            <Input
+                                                {...field}
+                                                placeholder="e.g., Coffee at Starbucks"
+                                                disabled={!watchedAccountId}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
                                     </FormItem>
                                 )}
                             />

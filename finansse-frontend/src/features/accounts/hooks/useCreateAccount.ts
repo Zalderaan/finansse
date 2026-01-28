@@ -13,7 +13,7 @@ export function useCreateAccount() {
             queryClient.invalidateQueries({ queryKey: ['accounts'] })
             // 2. Show success message (toast)
             toast.success("Account created successfully", {
-                description: `, ${accountData.data.account_name}: ${accountData.data.account_type} has been created.`,
+                description: accountData.message,
                 duration: 3000,
                 classNames: {
                     title: "!text-green-900",
@@ -31,8 +31,16 @@ export function useCreateAccount() {
             //     queryFn: () => accountApiService.getAccountById(String(accountData.data.account_id)),
             // });
         },
-        onError: (accountData) => {
-
+        onError: (error) => {
+            toast.error("There was a problem creating an account", {
+                description: error?.message || "Please try again.",
+                duration: 3000,
+                classNames: {
+                    title: "!text-red-900",
+                    description: "!text-xs !text-red-700",
+                    toast: "!bg-red-200 !border-red-300",
+                }
+            })
         }
     });
 
