@@ -65,23 +65,24 @@ export function AddTransactionDialog() {
             .positive({ message: "Amount must be greater than 0" }),
         type: z.enum(['INCOME', 'EXPENSE', 'TRANSFER']),
         category_id: z.number(),
-    }).superRefine((data, ctx) => {
-        // Only check for EXPENSE or TRANSFER
-        if (data.type === 'EXPENSE' || data.type === 'TRANSFER') {
-            // Find the selected account
-            const selectedAccount = accounts?.find(acc => acc.account_id === data.account_id);
-            const accountBalance = selectedAccount?.account_current_balance ?? 0;
+    })
+    // .superRefine((data, ctx) => {
+    //     // Only check for EXPENSE or TRANSFER
+    //     if (data.type === 'EXPENSE' || data.type === 'TRANSFER') {
+    //         // Find the selected account
+    //         const selectedAccount = accounts?.find(acc => acc.account_id === data.account_id);
+    //         const accountBalance = selectedAccount?.account_current_balance ?? 0;
 
-            // Check if amount exceeds balance
-            if (data.amount > accountBalance) {
-                ctx.addIssue({
-                    code: z.ZodIssueCode.custom,
-                    message: `Amount exceeds available balance of ₱${accountBalance.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-                    path: ['amount'], // Attach error to the 'amount' field
-                });
-            }
-        }
-    });
+    //         // Check if amount exceeds balance
+    //         if (data.amount > accountBalance) {
+    //             ctx.addIssue({
+    //                 code: z.ZodIssueCode.custom,
+    //                 message: `Amount exceeds available balance of ₱${accountBalance.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+    //                 path: ['amount'], // Attach error to the 'amount' field
+    //             });
+    //         }
+    //     }
+    // });
 
     const createTransactionForm = useForm<z.infer<typeof createTransactionFormSchema>>({
         resolver: zodResolver(createTransactionFormSchema),
@@ -133,7 +134,7 @@ export function AddTransactionDialog() {
     }
     const { accounts, isLoading: accountsIsLoading, isError: accountsIsError } = useGetAccounts();
     const { createTransactionDialogOpen, setCreateTransactionDialogOpen } = useTransactionUiStore();
-    const { createTransactionAsync, isCreating: isCreatingTransaction, isError: isErrorTransaction, error } = useCreateTransaction();
+    const { createTransactionAsync, isCreating: isCreatingTransaction, isError: isErrorTransaction, error: transactionError } = useCreateTransaction();
     const { categories, isLoading: categoriesIsLoading, isError: categoriesIsError } = useGetCategories();
 
 
@@ -142,15 +143,15 @@ export function AddTransactionDialog() {
 
     const watchedAccountId = createTransactionForm.watch("account_id");
     const watchedTransactionType = createTransactionForm.watch("type");
-    const watchedAmount = createTransactionForm.watch("amount");
+    // const watchedAmount = createTransactionForm.watch("amount");
 
 
     const selectedAccount = accounts?.find(acc => acc.account_id === watchedAccountId);
     const accountBalance = selectedAccount?.account_current_balance ?? 0;
 
-    const wouldExceedBalance = watchedTransactionType === 'EXPENSE' || watchedTransactionType === 'TRANSFER'
-        ? watchedAmount > accountBalance
-        : false;
+    // const wouldExceedBalance = watchedTransactionType === 'EXPENSE' || watchedTransactionType === 'TRANSFER'
+    //     ? watchedAmount > accountBalance
+    //     : false;
 
     return (
         <Dialog open={createTransactionDialogOpen} onOpenChange={setCreateTransactionDialogOpen}>
@@ -404,6 +405,15 @@ export function AddTransactionDialog() {
                                 )}
                             />
                         </div>
+
+                        {/* Add error display here */}
+                        {isErrorTransaction && (
+                            <div className="p-4 border border-red-300 bg-red-50 rounded-md">
+                                <p className="text-red-700 text-sm">
+                                    {transactionError?.response?.data?.message || transactionError?.message || "Invalid email or password"}
+                                </p>
+                            </div>
+                        )}
 
                         <DialogFooter>
                             {/* <DialogClose asChild>

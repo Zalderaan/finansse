@@ -9,6 +9,7 @@ import { type ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/ui/data-table"
 import type { Transaction } from "../transactions/types/transactions.types";
 import { useGetTransactionsByUser } from "../transactions/hooks/useGetTransactionsByUser";
+import { RecentTransactionsTable } from "./RecentTransactionsTable";
 
 export function RecentTransactions() {
     const { user_transactions, isLoading, isError, error } = useGetTransactionsByUser();
@@ -72,7 +73,7 @@ export function RecentTransactions() {
                 </CardDescription>
             </CardHeader>
             <CardContent>
-                <DataTable columns={columns} data={user_transactions ?? []} />
+                <RecentTransactionsTable columns={columns} data={user_transactions ?? []} isLoading={isLoading} isError={isError} error={error} />
             </CardContent>
         </Card>
     )

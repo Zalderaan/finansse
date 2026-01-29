@@ -1,6 +1,5 @@
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { categoriesApiService } from "@/features/categories/api/categoriesApi";
-import type { CategoriesResponse } from "@/features/categories/types/categories.types";
 import { toast } from "sonner";
 
 export function useAddCategory() {
