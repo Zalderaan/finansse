@@ -1,13 +1,10 @@
 import { Button } from "@/components/ui/button"
 import {
     Dialog,
-    DialogClose,
     DialogContent,
     DialogDescription,
     DialogFooter,
     DialogHeader,
-    DialogOverlay,
-    DialogPortal,
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
@@ -21,6 +18,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 import { useAddCategory } from "@/features/categories/hooks/useAddCategory";
 import { useState } from "react";
+import { Spinner } from "@/components/ui/spinner";
 
 
 const addCategoryFormSchema = z.object({
@@ -137,7 +135,15 @@ export function AddCategoryDialog() {
 
                         <DialogFooter>
                             <Button type="button" size={'sm'} variant={'outline'} onClick={handleReset}>Clear</Button>
-                            <Button type="submit" size={'sm'} >Add Category</Button>
+                            <Button type="submit" size={'sm'} disabled={isCreating}>{isCreating ? (
+                                <>
+                                    <Spinner />
+                                    <span>Adding Category</span>
+                                </>
+                            ) : (
+                                "Add Category"
+                            )}
+                            </Button>
                         </DialogFooter>
                     </form>
                 </Form>

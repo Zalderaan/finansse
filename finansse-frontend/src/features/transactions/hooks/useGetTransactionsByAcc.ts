@@ -1,6 +1,5 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { transactionApiService } from "../api/transactionApi";
-import { useAuthStore } from "@/features/auth/stores/auth.store";
 import type { GetTransactionByAccResponse } from "../types/transactions.types";
 
 export function useGetTransactionsByAcc(accountId: string) {

@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { useAuthStore } from '@/features/auth/stores/auth.store';
 import { setupInterceptors } from './axios.interceptors';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/finansse-backend';

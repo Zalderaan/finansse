@@ -3,6 +3,7 @@ import { transactionApiService } from "@/features/transactions/api/transactionAp
 import { useAuthStore } from "@/features/auth/stores/auth.store";
 import { toast } from 'sonner';
 import type { AxiosError } from "axios";
+import type { ApiErrorResponse } from "@/types/api";
 
 export function useCreateTransaction() {
     const queryClient = useQueryClient();
@@ -69,7 +70,7 @@ export function useCreateTransaction() {
             });
         },
 
-        onError: (transactionErrorData: AxiosError<{ message: string }>) => {
+        onError: (transactionErrorData: any) => {
             toast.error("Error creating transaction", {
                 description: `${transactionErrorData.response?.data.message ?? 'An error occurred'}`,
                 duration: 3000,
@@ -87,6 +88,6 @@ export function useCreateTransaction() {
         createTransactionAsync: createTransactionMuation.mutateAsync,
         isCreating: createTransactionMuation.isPending,
         isError: createTransactionMuation.isError,
-        error: createTransactionMuation.error?.message,
+        error: createTransactionMuation.error,
     }
 }
