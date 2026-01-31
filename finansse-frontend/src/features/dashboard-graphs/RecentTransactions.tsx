@@ -6,7 +6,6 @@ import {
     CardTitle
 } from "@/components/ui/card"
 import { type ColumnDef } from "@tanstack/react-table";
-import { DataTable } from "@/components/ui/data-table"
 import type { Transaction } from "../transactions/types/transactions.types";
 import { useGetTransactionsByUser } from "../transactions/hooks/useGetTransactionsByUser";
 import { RecentTransactionsTable } from "./RecentTransactionsTable";

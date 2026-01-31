@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { accountApiService } from '@/features/accounts/api/accountApi';
-import type { Account, GetAccountResponse } from '@/features/accounts/types/accounts.type';
+import type { GetAccountResponse } from '@/features/accounts/types/accounts.type';
 
 
 export function useGetAccDetails(accountId: string) {
@@ -12,7 +12,9 @@ export function useGetAccDetails(accountId: string) {
         staleTime: 5 * 60 * 1000, // 5 minutes
         refetchOnMount: 'always',
         retry: (failureCount, error: any) => {
-            return failureCount < 2;
+            if (failureCount >= 2) return false;
+            if (error?.response?.status >= 500) return true;
+            return false; // Don't retry for client errors (4xx) or other issues
         }
     });
 

@@ -22,8 +22,16 @@ export function useRegister() {
                 }
             })
         },
-        onError: (data) => {
-            
+        onError: (error: any) => {
+            toast.error("Error logging in", {
+                description: `${error.response.data.message}`,
+                duration: 3000,
+                classNames: {
+                    title: "!text-red-900",
+                    description: "!text-xs !text-red-700",
+                    toast: "!bg-red-200 !border-red-300",
+                }
+            })
         }
     });
 

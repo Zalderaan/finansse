@@ -117,6 +117,18 @@ export function RegisterPage() {
                                 )}
                             />
                         </CardContent>
+
+                        {registerError && (
+                            <div className="mx-6">
+                                <Card className="border-red-300 bg-red-50">
+                                    <CardContent className="px-6">
+                                        <p className="text-red-700 text-xs">
+                                            {registerError.response?.data?.message || registerError.message || "Invalid email or password"}
+                                        </p>
+                                    </CardContent>
+                                </Card>
+                            </div>
+                        )}
                         <CardFooter className="flex flex-col space-y-4">
                             <CardAction className="flex flex-col w-full space-y-2">
                                 <Button type='submit' disabled={isRegistering}>{!isRegistering ? 'Register' : "Creating your account..."}</Button>
