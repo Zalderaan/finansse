@@ -133,6 +133,12 @@ export function AddCategoryDialog() {
                             </div>
                         </div>
 
+                        {isError && (
+                            <div className="text-red-500 text-sm">
+                                {error}
+                            </div>
+                        )}
+
                         <DialogFooter>
                             <Button type="button" size={'sm'} variant={'outline'} onClick={handleReset}>Clear</Button>
                             <Button type="submit" size={'sm'} disabled={isCreating}>{isCreating ? (
