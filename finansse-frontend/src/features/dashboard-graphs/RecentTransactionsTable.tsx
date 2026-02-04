@@ -10,7 +10,8 @@ export interface RecentTransactionsTableProps {
     error: Error | null;
 }
 
-export function RecentTransactionsTable({ columns, data, isLoading, isError, error }: RecentTransactionsTableProps) {
+// export function RecentTransactionsTable({ columns, data, isLoading, isError, error }: RecentTransactionsTableProps) {
+export function RecentTransactionsTable({ columns, data}: RecentTransactionsTableProps) {
     return (
         <DataTable columns={columns} data={data} />
     )
