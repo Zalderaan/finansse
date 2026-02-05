@@ -5,7 +5,11 @@
 		},
 		{
 			"path": "finansse-backend"
+		},
+		{
+			"path": "."
 		}
 	],
+
 	"settings": {}
 }

@@ -7,6 +7,8 @@ import { z } from "zod";
 import { Link } from "react-router-dom";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { useRegister } from "@/features/auth/hooks/useRegister";
+// import { useAuthRedirect } from "@/features/auth/hooks/useAuthRedirect";
+
 const formSchema = z.object({
     email: z.string().email({
         message: "Input must be an email"
@@ -34,7 +36,11 @@ export function RegisterPage() {
             password: "",
             confirm_password: "",
         },
+        mode: "onChange"
     })
+
+    // const authRedirect = useAuthRedirect();
+    // if (authRedirect) return authRedirect;
 
     const { registerAsync, isRegistering, registerError } = useRegister();
     async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -46,8 +52,8 @@ export function RegisterPage() {
         }
     }
     return (
-        <>
-            <Card>
+        <div className="flex items-center justify-center h-screen">
+            <Card className="w-full sm:w-11/12 md:w-3/4 lg:w-1/2 xl:w-1/4">
                 <CardHeader>
                     <CardTitle>Register</CardTitle>
                     <CardDescription>Start tracking your finances with Finansse.</CardDescription>
@@ -111,20 +117,32 @@ export function RegisterPage() {
                                 )}
                             />
                         </CardContent>
-                        <CardFooter className="flex flex-col">
-                            <CardAction className="space-x-2">
-                                <Button type='submit'>Register</Button>
-                                <Button asChild variant={"outline"}>
+
+                        {registerError && (
+                            <div className="mx-6">
+                                <Card className="border-red-300 bg-red-50">
+                                    <CardContent className="px-6">
+                                        <p className="text-red-700 text-xs">
+                                            {registerError.response?.data?.message || registerError.message || "Invalid email or password"}
+                                        </p>
+                                    </CardContent>
+                                </Card>
+                            </div>
+                        )}
+                        <CardFooter className="flex flex-col space-y-4">
+                            <CardAction className="flex flex-col w-full space-y-2">
+                                <Button type='submit' disabled={isRegistering}>{!isRegistering ? 'Register' : "Creating your account..."}</Button>
+                                <Button asChild disabled={isRegistering} variant={"outline"}>
                                     <Link to='/'>
                                         Go back
                                     </Link>
                                 </Button>
                             </CardAction>
-                            <span>Already have an account? <Link to='/login' className="underline">Sign in instead</Link></span>
+                            <span className="text-xs">Already have an account? <Link to='/login' className="underline">Sign in instead</Link></span>
                         </CardFooter>
                     </form>
                 </Form>
             </Card>
-        </>
+        </div>
     );
 }

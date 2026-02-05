@@ -1,4 +1,4 @@
-import { AccountType } from "../generated/prisma";
+import { AccountType } from "../generated/prisma/enums";
 
 export interface Account {
     name: string,

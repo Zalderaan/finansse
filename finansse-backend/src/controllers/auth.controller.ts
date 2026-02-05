@@ -51,9 +51,9 @@ export class AuthController {
             // find user
             const user = await AuthModel.findUserByEmail(email);
             if (!user) {
-                return res.status(404).json({
+                return res.status(401).json({
                     success: false,
-                    message: "User not found."
+                    message: "Invalid email or password."
                 });
             }
 
@@ -62,7 +62,7 @@ export class AuthController {
             if (!isValidPassword) {
                 return res.status(401).json({
                     success: false,
-                    message: "Invalid credentials."
+                    message: "Invalid email or password."
                 })
             }
 
@@ -82,6 +82,7 @@ export class AuthController {
                 secure: process.env.NODE_ENV === 'production',
                 sameSite: 'lax',
                 maxAge: 7 * 24 * 60 * 60 * 1000,
+                // maxAge: 60 * 1000
             });
             return res.status(201).json({
                 success: true,
@@ -130,10 +131,10 @@ export class AuthController {
 
     // POST /auth/refresh
     static async refresh(req: Request, res: Response) {
-        // console.log('🚀 Refresh endpoint hit');
-        // console.log('🍪 Raw cookie header:', req.headers.cookie);
-        // console.log('🍪 Parsed cookies:', req.cookies);
-        // console.log('🔍 RefreshToken from cookies:', req.cookies.refreshToken);
+        console.log('🚀 Refresh endpoint hit');
+        console.log('🍪 Raw cookie header:', req.headers.cookie);
+        console.log('🍪 Parsed cookies:', req.cookies);
+        console.log('🔍 RefreshToken from cookies:', req.cookies.refreshToken);
         try {
             const refreshToken = req.cookies?.refreshToken;
 
@@ -175,8 +176,11 @@ export class AuthController {
             res.cookie('refreshToken', tokens.refreshToken, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
+                // secure: false,
                 sameSite: 'lax',
+                // sameSite: 'none',
                 maxAge: 7 * 24 * 60 * 60 * 1000,
+                // maxAge: 60 * 1000,
             });
 
             return res.status(200).json({

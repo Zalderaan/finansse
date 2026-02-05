@@ -1,3 +1,4 @@
+import { AuthModel } from "../models/auth.model";
 import { TransactionsModel } from "../models/transactions.model";
 import { CreateTransactionRequest } from "../types/transactions.types";
 import { AuthRequest } from "../utils/auth.middleware";
@@ -19,11 +20,29 @@ export class TransactionsController {
         } catch (error: unknown) {
             console.error('Error creating transaction in controller: ', error);
 
-            if (error instanceof Error && error.message === 'Account does not belong to user or does not exist') {
-                return res.status(404).json({
-                    success: false,
-                    message: error.message
-                })
+            if (error instanceof Error) {
+                // Handle specific business logic errors
+                if (error.message.includes('does not belong to user or does not exist')) {
+                    return res.status(404).json({
+                        success: false,
+                        message: error.message
+                    });
+                }
+
+                if (error.message === 'Insufficient funds in account') {
+                    return res.status(400).json({
+                        success: false,
+                        message: error.message
+                    });
+                }
+
+                if (error.message.includes('Transfer account ID is required') ||
+                    error.message.includes('balance is not a valid number')) {
+                    return res.status(400).json({
+                        success: false,
+                        message: error.message
+                    });
+                }
             }
 
             res.status(500).json({
@@ -52,6 +71,25 @@ export class TransactionsController {
                 success: false,
                 message: 'Internal server error'
             });
+        }
+    }
+
+    static async getTransactionsByUser(req: AuthRequest, res: Response) {
+        try {
+            const user_id = req.user!.userId;
+            const user_transactions = await TransactionsModel.findTransactionsByUser(user_id);
+
+            res.status(200).json({
+                success: true,
+                message: 'User transactions retrieved!',
+                data: user_transactions
+            })
+        } catch (error) {
+            console.error('Error getting user\'s transactions: ', error);
+            res.status(500).json({
+                success: false,
+                message: 'Internal server error'
+            })
         }
     }
 }

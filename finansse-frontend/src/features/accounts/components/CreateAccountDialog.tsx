@@ -28,6 +28,8 @@ import {
 import { z } from "zod";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import type { ReactNode } from 'react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const createAccountFormSchema = z.object({
     account_name: z.string()
@@ -42,7 +44,7 @@ const createAccountFormSchema = z.object({
         .optional(),
 });
 
-export function CreateAccountDialog() {
+export function CreateAccountDialog({ children, className }: { children?: ReactNode; className?: string; }) {
     const { createAccountDialogOpen, setCreateAccountDialogOpen } = useAccountUiStore();
 
     const createAccountForm = useForm<z.infer<typeof createAccountFormSchema>>({
@@ -95,9 +97,12 @@ export function CreateAccountDialog() {
         <>
             <Dialog open={createAccountDialogOpen} onOpenChange={setCreateAccountDialogOpen}>
                 <DialogTrigger asChild>
-                    <Button className='w-fit'>
-                        <Plus />
-                        Create
+                    <Button className={className ?? 'flex flex-row items-center justify-center gap-2'}>
+                        {children ?? (
+                            <>
+                                <Plus /> Create
+                            </>
+                        )}
                     </Button>
                 </DialogTrigger>
                 <DialogContent>
@@ -109,6 +114,14 @@ export function CreateAccountDialog() {
                                     Create a money-tracking account
                                 </DialogDescription>
                             </DialogHeader>
+
+                            {isError && (
+                                <Alert variant="destructive">
+                                    <AlertDescription>
+                                        Failed to create account. Please try again.
+                                    </AlertDescription>
+                                </Alert>
+                            )}
 
                             <div className='flex flex-col space-y-4'>
                                 <FormField

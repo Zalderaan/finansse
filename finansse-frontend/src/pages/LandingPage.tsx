@@ -26,7 +26,7 @@ export function LandingPage() {
                                 </Button>
                             </li>
                             <li>
-                                <Button asChild 
+                                <Button asChild
                                     className="w-fit text-xs sm:text-sm" onClick={() => logout()}
                                     variant='outline' size='sm'
                                 >
@@ -37,16 +37,16 @@ export function LandingPage() {
                     ) : (
                         <ul className="flex space-x-1 sm:space-x-2 list-none">
                             <li>
-                                <Button asChild className="w-fit text-xs sm:text-sm" size='sm'>
-                                    <Link to='/register'>
-                                        <span className="hidden sm:inline">Get Started Free</span>
-                                        <span className="sm:hidden">Sign Up</span>
-                                    </Link>
+                                <Button asChild className="w-fit text-xs sm:text-sm" size='sm' variant={"outline"}>
+                                    <Link to='/login'>Sign In</Link>
                                 </Button>
                             </li>
                             <li>
-                                <Button asChild className="w-fit text-xs sm:text-sm" size='sm' variant={"outline"}>
-                                    <Link to='/login'>Sign In</Link>
+                                <Button asChild className="w-fit text-xs sm:text-sm" size='sm'>
+                                    <Link to='/register'>
+                                        <span className="sm:hidden">Sign Up</span>
+                                        <span className="hidden sm:inline">Get Started Free</span>
+                                    </Link>
                                 </Button>
                             </li>
                         </ul>
