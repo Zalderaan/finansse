@@ -9,6 +9,8 @@ export class jwtUtil {
     private static readonly SECRET_KEY = process.env.JWT_SECRET || 'secret';
     private static readonly token_expiry = '30m';
     private static readonly refresh_expiry = '7d';
+    // private static readonly token_expiry = '1m';
+    // private static readonly refresh_expiry = '1m';
 
 
     static generateTokenPair(payload: object): TokenPair {

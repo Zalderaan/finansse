@@ -9,15 +9,23 @@ import { ProfilePage } from "@/pages/profile/ProfilePage";
 import { ProtectedRoute } from "@/features/auth/components/ProtectedRoute";
 import { AccountPage } from "@/pages/accounts/AccountPage";
 import { BudgetPage } from "@/pages/budgets/BudgetPage";
+import { CategoriesPage } from "@/pages/categories/CategoriesPage";
 import { AccountDetails } from "@/pages/accounts/AccountDetails";
+import { AuthRoute } from "@/features/auth/components/AuthRoute";
 import TestPage from "@/features/accounts/components/testpage";
 
 
 export const router = createBrowserRouter([
     { path: "/*", Component: NotFound },
     { path: "/", Component: LandingPage },
-    { path: "/login", Component: LoginPage },
-    { path: "/register", Component: RegisterPage },
+
+    {
+        Component: AuthRoute,
+        children: [
+            { path: "/login", Component: LoginPage },
+            { path: "/register", Component: RegisterPage },
+        ]
+    },
 
     {
         Component: ProtectedRoute,
@@ -30,8 +38,9 @@ export const router = createBrowserRouter([
                         children: [
                             { index: true, Component: DashboardPage },
                             { path: "accounts", Component: AccountPage },
-                            { path: "accounts/:accountId", Component: AccountDetails},
+                            { path: "accounts/:accountId", Component: AccountDetails },
                             { path: "budgets", Component: BudgetPage },
+                            { path: "categories", Component: CategoriesPage },
                             { path: "test", Component: TestPage },
                         ]
                     },

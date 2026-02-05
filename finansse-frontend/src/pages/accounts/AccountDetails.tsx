@@ -1,19 +1,19 @@
 import { Link, useParams } from "react-router-dom"
 import { useGetAccDetails } from "@/features/accounts//hooks/useGetAccDetails";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, PencilLine, Trash } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import {
     Card,
     CardHeader,
-    CardFooter,
     CardTitle,
-    CardAction,
     CardDescription,
     CardContent,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { DeleteAccountDialog } from "@/features/accounts/components/DeleteAccountDialog";
 import { TransactionList } from "@/features/transactions/components/TransactionList";
+import { EditAccountDialog } from "@/features/accounts/components/EditAccountDialog";
+import { TransactionSearchBar } from "@/features/accounts/components/TransactionSearchBar";
 
 export function AccountDetails() {
     const { accountId } = useParams();
@@ -51,7 +51,7 @@ export function AccountDetails() {
                         </div>
                     </div>
                     <div className="space-x-2">
-                        <Button><PencilLine /></Button>
+                        <EditAccountDialog />
                         <DeleteAccountDialog />
                     </div>
                 </CardHeader>
@@ -65,15 +65,19 @@ export function AccountDetails() {
             </Card>
 
             <Card>
-                <CardHeader>
-                    <CardTitle>Transactions</CardTitle>
-                    <CardDescription>Money transactions made in this account</CardDescription>
+                <CardHeader className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+                    <div className="flex flex-col space-y-1.5">
+                        <CardTitle>Transactions</CardTitle>
+                        <CardDescription>Money transactions made in this account</CardDescription>
+                    </div>
+
+                    {/* Search */}
+                    <TransactionSearchBar />
                 </CardHeader>
                 <Separator />
                 <TransactionList />
-                {/* <CardContent className="flex flex-col">
-                </CardContent> */}
             </Card>
         </>
     )
 }
+

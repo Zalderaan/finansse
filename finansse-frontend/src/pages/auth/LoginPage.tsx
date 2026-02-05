@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Link } from "react-router-dom";
 import { useLogin } from "@/features/auth/hooks/useLogin";
-import { useNavigate } from "react-router-dom";
+// import { useAuthRedirect } from "@/features/auth/hooks/useAuthRedirect";
 
 const formSchema = z.object({
     email: z.string().email({
@@ -17,7 +17,6 @@ const formSchema = z.object({
 })
 
 export function LoginPage() {
-    const navigate = useNavigate();
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -26,21 +25,20 @@ export function LoginPage() {
         },
     })
 
-    const { loginAsync, isLoggingIn, loginError } = useLogin();
+    const { login, isLoggingIn, loginError } = useLogin();
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log("Login form values: ", values);
+        // console.log("Login form values: ", values);
         try {
-            await loginAsync(values);
-            navigate('/dashboard');
-
+            // await loginAsync(values);
+            login(values);
         } catch (error) {
             console.error('Login failed: ', error);
         }
     }
 
     return (
-        <>
-            <Card>
+        <div className="flex items-center justify-center h-screen">
+            <Card className="w-full sm:w-11/12 md:w-3/4 lg:w-1/2 xl:w-1/4">
                 <CardHeader>
                     <CardTitle>Login</CardTitle>
                     <CardDescription>Continue tracking your finances.</CardDescription>
@@ -76,20 +74,33 @@ export function LoginPage() {
                                 )}
                             />
                         </CardContent>
-                        <CardFooter className="flex flex-col">
-                            <CardAction className="space-x-2">
-                                <Button type='submit'>{isLoggingIn ? 'Logging in...' : 'Login'}</Button>
-                                <Button asChild variant={'outline'}>
+
+                        {loginError && (
+                            <div className="mx-6">
+                                <Card className="border-red-300 bg-red-50">
+                                    <CardContent className="px-6">
+                                        <p className="text-red-700 text-xs">
+                                            {loginError.response?.data?.message || loginError.message || "Invalid email or password"}
+                                        </p>
+                                    </CardContent>
+                                </Card>
+                            </div>
+                        )}
+
+                        <CardFooter className="flex flex-col space-y-4">
+                            <CardAction className="flex flex-col space-y-2 w-full">
+                                <Button type='submit' size={'sm'} disabled={isLoggingIn}>{isLoggingIn ? 'Logging in...' : 'Login'}</Button>
+                                <Button asChild variant={'outline'} size={"sm"}>
                                     <Link to='/'>
                                         Go back
                                     </Link>
                                 </Button>
                             </CardAction>
-                            <span>Don't have an account yet? <Link to='/register' className="underline">Sign up instead</Link></span>
+                            <span className="text-xs">Don't have an account yet? <Link to='/register' className="underline">Sign up instead</Link></span>
                         </CardFooter>
                     </form>
                 </Form>
             </Card>
-        </>
+        </div>
     );
 }

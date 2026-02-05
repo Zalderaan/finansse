@@ -1,18 +1,20 @@
 import { useQuery } from "@tanstack/react-query";
 import { accountApiService } from '@/features/accounts/api/accountApi';
-import type { Account, GetAccountResponse } from "../types/accounts.type";
+import type { GetAccountResponse } from '@/features/accounts/types/accounts.type';
 
 
 export function useGetAccDetails(accountId: string) {
 
     const query = useQuery<GetAccountResponse>({
-        queryKey: ['account', accountId],
+        queryKey: ['account', Number(accountId)],
         queryFn: () => accountApiService.getAccountById(accountId),
         enabled: !!accountId,
         staleTime: 5 * 60 * 1000, // 5 minutes
         refetchOnMount: 'always',
         retry: (failureCount, error: any) => {
-            return failureCount < 2;
+            if (failureCount >= 2) return false;
+            if (error?.response?.status >= 500) return true;
+            return false; // Don't retry for client errors (4xx) or other issues
         }
     });
 
@@ -22,7 +24,7 @@ export function useGetAccDetails(accountId: string) {
          * second data: property of the API response (coincidence that our API has a 'data' property)
          */
 
-        account: query.data?.data,
+        account: query.data?.data, // <---- first & seconnd data
         isLoading: query.isLoading,
         isError: query.isError,
         error: query.error,

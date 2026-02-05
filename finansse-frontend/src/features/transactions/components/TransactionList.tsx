@@ -14,17 +14,18 @@ export function TransactionList() {
                 isLoadingAccTransactions ? (
                     <span>Loading account transactions...</span>
                 ) : isErrorAccTransactions ? (
-                    <span>Error loading account transactions!</span>
+                    <span>Error loading account transactions: {errorAccTransactions?.message}</span>
                 ) : (
                     transactions?.map((transaction) => (
-                        <TransactionCard 
+                        <TransactionCard
                             key={transaction.transaction_id}
                             name={transaction.transaction_name}
                             type={transaction.transaction_type}
                             amount={transaction.transaction_amount}
                             date={transaction.created_at}
+                            category={transaction.category?.category_name}
                         />
-                            
+
                     ))
                 )
             }
