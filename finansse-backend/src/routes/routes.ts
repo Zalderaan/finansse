@@ -37,6 +37,7 @@ router.delete('/accounts/:id', authenticateToken, AccountsController.deleteAccou
 router.post('/transactions/create', authenticateToken, TransactionsController.postTransaction);
 router.get(`/transactions/account/:accountId`, authenticateToken, TransactionsController.getTransactionsByAcc);
 router.get(`/transactions`, authenticateToken, TransactionsController.getTransactionsByUser);
+router.patch(`/transactions/update/:id`, authenticateToken, TransactionsController.updateTransaction);
 
 // CATEGORIES
 router.post('/categories/create', authenticateToken, CategoriesController.postCategory);

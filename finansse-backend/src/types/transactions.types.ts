@@ -14,6 +14,15 @@ export interface CreateTransactionRequest {
     category_id: number,
 }
 
+export interface UpdateTransactionRequest {
+    name: string,
+    amount: number,
+    type: TransactionType,
+    account_id: number,
+    transfer_account_id?: number,
+    category_id: number,
+}
+
 // export interface GetTransactionsByAccRequest {
     
 // }

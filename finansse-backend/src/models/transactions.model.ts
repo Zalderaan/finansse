@@ -1,5 +1,5 @@
 import prisma from "../db";
-import { CreateTransactionRequest } from "../types/transactions.types";
+import { CreateTransactionRequest, UpdateTransactionRequest } from "../types/transactions.types";
 import { AccountsModel } from "./accounts.model";
 export class TransactionsModel {
 
@@ -149,7 +149,137 @@ export class TransactionsModel {
             take: 10
         })
     }
+
     // UPDATE
+    static async updateTransactionByID(updateTransactionData: UpdateTransactionRequest, userId: number, transaction_id: number) {
+        return await prisma.$transaction(async (tx) => {
+            // verify account belongs to user
+            const account = await tx.account.findFirst({
+                where: {
+                    account_id: updateTransactionData.account_id,
+                    user_id: userId
+                }
+            });
+
+            if (!account) {
+                throw new Error('Account does not belong to user or does not exist');
+            }
+
+            // check for transfer account (ONLY if TransactionType is transfer)
+            let transfer_account = null;
+            if (updateTransactionData.type === 'TRANSFER') {
+                transfer_account = await tx.account.findFirst({
+                    where: {
+                        account_id: updateTransactionData.transfer_account_id,  // Assuming schema updated to transfer_to_account_id
+                        user_id: userId
+                    }
+                });
+
+                if (!transfer_account) {
+                    throw new Error('Transfer account does not belong to user or does not exist');
+                }
+            }
+
+            // 1. get original transaction
+            const originalTransaction = await tx.transaction.findUnique({
+                where: { transaction_id },
+                include: { account: true, transfer_account: true }
+            })
+
+            const updated_transaction = await tx.transaction.update({
+                where: {
+                    transaction_id: transaction_id
+                },
+                data: {
+                    transaction_name: updateTransactionData.name ? updateTransactionData.name : `${updateTransactionData.type} - `,
+                    transaction_type: updateTransactionData.type,
+                    transaction_amount: updateTransactionData.amount,
+                    user_id: userId,
+                    account_id: updateTransactionData.account_id,
+                    transfer_account_id: updateTransactionData.transfer_account_id || null,
+                    category_id: updateTransactionData.category_id
+                },
+
+                select: {
+                    account_id: true,
+                    transaction_id: true,
+                    transaction_name: true,
+                    transaction_amount: true,
+                    transaction_type: true,
+                    created_at: true,
+                    category_id: true,
+                    transfer_account_id: true,  // Include in select
+                }
+            });
+
+            // TODO: Proper recalculation of balance after update
+            /**
+             * scenario: 
+             * 100 + 1000 = 1100 curr_balance... 
+             * update 1000 INCOME --> 50 EXPENSE...
+             * 
+             * current behavior: account_curr_bal = P1,050.00
+             * required behavior: account_curr_bal = P50.00
+             */
+
+            // 2. reverse orig transaction
+            let currentBalance = Number(originalTransaction?.account.account_current_balance);
+            let transferCurrentBalance = Number(originalTransaction?.transfer_account?.account_current_balance);
+
+            switch (originalTransaction?.transaction_type) {
+                case 'EXPENSE':
+                    currentBalance += Number(originalTransaction.transaction_amount);
+                    break;
+                case 'INCOME':
+                    currentBalance -= Number(originalTransaction.transaction_amount);
+                    break;
+                case 'TRANSFER':
+                    currentBalance += Number(originalTransaction.transaction_amount);
+                    transferCurrentBalance -= Number(originalTransaction.transaction_amount);
+                    break;
+            }
+
+            let updateSourceNewBalance = currentBalance;
+            if (isNaN(updateSourceNewBalance)) throw new Error('Account balance is not a valid number');
+
+
+            if (updateTransactionData.type === 'EXPENSE') {
+                updateSourceNewBalance -= updateTransactionData.amount
+            } else if (updateTransactionData.type === 'INCOME') {
+                updateSourceNewBalance += updateTransactionData.amount
+            } else if (updateTransactionData.type === 'TRANSFER') {
+
+                updateSourceNewBalance -= updateTransactionData.amount; // Subtract from source
+                let updateDestNewBalance = transferCurrentBalance;
+                if (isNaN(updateDestNewBalance)) throw new Error('Destination account balance is not a valid number');
+                updateDestNewBalance += updateTransactionData.amount; // Add to destination
+
+                // ensures transfer_account_id always exists
+                if (!updateTransactionData.transfer_account_id) throw new Error('Transfer account ID is required for TRANSFER');
+
+                // Create the reciprocal transaction for the destination account
+                await tx.transaction.create({
+                    data: {
+                        transaction_name: `Transfer from ${account.account_name}`,
+                        transaction_type: 'TRANSFER',
+                        transaction_amount: updateTransactionData.amount,
+                        user_id: userId,
+                        account_id: updateTransactionData.transfer_account_id, // Destination is now the main account
+                        transfer_account_id: updateTransactionData.account_id, // Source becomes the transfer account
+                        category_id: updateTransactionData.category_id
+                    }
+                });
+
+                await AccountsModel.updateAccountBalanceInTransaction(updateTransactionData.transfer_account_id, updateDestNewBalance, tx);
+            }
+
+            // update account balance using tx client
+            await AccountsModel.updateAccountBalanceInTransaction(updateTransactionData.account_id, updateSourceNewBalance, tx);
+
+            return updated_transaction;
+        });
+    }
+
     // DELETE
 
 }
