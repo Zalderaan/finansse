@@ -14,6 +14,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { SidebarMenuButton, useSidebar } from '@/components/ui/sidebar';
+import { DatePickerSimple } from "@/components/ui/date-picker";
 
 // forms imports
 import {
@@ -58,6 +59,7 @@ export function AddTransactionDialog() {
 
     const createTransactionFormSchema = z.object({
         transaction_name: z.string().optional(),
+        transaction_date: z.coerce.date().optional(),
         account_id: z.number(),
         transfer_account_id: z.number().optional(),
         amount: z
@@ -88,6 +90,7 @@ export function AddTransactionDialog() {
         resolver: zodResolver(createTransactionFormSchema),
         defaultValues: {
             transaction_name: "",
+            transaction_date: undefined,
             account_id: undefined,
             amount: undefined,
             transfer_account_id: undefined,
@@ -112,6 +115,7 @@ export function AddTransactionDialog() {
         const finalTransactionValues: CreateTransactionRequest = {
             name: values.transaction_name || name,
             account_id: values.account_id,
+            date: values.transaction_date || new Date(),  // Assign Date object directly (no .toISOString())
             transfer_account_id: values.transfer_account_id,
             amount: values.amount,
             type: values.type,
@@ -255,6 +259,27 @@ export function AddTransactionDialog() {
                                             <Input
                                                 {...field}
                                                 placeholder="e.g., Coffee at Starbucks"
+                                                disabled={!watchedAccountId}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={createTransactionForm.control}
+                                name="transaction_date"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Transaction Date <span className='text-xs text-gray-600'>(Optional)</span></FormLabel>
+                                        <FormDescription className='text-xs'>
+                                            Leaving this blank will default to now
+                                        </FormDescription>
+                                        <FormControl>
+                                            <DatePickerSimple
+                                                value={field.value}
+                                                onChange={field.onChange}
                                                 disabled={!watchedAccountId}
                                             />
                                         </FormControl>

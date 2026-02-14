@@ -27,11 +27,27 @@ class TransactionsController {
             }
             catch (error) {
                 console.error('Error creating transaction in controller: ', error);
-                if (error instanceof Error && error.message === 'Account does not belong to user or does not exist') {
-                    return res.status(404).json({
-                        success: false,
-                        message: error.message
-                    });
+                if (error instanceof Error) {
+                    // Handle specific business logic errors
+                    if (error.message.includes('does not belong to user or does not exist')) {
+                        return res.status(404).json({
+                            success: false,
+                            message: error.message
+                        });
+                    }
+                    if (error.message === 'Insufficient funds in account') {
+                        return res.status(400).json({
+                            success: false,
+                            message: error.message
+                        });
+                    }
+                    if (error.message.includes('Transfer account ID is required') ||
+                        error.message.includes('balance is not a valid number')) {
+                        return res.status(400).json({
+                            success: false,
+                            message: error.message
+                        });
+                    }
                 }
                 res.status(500).json({
                     success: false,
@@ -55,6 +71,70 @@ class TransactionsController {
             }
             catch (error) {
                 console.error('Error getting transactions for account: ', error);
+                res.status(500).json({
+                    success: false,
+                    message: 'Internal server error'
+                });
+            }
+        });
+    }
+    static getTransactionsByUser(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const user_id = req.user.userId;
+                const user_transactions = yield transactions_model_1.TransactionsModel.findTransactionsByUser(user_id);
+                res.status(200).json({
+                    success: true,
+                    message: 'User transactions retrieved!',
+                    data: user_transactions
+                });
+            }
+            catch (error) {
+                console.error('Error getting user\'s transactions: ', error);
+                res.status(500).json({
+                    success: false,
+                    message: 'Internal server error'
+                });
+            }
+        });
+    }
+    static updateTransaction(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const user = req.user.userId;
+                const transaction_id = Number(req.params.id);
+                const updateTransactionData = req.body;
+                const updatedTransaction = yield transactions_model_1.TransactionsModel.updateTransactionByID(updateTransactionData, user, transaction_id);
+                return res.status(201).json({
+                    success: true,
+                    message: `Transaction ${updatedTransaction.transaction_name} updated successfully`,
+                    data: updatedTransaction
+                });
+            }
+            catch (error) {
+                console.error('Error updating transaction in controller: ', error);
+                if (error instanceof Error) {
+                    // Handle specific business logic errors
+                    if (error.message.includes('does not belong to user or does not exist')) {
+                        return res.status(404).json({
+                            success: false,
+                            message: error.message
+                        });
+                    }
+                    if (error.message === 'Insufficient funds in account') {
+                        return res.status(400).json({
+                            success: false,
+                            message: error.message
+                        });
+                    }
+                    if (error.message.includes('Transfer account ID is required') ||
+                        error.message.includes('balance is not a valid number')) {
+                        return res.status(400).json({
+                            success: false,
+                            message: error.message
+                        });
+                    }
+                }
                 res.status(500).json({
                     success: false,
                     message: 'Internal server error'

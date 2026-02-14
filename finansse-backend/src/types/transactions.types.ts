@@ -7,6 +7,7 @@ export interface Transaction {
 
 export interface CreateTransactionRequest {
     name: string,
+    date: Date,
     amount: number,
     type: TransactionType,
     account_id: number,

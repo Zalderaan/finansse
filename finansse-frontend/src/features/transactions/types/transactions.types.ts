@@ -25,6 +25,7 @@ export interface Transaction {
 export interface CreateTransactionRequest {
     name: string,
     amount: number,
+    date: Date,
     type: string,
     account_id: number,
     transfer_account_id?: number,

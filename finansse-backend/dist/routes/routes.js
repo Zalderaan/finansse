@@ -34,6 +34,8 @@ router.delete('/accounts/:id', auth_middleware_1.authenticateToken, accounts_con
 // TRANSACTIONS
 router.post('/transactions/create', auth_middleware_1.authenticateToken, transactions_controller_1.TransactionsController.postTransaction);
 router.get(`/transactions/account/:accountId`, auth_middleware_1.authenticateToken, transactions_controller_1.TransactionsController.getTransactionsByAcc);
+router.get(`/transactions`, auth_middleware_1.authenticateToken, transactions_controller_1.TransactionsController.getTransactionsByUser);
+router.patch(`/transactions/update/:id`, auth_middleware_1.authenticateToken, transactions_controller_1.TransactionsController.updateTransaction);
 // CATEGORIES
 router.post('/categories/create', auth_middleware_1.authenticateToken, categories_controller_1.CategoriesController.postCategory);
 router.get('/categories', auth_middleware_1.authenticateToken, categories_controller_1.CategoriesController.getCategories);

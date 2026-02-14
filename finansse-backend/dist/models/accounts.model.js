@@ -159,6 +159,9 @@ class AccountsModel {
     // UPDATE
     static updateAccountBalanceInTransaction(accountId, newBalance, tx) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (newBalance < 0) {
+                throw new Error("Insufficient funds in account");
+            }
             return yield tx.account.update({
                 where: { account_id: accountId },
                 data: { account_current_balance: newBalance }
@@ -179,6 +182,11 @@ class AccountsModel {
                     return null; // return null if account not found / does not belong to the user
                 return yield db_1.default.account.delete({
                     where: { account_id: id },
+                    select: {
+                        account_id: true,
+                        account_name: true,
+                        account_type: true
+                    }
                 });
             }
             catch (error) {

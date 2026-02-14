@@ -43,7 +43,8 @@ export class TransactionsModel {
                     user_id: userId,
                     account_id: transactionData.account_id,
                     transfer_account_id: transactionData.transfer_account_id || null,
-                    category_id: transactionData.category_id
+                    category_id: transactionData.category_id,
+                    created_at: transactionData.date
                 },
 
                 select: {
