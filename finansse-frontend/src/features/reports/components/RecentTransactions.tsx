@@ -6,9 +6,9 @@ import {
     CardTitle
 } from "@/components/ui/card"
 import { type ColumnDef } from "@tanstack/react-table";
-import type { Transaction } from "../transactions/types/transactions.types";
-import { useGetTransactionsByUser } from "../transactions/hooks/useGetTransactionsByUser";
-import { RecentTransactionsTable } from "./RecentTransactionsTable";
+import type { Transaction } from "@/features/transactions/types/transactions.types";
+import { useGetTransactionsByUser } from "@/features/transactions/hooks/useGetTransactionsByUser";
+import { RecentTransactionsTable } from "@/features/reports/components/RecentTransactionsTable";
 
 export function RecentTransactions() {
     const { user_transactions, isLoading, isError, error } = useGetTransactionsByUser();

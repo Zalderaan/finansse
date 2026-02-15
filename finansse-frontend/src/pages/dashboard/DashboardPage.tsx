@@ -4,8 +4,9 @@ import { BalanceChart } from "@/features/reports/components/BalanceCharts";
 import { useGetDashboardData } from "@/features/reports/hooks/useGetDashboardData";
 import { SpendingByCategory } from "@/features/reports/components/SpendingByCategory";
 import { IncomeByCategory } from "@/features/reports/components/IncomeByCategory";
-import { RecentTransactions } from "@/features/dashboard-graphs/RecentTransactions";
+import { RecentTransactions } from "@/features/reports/components/RecentTransactions";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { DashboardQuickActions } from "./DashboardQuickActions";
 
 export function DashboardPage() {
 
@@ -28,6 +29,8 @@ export function DashboardPage() {
                     </AlertDescription>
                 </Alert>
             )}
+
+            <DashboardQuickActions/>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <DashboardCard color="green" title="Your income this month" value={totalIncome!} isLoading={isLoading} />

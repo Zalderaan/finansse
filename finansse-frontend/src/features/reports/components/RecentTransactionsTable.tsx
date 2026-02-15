@@ -1,6 +1,6 @@
 import { type ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/ui/data-table";
-import type { Transaction } from "../transactions/types/transactions.types";
+import type { Transaction } from "@/features/transactions/types/transactions.types";
 
 export interface RecentTransactionsTableProps {
     columns: ColumnDef<Transaction>[]; // Replace with proper types
