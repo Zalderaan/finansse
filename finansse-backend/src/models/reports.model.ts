@@ -1,5 +1,5 @@
 import prisma from "../db";
-import { Prisma } from "@prisma/client";
+import { Prisma } from '../generated/prisma/client';
 
 export class BalanceModel {
     static async fetchUserBalanceTrend(userId: number, period: string) {
