@@ -8,6 +8,7 @@ import { RecentTransactions } from "@/features/reports/components/RecentTransact
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { DashboardQuickActions } from "@/features/dashboard/components/DashboardQuickActions";
 import { CreateAccountDialog } from "@/features/accounts/components/CreateAccountDialog";
+import { AddCategoryDialog } from "@/features/categories/components/AddCategoryDialog";
 
 export function DashboardPage() {
 
@@ -36,6 +37,7 @@ export function DashboardPage() {
 
             {/* Dialog Render Area */}
             <CreateAccountDialog showTrigger={false}/>
+            <AddCategoryDialog showTrigger={false}/>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <DashboardCard color="green" title="Your income this month" value={totalIncome!} isLoading={isLoading} />

@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 import { useAddCategory } from "@/features/categories/hooks/useAddCategory";
+import { useCategoryUiStore } from "@/features/categories/stores/categories.uiStore";
 import { useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 
@@ -27,8 +28,15 @@ const addCategoryFormSchema = z.object({
     category_icon: z.string().optional(),
 })
 
-export function AddCategoryDialog() {
-    const [open, setOpen] = useState(false);
+
+interface AddCategoryDialogProps {
+    showTrigger?: boolean;
+}
+
+
+export function AddCategoryDialog({ showTrigger = false }: AddCategoryDialogProps) {
+    const { createCategoryDialogOpen, setCreateCategoryDialogOpen } = useCategoryUiStore();
+    // const [open, setOpen] = useState(false);
     const { createCategoryAsync, isCreating, isError, error } = useAddCategory();
 
     async function onSubmit(values: z.infer<typeof addCategoryFormSchema>) {
@@ -37,7 +45,7 @@ export function AddCategoryDialog() {
 
         try {
             await createCategoryAsync({ ...values, category_icon: values.category_icon === "" ? null : values.category_icon });
-            setOpen(false);
+            setCreateCategoryDialogOpen(false);
         } catch (error) {
             console.error("Error creating category: ", error);
         }
@@ -60,10 +68,15 @@ export function AddCategoryDialog() {
     });
 
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-                <Button>Add Category</Button>
-            </DialogTrigger>
+        <Dialog open={createCategoryDialogOpen} onOpenChange={setCreateCategoryDialogOpen}>
+            {
+                showTrigger && (
+                    <DialogTrigger asChild>
+                        <Button>Add Category</Button>
+                    </DialogTrigger>
+
+                )
+            }
 
             <DialogContent>
                 <Form {...addCategoryForm}>
