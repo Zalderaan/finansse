@@ -18,7 +18,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 import { useAddCategory } from "@/features/categories/hooks/useAddCategory";
 import { useCategoryUiStore } from "@/features/categories/stores/categories.uiStore";
-import { useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 
 
