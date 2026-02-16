@@ -12,9 +12,9 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useCreateAccount } from '../hooks/useCreateAccount';
-import type { CreateAccountRequest } from '../types/accounts.type';
-import { useAccountUiStore } from '../stores/accounts.uiStore';
+import { useCreateAccount } from '@/features/accounts/hooks/useCreateAccount';
+import type { CreateAccountRequest } from '@/features/accounts/types/accounts.type';
+import { useAccountUiStore } from '@/features/accounts/stores/accounts.uiStore';
 
 // Forms imports
 import {
@@ -44,7 +44,13 @@ const createAccountFormSchema = z.object({
         .optional(),
 });
 
-export function CreateAccountDialog({ children, className }: { children?: ReactNode; className?: string; }) {
+interface CreateAccountDialogProps {
+    children?: ReactNode;
+    className?: string;
+    showTrigger?: boolean;
+}
+
+export function CreateAccountDialog({ children, className, showTrigger = true }: CreateAccountDialogProps) {
     const { createAccountDialogOpen, setCreateAccountDialogOpen } = useAccountUiStore();
 
     const createAccountForm = useForm<z.infer<typeof createAccountFormSchema>>({
@@ -96,15 +102,17 @@ export function CreateAccountDialog({ children, className }: { children?: ReactN
     return (
         <>
             <Dialog open={createAccountDialogOpen} onOpenChange={setCreateAccountDialogOpen}>
-                <DialogTrigger asChild>
-                    <Button className={className ?? 'flex flex-row items-center justify-center gap-2'}>
-                        {children ?? (
-                            <>
-                                <Plus /> Create
-                            </>
-                        )}
-                    </Button>
-                </DialogTrigger>
+                {showTrigger && (
+                    <DialogTrigger asChild>
+                        <Button className={className ?? 'flex flex-row items-center justify-center gap-2'}>
+                            {children ?? (
+                                <>
+                                    <Plus /> Create
+                                </>
+                            )}
+                        </Button>
+                    </DialogTrigger>
+                )}
                 <DialogContent>
                     <Form {...createAccountForm}>
                         <form onSubmit={createAccountForm.handleSubmit(onSubmit)} className='space-y-6'>
