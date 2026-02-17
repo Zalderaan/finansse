@@ -53,7 +53,11 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 // })
 
-export function AddTransactionDialog() {
+interface AddTransactionDialogProps {
+    showTrigger: boolean;
+}
+
+export function AddTransactionDialog({ showTrigger = true }: AddTransactionDialogProps) {
     const { state } = useSidebar();
     const isCollapsed = state === "collapsed";
 
@@ -160,12 +164,17 @@ export function AddTransactionDialog() {
     return (
         <Dialog open={createTransactionDialogOpen} onOpenChange={setCreateTransactionDialogOpen}>
 
-            <DialogTrigger asChild disabled={isDisabled} className='w-full'>
-                <SidebarMenuButton tooltip="Add Transaction" className="font-bold flex justify-center items-center border">
-                    <PlusIcon />
-                    {!isCollapsed && <span className="ml-2">Add Transaction</span>}
-                </SidebarMenuButton>
-            </DialogTrigger>
+            {
+                showTrigger && (
+                    <DialogTrigger asChild disabled={isDisabled} className='w-full'>
+                        <SidebarMenuButton tooltip="Add Transaction" className="font-bold flex justify-center items-center border">
+                            <PlusIcon />
+                            {!isCollapsed && <span className="ml-2">Add Transaction</span>}
+                        </SidebarMenuButton>
+                    </DialogTrigger>
+
+                )
+            }
 
             <DialogContent>
                 <Form {...createTransactionForm}>

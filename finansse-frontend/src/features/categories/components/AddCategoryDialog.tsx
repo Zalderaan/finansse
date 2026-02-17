@@ -33,7 +33,7 @@ interface AddCategoryDialogProps {
 }
 
 
-export function AddCategoryDialog({ showTrigger = false }: AddCategoryDialogProps) {
+export function AddCategoryDialog({ showTrigger = true }: AddCategoryDialogProps) {
     const { createCategoryDialogOpen, setCreateCategoryDialogOpen } = useCategoryUiStore();
     // const [open, setOpen] = useState(false);
     const { createCategoryAsync, isCreating, isError, error } = useAddCategory();
