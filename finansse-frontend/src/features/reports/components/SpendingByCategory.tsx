@@ -5,7 +5,7 @@ import {
     CardDescription,
     CardContent,
 } from "@/components/ui/card";
-import { PieChart, Pie, Tooltip, Legend, Cell } from "recharts";
+import { PieChart, Pie, Tooltip, Legend, Cell, ResponsiveContainer } from "recharts";
 import { useGetUserSpendingByCategory } from "@/features/reports/hooks/useGetUserSpendingByCategory";
 // import { useHasAccounts } from "@/features/accounts/hooks/useHasAccounts";
 // import { Button } from "@/components/ui/button";
@@ -39,23 +39,25 @@ export function SpendingByCategory() {
                     ) : isError ? (
                         <p>Error loading data: {error?.message || "Unknown error"}</p>
                     ) : (
-                        <PieChart>
-                            <Pie
-                                data={userSpendByCategory}
-                                dataKey="total_amount"
-                                nameKey="category_name"
-                                innerRadius={60}
-                                outerRadius={80}
-                                cornerRadius={5}
-                                paddingAngle={5}
-                            >
-                                {userSpendByCategory?.map((_, index) => (
-                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                ))}
-                            </Pie>
-                            <Tooltip formatter={(value: number) => `${value.toLocaleString("en-PH", { style: "currency", currency: "PHP" })}`} />
-                            <Legend />
-                        </PieChart >
+                        <ResponsiveContainer width={"100%"} height={400}>
+                            <PieChart>
+                                <Pie
+                                    data={userSpendByCategory}
+                                    dataKey="total_amount"
+                                    nameKey="category_name"
+                                    innerRadius={60}
+                                    outerRadius={80}
+                                    cornerRadius={5}
+                                    paddingAngle={5}
+                                >
+                                    {userSpendByCategory?.map((_, index) => (
+                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                    ))}
+                                </Pie>
+                                <Tooltip formatter={(value: number) => `${value.toLocaleString("en-PH", { style: "currency", currency: "PHP" })}`} />
+                                <Legend />
+                            </PieChart >
+                        </ResponsiveContainer>
                     )
                 }
             </CardContent >
