@@ -36,7 +36,7 @@ export function DashboardPage() {
             {/* Quick Actions */}
             <DashboardQuickActions />
 
-            {/* Dialog Render Area */}
+            {/* Dialog Render Area so that Quick Actions can access it*/}
             <CreateAccountDialog showTrigger={false} />
             <AddCategoryDialog showTrigger={false} />
             <AddTransactionDialog showTrigger={false} />
