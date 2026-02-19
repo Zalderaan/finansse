@@ -39,6 +39,7 @@ import { useGetCategories } from '@/features/categories/hooks/useGetCategories';
 // types imports
 import type { CreateTransactionRequest } from '@/features/transactions/types/transactions.types';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { cn } from '@/lib/utils';
 
 // const createTransactionFormSchema = z.object({
 //     transaction_name: z.string().optional(),
@@ -247,7 +248,11 @@ export function AddTransactionDialog({ showTrigger = true }: AddTransactionDialo
                                                 <SelectContent>
                                                     <SelectItem value='EXPENSE'>Expense</SelectItem>
                                                     <SelectItem value='INCOME'>Income</SelectItem>
-                                                    <SelectItem value='TRANSFER'>Transfer</SelectItem>
+                                                    <SelectItem className={cn((accounts?.length ?? 0) < 2 && "text-muted-foreground cursor-not-allowed opacity-50")} value='TRANSFER' disabled={(accounts?.length ?? 0) < 2}>Transfer {(accounts?.length ?? 0) < 2 && (
+                                                        <span className='text-xs items-center text-gray-600'>
+                                                            (Must have 2 or more accounts to enable)
+                                                        </span>
+                                                    )}</SelectItem>
                                                 </SelectContent>
                                             </Select>
                                         </FormControl>

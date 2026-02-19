@@ -53,8 +53,8 @@ export function DashboardPage() {
                 <RecentTransactions />
                 <BalanceChart />
                 <div className="flex flex-col sm:flex-row items-center justify-between space-x-3">
-                    <SpendingByCategory />
                     <IncomeByCategory />
+                    <SpendingByCategory />
                 </div>
             </div>
         </div>
