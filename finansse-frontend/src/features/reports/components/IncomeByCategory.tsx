@@ -27,6 +27,8 @@ export function IncomeByCategory() {
                 </CardDescription>
             </CardHeader>
 
+            {/* TODO: Empty state */}
+
             <CardContent>
                 {
                     isLoading ? (
@@ -35,7 +37,6 @@ export function IncomeByCategory() {
                         <p>Error loading data: {error?.message || "Unknown error"}</p>
                     ) : (
                         <ResponsiveContainer width="100%" height={400}>
-
                             <PieChart>
                                 <Pie
                                     data={userIncomeByCategory}

@@ -32,6 +32,9 @@ export function SpendingByCategory() {
                 </CardDescription>
             </CardHeader>
 
+            {/* TODO: Empty state */}
+
+
             <CardContent>
                 {
                     isLoading ? (
