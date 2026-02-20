@@ -13,3 +13,5 @@ node_modules
 
 # sequence fixing
 /src/utils/fix-seq.ts
+
+dist/
