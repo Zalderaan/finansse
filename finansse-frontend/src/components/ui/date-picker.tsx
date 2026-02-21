@@ -43,7 +43,7 @@
 
 "use client"
 
-import * as React from "react"
+//! THIS IS NOT FULLY FROM SHADCN, SOME STUFF HAVE BEEN CUSTOMIZED
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import {

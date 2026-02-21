@@ -55,7 +55,7 @@ import { cn } from '@/lib/utils';
 // })
 
 interface AddTransactionDialogProps {
-    showTrigger: boolean;
+    showTrigger?: boolean;
 }
 
 export function AddTransactionDialog({ showTrigger = true }: AddTransactionDialogProps) {
