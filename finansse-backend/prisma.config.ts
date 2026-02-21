@@ -1,5 +1,4 @@
-// import "dotenv/config"
-
+import "dotenv/config" //! Don't remove this
 import { defineConfig, env } from "prisma/config";
 
 // console.log(env("DATABASE_URL"));
