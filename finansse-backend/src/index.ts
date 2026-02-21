@@ -9,9 +9,18 @@ const app: Express = express()
 const port = 3001;
 const routes = router;
 
+const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:5173'];
+
 // middleware
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: (origin, callback) => {
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.includes(origin)) {
+            callback(null, true)
+        } else {
+            callback(new Error(`Origin ${origin} not allowed by CORS`));
+        }
+    },
     credentials: true,
 }));
 app.use(cookieParser());
@@ -20,7 +29,7 @@ app.use(morgan('dev'));
 app.use(express.json());
 
 // routes
-app.use('/finansse-backend', routes)
+app.use('/finansse-backend', routes);
 
 // server
 const server = app.listen(port, () => {
