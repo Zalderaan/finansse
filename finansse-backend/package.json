@@ -4,7 +4,7 @@
   "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx prisma generate && tsc --pretty false",
+    "build": "npm ci && npx prisma generate && tsc --pretty false",
     "start": "node dist/index.js",
     "dev": "ts-node src/index.ts",
     "watch": "nodemon --exec ts-node src/index.ts"
