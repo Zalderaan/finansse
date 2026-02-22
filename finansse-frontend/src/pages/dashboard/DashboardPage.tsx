@@ -52,7 +52,7 @@ export function DashboardPage() {
                 <span className="font-normal text-2xl">Graphs</span>
                 <RecentTransactions />
                 <BalanceChart />
-                <div className="flex flex-col sm:flex-row items-center justify-between space-x-3">
+                <div className="flex flex-col gap-4 sm:flex-row sm:justify-center sm:items-center">
                     <IncomeByCategory />
                     <SpendingByCategory />
                 </div>

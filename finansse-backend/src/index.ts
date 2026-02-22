@@ -6,10 +6,12 @@ import router from './routes/routes'
 import cookieParser from 'cookie-parser';
 
 const app: Express = express()
-const port = 3001;
+const port = process.env.PORT || 3001; // PORT will be assigned by render.com
 const routes = router;
-
+const environment = process.env.NODE_ENV || 'development';
 const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:5173'];
+
+// console.log(process.env.DATABASE_URL);
 
 // middleware
 app.use(cors({
@@ -33,8 +35,21 @@ app.use('/finansse-backend', routes);
 
 // server
 const server = app.listen(port, () => {
-    console.log(`Server running from http://localhost:${port}`);
-})
+    if (environment === 'production') {
+        console.log(`Server running in production on port ${port}`);
+    } else {
+        console.log(`Server running at http://localhost:${port}`);
+    }
+});
+
+server.on('error', (error: NodeJS.ErrnoException) => {
+    if (error.code === 'EADDRINUSE') {
+        console.error(`Port ${port} is already in use`);
+    } else {
+        console.error('Server error:', error);
+    }
+    process.exit(1);
+});
 
 // Graceful shutdown
 process.on('SIGTERM', () => {

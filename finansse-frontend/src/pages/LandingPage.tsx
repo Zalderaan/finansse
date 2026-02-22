@@ -61,7 +61,7 @@ export function LandingPage() {
                         <div className="flex flex-col justify-center space-y-4 sm:space-y-6 text-center lg:text-left">
                             {/* Main functionality overall of your app */}
                             <h1 className="font-bold text-3xl sm:text-4xl lg:text-5xl xl:text-6xl leading-tight">
-                                Your Money, Your Rules
+                                Make it make sense
                             </h1>
                             <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto lg:mx-0">
                                 Take control of your finances with smart budgeting, expense tracking, and financial insights that help you achieve your goals.
