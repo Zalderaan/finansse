@@ -24,7 +24,7 @@ export function useRegister() {
         },
         onError: (error: any) => {
             toast.error("Error logging in", {
-                description: `${error.response.data.message}`,
+                description: `${error?.response?.data?.message || error?.message || "Registration failed"}`,
                 duration: 3000,
                 classNames: {
                     title: "!text-red-900",
