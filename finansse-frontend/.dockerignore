@@ -1,0 +1,16 @@
+
+# node pkgs
+node_modules
+
+# build files
+dist
+
+# env files
+.env
+.env.*
+
+# any markdown
+*.md
+
+# git
+.git

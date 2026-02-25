@@ -1,0 +1,10 @@
+# services:
+#   frontend:
+#     container_name: 
+#     image:
+#     ports:
+  
+#   backend:
+#     container_name: finansse-backend
+#     image:
+#     ports:
