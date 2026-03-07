@@ -58,7 +58,7 @@ export function Accounts() {
 
     return (
         <>
-            <div className="flex flex-col flex-1 space-y-4 bg-red-200">
+            <div className="flex flex-col flex-1 space-y-4">
                 {accounts?.map(account => (
                     <AccountCard key={account.account_id} {...account} />
                 ))}

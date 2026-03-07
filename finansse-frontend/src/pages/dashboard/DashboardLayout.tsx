@@ -13,7 +13,7 @@ export function DashboardLayout() {
         <SidebarProvider defaultOpen={defaultOpen}>
             <AppSidebar />
             <main className="flex flex-col w-full">
-                <nav className="p-4 border-b-1 flex justify-between items-center top-0 sticky z-10 bg-gray-50 dark:bg-neutral-900">
+                <nav className="p-4 h-18 border-b-1 flex justify-between items-center top-0 sticky z-10 bg-gray-50 dark:bg-neutral-900">
                     <SidebarTrigger />
                     <ModeToggle />
                 </nav>
