@@ -7,6 +7,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Link } from "react-router-dom";
 import { useLogin } from "@/features/auth/hooks/useLogin";
+import { useState } from "react";
+import { Eye, EyeClosed } from "lucide-react";
 // import { useAuthRedirect } from "@/features/auth/hooks/useAuthRedirect";
 
 const formSchema = z.object({
@@ -17,6 +19,7 @@ const formSchema = z.object({
 })
 
 export function LoginPage() {
+    const [isShowPassword, setIsShowPassword] = useState<boolean>(false);
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -67,7 +70,12 @@ export function LoginPage() {
                                     <FormItem>
                                         <FormLabel>Password</FormLabel>
                                         <FormControl>
-                                            <Input type="Password" placeholder="password" {...field} />
+                                            <div className="flex flex-row items-center justify-between space-x-2">
+                                                <Input type={!isShowPassword ? "password" : "text"} placeholder="password" {...field} />
+                                                <Button onClick={() => setIsShowPassword(!isShowPassword)} type="button" className="w-fit">
+                                                    {isShowPassword ? <Eye /> : <EyeClosed />}
+                                                </Button>
+                                            </div>
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
