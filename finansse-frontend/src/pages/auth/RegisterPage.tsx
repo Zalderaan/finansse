@@ -7,6 +7,8 @@ import { z } from "zod";
 import { Link } from "react-router-dom";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { useRegister } from "@/features/auth/hooks/useRegister";
+import { useState } from "react";
+import { Eye, EyeClosed } from "lucide-react";
 // import { useAuthRedirect } from "@/features/auth/hooks/useAuthRedirect";
 
 const formSchema = z.object({
@@ -28,6 +30,8 @@ const formSchema = z.object({
 });
 
 export function RegisterPage() {
+    const [isShowPassword, setIsShowPassword] = useState<boolean>(false);
+    const [isShowConfirmPassword, setIsShowConfirmPassword] = useState<boolean>(false);
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -95,8 +99,21 @@ export function RegisterPage() {
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Password</FormLabel>
+                                        {/* <FormControl>
+                                            <div className="flex flex-row items-center justify-between space-x-2">
+                                                <Input type={!isShowPassword ? "password" : "text"} placeholder="Password" {...field} />
+                                                <Button onClick={() => setIsShowPassword(!isShowPassword)} type="button" className="w-fit">
+                                                    {isShowPassword ? <Eye /> : <EyeClosed />}
+                                                </Button>
+                                            </div>
+                                        </FormControl> */}
                                         <FormControl>
-                                            <Input type="Password" placeholder="password" {...field} />
+                                            <div className="flex flex-row items-center justify-between space-x-2">
+                                                <Input type={!isShowPassword ? "password" : "text"} placeholder="Password" {...field} />
+                                                <Button onClick={() => setIsShowPassword(!isShowPassword)} type="button" className="w-fit">
+                                                    {isShowPassword ? <Eye /> : <EyeClosed />}
+                                                </Button>
+                                            </div>
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -110,7 +127,12 @@ export function RegisterPage() {
                                     <FormItem>
                                         <FormLabel>Confirm Password</FormLabel>
                                         <FormControl>
-                                            <Input type="password" placeholder="Confirm Password" {...field} />
+                                            <div className="flex flex-row items-center justify-between space-x-2">
+                                                <Input type={!isShowConfirmPassword ? "password" : "text"} placeholder="Confirm Password" {...field} />
+                                                <Button onClick={() => setIsShowConfirmPassword(!isShowConfirmPassword)} type="button" className="w-fit">
+                                                    {isShowConfirmPassword ? <Eye /> : <EyeClosed />}
+                                                </Button>
+                                            </div>
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>

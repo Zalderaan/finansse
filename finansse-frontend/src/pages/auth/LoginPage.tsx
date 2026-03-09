@@ -71,7 +71,7 @@ export function LoginPage() {
                                         <FormLabel>Password</FormLabel>
                                         <FormControl>
                                             <div className="flex flex-row items-center justify-between space-x-2">
-                                                <Input type={!isShowPassword ? "password" : "text"} placeholder="password" {...field} />
+                                                <Input type={!isShowPassword ? "password" : "text"} placeholder="Password" {...field} />
                                                 <Button onClick={() => setIsShowPassword(!isShowPassword)} type="button" className="w-fit">
                                                     {isShowPassword ? <Eye /> : <EyeClosed />}
                                                 </Button>
