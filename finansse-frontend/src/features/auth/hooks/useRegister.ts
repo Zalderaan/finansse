@@ -9,18 +9,20 @@ export function useRegister() {
     const registerMutation = useMutation({
         mutationFn: authApiService.register,
         onSuccess: (data) => {
-            queryClient.setQueryData(['auth', 'user'], data.user);
+            console.log("Register data: ", data);
+            const user = data.data;
+            queryClient.setQueryData(['auth', 'user'], user);
 
-            toast.success("Registration successful", {
-                // description: `Welcome back, ${data.user_data.username}!`,
-                description: `Welcome to Finansse, ${data.user.username}!`,
-                duration: 3000,
-                classNames: {
-                    title: "!text-green-900",
-                    description: "!text-xs !text-green-700",
-                    toast: "!bg-green-200 !border-green-300",
-                }
-            })
+            // toast.success("Registration successful", {
+            //     // description: `Welcome back, ${data.user_data.username}!`,
+            //     description: `Welcome to Finansse, ${data.user.username}!`,
+            //     duration: 3000,
+            //     classNames: {
+            //         title: "!text-green-900",
+            //         description: "!text-xs !text-green-700",
+            //         toast: "!bg-green-200 !border-green-300",
+            //     }
+            // })
         },
         onError: (error: any) => {
             toast.error("Error logging in", {

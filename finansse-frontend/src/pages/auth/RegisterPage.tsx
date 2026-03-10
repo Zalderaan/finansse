@@ -9,7 +9,7 @@ import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "
 import { useRegister } from "@/features/auth/hooks/useRegister";
 import { useState } from "react";
 import { Eye, EyeClosed } from "lucide-react";
-// import { useAuthRedirect } from "@/features/auth/hooks/useAuthRedirect";
+import { SuccessfulRegistrationDialog } from "@/features/auth/components/SuccessfulRegistrationDialog";
 
 const formSchema = z.object({
     email: z.string().email({
@@ -30,6 +30,7 @@ const formSchema = z.object({
 });
 
 export function RegisterPage() {
+    const [registerSuccessDialogOpen, setRegisterSuccessDialogOpen] = useState<boolean>(false);
     const [isShowPassword, setIsShowPassword] = useState<boolean>(false);
     const [isShowConfirmPassword, setIsShowConfirmPassword] = useState<boolean>(false);
     const form = useForm<z.infer<typeof formSchema>>({
@@ -43,14 +44,12 @@ export function RegisterPage() {
         mode: "onChange"
     })
 
-    // const authRedirect = useAuthRedirect();
-    // if (authRedirect) return authRedirect;
-
     const { registerAsync, isRegistering, registerError } = useRegister();
     async function onSubmit(values: z.infer<typeof formSchema>) {
         console.log("Register form values: ", values);
         try {
             await registerAsync(values);
+            setRegisterSuccessDialogOpen(true);
         } catch (error) {
             console.error("Register error: ", error);
         }
@@ -99,14 +98,6 @@ export function RegisterPage() {
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Password</FormLabel>
-                                        {/* <FormControl>
-                                            <div className="flex flex-row items-center justify-between space-x-2">
-                                                <Input type={!isShowPassword ? "password" : "text"} placeholder="Password" {...field} />
-                                                <Button onClick={() => setIsShowPassword(!isShowPassword)} type="button" className="w-fit">
-                                                    {isShowPassword ? <Eye /> : <EyeClosed />}
-                                                </Button>
-                                            </div>
-                                        </FormControl> */}
                                         <FormControl>
                                             <div className="flex flex-row items-center justify-between space-x-2">
                                                 <Input type={!isShowPassword ? "password" : "text"} placeholder="Password" {...field} />
@@ -165,6 +156,7 @@ export function RegisterPage() {
                     </form>
                 </Form>
             </Card>
+            <SuccessfulRegistrationDialog open={registerSuccessDialogOpen} onOpenChange={setRegisterSuccessDialogOpen} />
         </div>
     );
 }

@@ -40,7 +40,11 @@ export interface RegisterRequest {
     password: string;
 }
 
-// TODO: Register response
+export interface RegisterResponse {
+    success: string;
+    message: string;
+    data: User;
+}
 
 export interface RefreshTokenRequest {
     accessToken: string
