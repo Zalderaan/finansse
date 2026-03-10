@@ -13,7 +13,6 @@ export function LandingPage() {
             <header className="flex flex-row items-center justify-between px-4 sm:px-6 lg:px-8 py-3 lg:py-4 bg-purple-200 dark:bg-purple-950 fixed top-0 w-full z-50">
                 <span className="font-extrabold text-lg sm:text-xl lg:text-2xl">Finansse</span>
                 <div className="flex flex-row items-center space-x-2">
-                    <ModeToggle />
                     <nav aria-label="Authentication">
                         {user ? (
                             <ul className="flex items-center space-x-1 sm:space-x-2 list-none">
@@ -55,6 +54,7 @@ export function LandingPage() {
                             </ul>
                         )}
                     </nav>
+                    <ModeToggle />
                 </div>
 
             </header>

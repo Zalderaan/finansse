@@ -82,6 +82,7 @@ export class AuthController {
                 secure: process.env.NODE_ENV === 'production',
                 sameSite: 'lax',
                 maxAge: 7 * 24 * 60 * 60 * 1000,
+                domain: process.env.JWT_COOKIE_DOMAIN || undefined,
                 // maxAge: 60 * 1000
             });
             return res.status(201).json({
