@@ -13,7 +13,7 @@ function App() {
   return (
     <>
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider defaultTheme='dark' storageKey='vite-ui-theme'>
+        <ThemeProvider defaultTheme='system' storageKey='vite-ui-theme'>
           <ReactQueryDevtools initialIsOpen={false} />
           <TooltipProvider>
             <RouterProvider router={router} />

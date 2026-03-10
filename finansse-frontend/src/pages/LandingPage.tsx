@@ -3,55 +3,60 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from 'react-router-dom';
 import { useAuthStore } from "@/features/auth/stores/auth.store";
 import { useLogout } from "@/features/auth/hooks/useLogout";
+import { ModeToggle } from "@/components/mode-toggle";
 
 export function LandingPage() {
     const user = useAuthStore(state => state.user);
     const { logout } = useLogout();
     return (
         <div className="min-h-screen flex flex-col">
-            <header className="flex flex-row items-center justify-between px-4 sm:px-6 lg:px-8 py-3 lg:py-4 bg-purple-200 top-0 sticky z-10">
+            <header className="flex flex-row items-center justify-between px-4 sm:px-6 lg:px-8 py-3 lg:py-4 bg-purple-200 dark:bg-purple-950 fixed top-0 w-full z-50">
                 <span className="font-extrabold text-lg sm:text-xl lg:text-2xl">Finansse</span>
-                <nav aria-label="Authentication">
-                    {user ? (
-                        <ul className="flex items-center space-x-1 sm:space-x-2 list-none">
-                            <li className="hidden sm:block text-xs sm:text-sm text-gray-600">
-                                Welcome, {user.username}!
-                            </li>
-                            <li>
-                                <Button asChild className="w-fit text-xs sm:text-sm" size='sm'>
-                                    <Link to='/dashboard'>
-                                        <span className="hidden sm:inline">Proceed to dashboard</span>
-                                        <span className="sm:hidden">Dashboard</span>
-                                    </Link>
-                                </Button>
-                            </li>
-                            <li>
-                                <Button asChild
-                                    className="w-fit text-xs sm:text-sm" onClick={() => logout()}
-                                    variant='outline' size='sm'
-                                >
-                                    <Link to='/dashboard'>Logout</Link>
-                                </Button>
-                            </li>
-                        </ul>
-                    ) : (
-                        <ul className="flex space-x-1 sm:space-x-2 list-none">
-                            <li>
-                                <Button asChild className="w-fit text-xs sm:text-sm" size='sm' variant={"outline"}>
-                                    <Link to='/login'>Sign In</Link>
-                                </Button>
-                            </li>
-                            <li>
-                                <Button asChild className="w-fit text-xs sm:text-sm" size='sm'>
-                                    <Link to='/register'>
-                                        <span className="sm:hidden">Sign Up</span>
-                                        <span className="hidden sm:inline">Get Started Free</span>
-                                    </Link>
-                                </Button>
-                            </li>
-                        </ul>
-                    )}
-                </nav>
+                <div className="flex flex-row items-center space-x-2">
+                    <ModeToggle />
+                    <nav aria-label="Authentication">
+                        {user ? (
+                            <ul className="flex items-center space-x-1 sm:space-x-2 list-none">
+                                <li className="hidden sm:block text-xs sm:text-sm text-gray-600">
+                                    Welcome, {user.username}!
+                                </li>
+                                <li>
+                                    <Button asChild className="w-fit text-xs sm:text-sm" size='sm'>
+                                        <Link to='/dashboard'>
+                                            <span className="hidden sm:inline">Proceed to dashboard</span>
+                                            <span className="sm:hidden">Dashboard</span>
+                                        </Link>
+                                    </Button>
+                                </li>
+                                <li>
+                                    <Button asChild
+                                        className="w-fit text-xs sm:text-sm" onClick={() => logout()}
+                                        variant='outline' size='sm'
+                                    >
+                                        <Link to='/dashboard'>Logout</Link>
+                                    </Button>
+                                </li>
+                            </ul>
+                        ) : (
+                            <ul className="flex space-x-1 sm:space-x-2 list-none">
+                                <li>
+                                    <Button asChild className="w-fit text-xs sm:text-sm" size='sm' variant={"outline"}>
+                                        <Link to='/login'>Sign In</Link>
+                                    </Button>
+                                </li>
+                                <li>
+                                    <Button asChild className="w-fit text-xs sm:text-sm" size='sm'>
+                                        <Link to='/register'>
+                                            <span className="sm:hidden">Sign Up</span>
+                                            <span className="hidden sm:inline">Get Started Free</span>
+                                        </Link>
+                                    </Button>
+                                </li>
+                            </ul>
+                        )}
+                    </nav>
+                </div>
+
             </header>
             <main className="flex-1">
                 {/* Hero Section */}
