@@ -52,6 +52,12 @@ export function setupInterceptors() {
             // 🔴 Handle refresh endpoint failure explicitly
             if (error.response?.status === 401 && originalRequest?.url?.includes('auth/refresh')) {
                 console.log('Refresh token invalid or missing — redirecting to login');
+                // In axios response interceptor, right before each logout()+redirect branch
+                console.warn('[AUTH DEBUG] forcing logout from interceptor', {
+                    url: originalRequest?.url,
+                    status: error.response?.status,
+                    hasRetry: originalRequest?._retry,
+                });
                 useAuthStore.getState().logout();
                 window.location.href = '/login';
                 return Promise.reject(error);
@@ -92,6 +98,12 @@ export function setupInterceptors() {
                     // TODO: catch refreshError better
                 } catch (refreshError: any) {
                     console.log('this is refresh error: ', refreshError);
+                    // In axios response interceptor, right before each logout()+redirect branch
+                    console.warn('[AUTH DEBUG] forcing logout from interceptor', {
+                        url: originalRequest?.url,
+                        status: error.response?.status,
+                        hasRetry: originalRequest?._retry,
+                    });
                     useAuthStore.getState().logout(); // Clear auth state and redirect to login
                     window.location.href = '/login';
                     processQueue(refreshError, null);

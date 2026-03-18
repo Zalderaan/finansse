@@ -25,6 +25,8 @@ export const useAuthStore = create<AuthStore>()(
                 set({ user })
             },
             logout: () => {
+                console.warn('[AUTH DEBUG] logout() called');
+                console.trace('[AUTH DEBUG] logout call stack');
                 set({ token: null, user: null, isAuthenticated: false });
                 localStorage.removeItem('auth-storage');
             },
