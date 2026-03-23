@@ -20,7 +20,6 @@ export function TransactionList({transactions, isLoadingAccTransactions, isError
     // TEMP: force loading UI preview
     const previewLoadingUI = false;
 
-
     // TEMP: force error UI preview
     const previewErrorUI = false;
     const previewErrorMessage = "Sample error: Failed to fetch account transactions (500).";
@@ -68,14 +67,14 @@ export function TransactionList({transactions, isLoadingAccTransactions, isError
 // loading state UI in the account's transaction list
 function TransactionListLoading() {
     return (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col">
             {/* <div className="flex items-center gap-2 px-1 text-sm text-muted-foreground">
                 <Spinner className="size-4" />
                 <span>Loading account transactions...</span>
             </div> */}
 
             {Array.from({ length: 4 }).map((_, index) => (
-                <div key={index} className="rounded-lg border p-4 shadow-sm">
+                <div key={index} className="border p-4 shadow-sm">
                     <div className="flex items-start justify-between gap-4">
                         <div className="flex-1 space-y-2">
                             <Skeleton className="h-5 w-44" />

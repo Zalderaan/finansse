@@ -44,12 +44,12 @@ export function AccountDetails() {
     }
 
     return (
-        <>
+        <div className="h-full flex flex-col space-y-2">
             {/* ── Back nav ── */}
-            <Button asChild className="w-fit" variant="ghost" size="sm">
-                <Link to="/dashboard/accounts"><ArrowLeft className="mr-1 h-4 w-4" />Back to accounts</Link>
+            <Button asChild className="w-fit px-0" variant="ghost" size="sm">
+                <Link to="/dashboard/accounts"><ArrowLeft className="h-4 w-4" />Back to accounts</Link>
             </Button>
-            <main className="space-y-4 px-4 py-4">
+            <main className="min-h-0 flex flex-col flex-1 space-y-4 px-2">
                 {/* ── Account header ── */}
                 <section className="flex items-center justify-between">
                     <div>
@@ -71,7 +71,7 @@ export function AccountDetails() {
                 </section>
 
                 {/* ── Transactions table ── */}
-                <Card className="gap-0 py-0">
+                <Card className="flex-1 min-h-0 flex flex-col gap-0 py-0 m-0 h-full">
                     <CardHeader className="grid grid-cols-1 md:grid-cols-2 justify-center items-center py-4 align-middle">
                         <div className="flex flex-col justify-center space-y-2">
                             <CardTitle>Transactions</CardTitle>
@@ -90,7 +90,7 @@ export function AccountDetails() {
                         <TransactionSearchBar />
                     </CardHeader>
                     <Separator />
-                    <CardContent className="m-0 p-0">
+                    <CardContent className="flex-1 min-h-0 p-0 ">
                         <TransactionList
                             transactions={transactions}
                             isLoadingAccTransactions={isLoadingAccTransactions}
@@ -99,9 +99,8 @@ export function AccountDetails() {
                         />
                     </CardContent>
                 </Card>
-
             </main>
-        </>
+        </div>
     )
 }
 

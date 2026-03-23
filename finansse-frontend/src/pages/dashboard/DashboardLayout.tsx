@@ -17,7 +17,7 @@ export function DashboardLayout() {
                     <SidebarTrigger />
                     <ModeToggle />
                 </nav>
-                <section className="flex flex-col flex-1 p-4">
+                <section className="flex flex-col flex-1 p-4 min-h-0">
                     <Outlet />
                 </section>
             </main>

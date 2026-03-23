@@ -14,7 +14,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { SidebarMenuButton, useSidebar } from '@/components/ui/sidebar';
-import { DatePickerSimple } from "@/components/ui/date-picker";
+import { DatePickerTime } from "@/components/ui/date-picker";
 
 // forms imports
 import {
@@ -114,8 +114,8 @@ export function AddTransactionDialog({ showTrigger = true }: AddTransactionDialo
         const accountName = selectedAccount?.account_name || `Account ${values.account_id}`;
         const name = `${values.type} of ${formattedAmount} on ${accountName}`;
 
-        console.log("Auto name: ", name);
-        console.log("Actual name: ", values.transaction_name);
+        // console.log("Auto name: ", name);
+        // console.log("Actual name: ", values.transaction_name);
 
         const finalTransactionValues: CreateTransactionRequest = {
             name: values.transaction_name || name,
@@ -200,7 +200,7 @@ export function AddTransactionDialog({ showTrigger = true }: AddTransactionDialo
                                                 <SelectTrigger className='w-full'>
                                                     <SelectValue placeholder="Choose account" />
                                                 </SelectTrigger>
-                                                <SelectContent>
+                                                <SelectContent position='popper'>
 
                                                     {accountsIsLoading ? (
                                                         <SelectItem value="" disabled>Loading accounts</SelectItem>
@@ -245,7 +245,7 @@ export function AddTransactionDialog({ showTrigger = true }: AddTransactionDialo
                                                 <SelectTrigger className='w-full'>
                                                     <SelectValue placeholder={!watchedAccountId ? "Pick an account first" : "Choose transaction type"} />
                                                 </SelectTrigger>
-                                                <SelectContent>
+                                                <SelectContent position='popper'>
                                                     <SelectItem value='EXPENSE'>Expense</SelectItem>
                                                     <SelectItem value='INCOME'>Income</SelectItem>
                                                     <SelectItem className={cn((accounts?.length ?? 0) < 2 && "text-muted-foreground cursor-not-allowed opacity-50")} value='TRANSFER' disabled={(accounts?.length ?? 0) < 2}>Transfer {(accounts?.length ?? 0) < 2 && (
@@ -294,7 +294,7 @@ export function AddTransactionDialog({ showTrigger = true }: AddTransactionDialo
                                             Leaving this blank will default to now
                                         </FormDescription>
                                         <FormControl>
-                                            <DatePickerSimple
+                                            <DatePickerTime
                                                 value={field.value}
                                                 onChange={field.onChange}
                                                 disabled={!watchedAccountId}
@@ -320,8 +320,7 @@ export function AddTransactionDialog({ showTrigger = true }: AddTransactionDialo
                                                     <SelectTrigger className='w-full'>
                                                         <SelectValue placeholder="Choose account to transfer to" />
                                                     </SelectTrigger>
-                                                    <SelectContent>
-
+                                                    <SelectContent position='popper'>
                                                         {accountsIsLoading ? (
                                                             <SelectItem value="" disabled>Loading accounts</SelectItem>
                                                         ) : accountsIsError ? (
@@ -404,7 +403,7 @@ export function AddTransactionDialog({ showTrigger = true }: AddTransactionDialo
                                                     )}
                                                 </SelectContent> */}
 
-                                                <SelectContent side='top'>
+                                                <SelectContent side='top' position='popper'>
                                                     <Tabs defaultValue='default'>
                                                         <TabsList>
                                                             <TabsTrigger value="user">User-made</TabsTrigger>
