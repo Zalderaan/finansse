@@ -1,5 +1,6 @@
 import { Link, useParams } from "react-router-dom"
 import { useGetAccDetails } from "@/features/accounts//hooks/useGetAccDetails";
+import { useGetTransactionsByAcc } from "@/features/transactions/hooks/useGetTransactionsByAcc";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import {
@@ -7,6 +8,7 @@ import {
     CardHeader,
     CardTitle,
     CardDescription,
+    CardContent,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { DeleteAccountDialog } from "@/features/accounts/components/DeleteAccountDialog";
@@ -14,10 +16,12 @@ import { TransactionList } from "@/features/transactions/components/TransactionL
 import { EditAccountDialog } from "@/features/accounts/components/EditAccountDialog";
 import { TransactionSearchBar } from "@/features/accounts/components/TransactionSearchBar";
 import { DashboardCard } from "@/features/reports/components/DashboardCard";
+import { Spinner } from "@/components/ui/spinner";
 
 export function AccountDetails() {
     const { accountId } = useParams();
     if (!accountId) return <span>Invalid account ID</span>;
+    const { transactions, isLoading: isLoadingAccTransactions, isError: isErrorAccTransactions, error: errorAccTransactions } = useGetTransactionsByAcc(accountId);
     const { account, isLoading, isError, error } = useGetAccDetails(accountId);
     // console.log('account details: ', account);
     const totalIncome = 1000;
@@ -67,16 +71,33 @@ export function AccountDetails() {
                 </section>
 
                 {/* ── Transactions table ── */}
-                <Card>
-                    <CardHeader className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
-                        <div>
+                <Card className="gap-0 py-0">
+                    <CardHeader className="grid grid-cols-1 md:grid-cols-2 justify-center items-center py-4 align-middle">
+                        <div className="flex flex-col justify-center space-y-2">
                             <CardTitle>Transactions</CardTitle>
-                            <CardDescription>Money transactions made in this account</CardDescription>
+                            <CardDescription>{
+                                isLoadingAccTransactions ? (
+                                    <div className="flex items-center gap-2">
+                                        <Spinner />
+                                        <span>Loading transactions...</span>
+                                    </div>
+                                ) : (
+                                    <span>Money transactions tracked in this account</span>
+                                )
+                            }
+                            </CardDescription>
                         </div>
                         <TransactionSearchBar />
                     </CardHeader>
                     <Separator />
-                    <TransactionList />
+                    <CardContent className="m-0 p-0">
+                        <TransactionList
+                            transactions={transactions}
+                            isLoadingAccTransactions={isLoadingAccTransactions}
+                            isErrorAccTransactions={isErrorAccTransactions}
+                            errorAccTransactions={errorAccTransactions}
+                        />
+                    </CardContent>
                 </Card>
 
             </main>

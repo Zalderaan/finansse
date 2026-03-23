@@ -38,8 +38,8 @@ export function TransactionCard(
     });
 
     return (
-        <Card className='rounded-lg border shadow-sm hover:shadow-md transition-shadow duration-200 mb-4'>
-            <CardHeader className='pb-3'>
+        <Card className='rounded-none shadow-sm hover:shadow-md transition-shadow duration-200'>
+            <CardHeader className=''>
                 <div className='flex items-start justify-between'>
                     <div className='flex-1'>
                         <CardTitle className='text-lg font-semibold'>{name}</CardTitle>
