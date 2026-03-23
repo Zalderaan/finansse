@@ -13,24 +13,29 @@ export function CustomPagination() {
         <Pagination>
             <PaginationContent>
                 <PaginationItem>
-                    <PaginationPrevious to={`./?page=${1}`} />
+                    <PaginationPrevious href="./accounts?page=1" />
                 </PaginationItem>
 
                 <PaginationItem>
-                    <PaginationLink to="#">1</PaginationLink>
+                    <PaginationLink href="./accounts?page=1">1</PaginationLink>
                 </PaginationItem>
 
                 <PaginationItem>
-                    <PaginationLink to="#">2</PaginationLink>
+                    <PaginationLink href="./accounts?page=2">2</PaginationLink>
                 </PaginationItem>
 
                 <PaginationItem>
-                    <PaginationLink to="#">3</PaginationLink>
+                    <PaginationLink href="./accounts?page=3">3</PaginationLink>
                 </PaginationItem>
 
-                <PaginationEllipsis />
-                <PaginationNext to="#" />
+                <PaginationItem>
+                    <PaginationEllipsis />
+                </PaginationItem>
 
+                <PaginationItem>
+                    <PaginationNext href="./?page=2" />
+                </PaginationItem>
             </PaginationContent>
-        </Pagination>)
+        </Pagination>
+    )
 }

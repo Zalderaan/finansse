@@ -2,15 +2,7 @@ import { AccountCard } from "./AccountCard";
 import { useGetAccounts } from "../hooks/useGetAccounts";
 import { Loader } from "@/components/loader";
 import { CreateAccountDialog } from "@/features/accounts/components/CreateAccountDialog";
-import {
-    Pagination,
-    PaginationContent,
-    PaginationLink,
-    PaginationItem,
-    PaginationPrevious,
-    PaginationNext,
-    PaginationEllipsis,
-} from "@/components/ui/pagination";
+import { CustomPagination } from "@/components/custom-pagination";
 import { Wallet } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
@@ -62,7 +54,7 @@ export function Accounts() {
                 {accounts?.map(account => (
                     <AccountCard key={account.account_id} {...account} />
                 ))}
-                <Pagination>
+                {/* <Pagination>
                     <PaginationContent>
                         <PaginationItem>
                             <PaginationPrevious to={`./?page=${1}`} />
@@ -84,7 +76,8 @@ export function Accounts() {
                         <PaginationNext to="#" />
 
                     </PaginationContent>
-                </Pagination>
+                </Pagination> */}
+                <CustomPagination />
             </div>
         </>
     )

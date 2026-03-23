@@ -46,12 +46,18 @@ export function AccountDetails() {
     return (
         <div className="h-full flex flex-col space-y-2">
             {/* ── Back nav ── */}
-            <Button asChild className="w-fit px-0" variant="ghost" size="sm">
+            {/* <Button asChild className="w-fit" variant="ghost" size="sm">
                 <Link to="/dashboard/accounts"><ArrowLeft className="h-4 w-4" />Back to accounts</Link>
-            </Button>
-            <main className="min-h-0 flex flex-col flex-1 space-y-4 px-2">
+            </Button> */}
+            <main className="min-h-0 flex flex-col flex-1 space-y-4 px-4">
                 {/* ── Account header ── */}
-                <section className="flex items-center justify-between">
+                <section className="flex items-center justify-between sticky top-18 z-10 py-2 backdrop-blur-sm">
+                    <Button asChild className="w-fit" variant="default" size="sm">
+                        <Link to="/dashboard/accounts">
+                            <ArrowLeft className="h-4 w-4" />
+                            Back to accounts
+                        </Link>
+                    </Button>
                     <div>
                         <h1 className="text-3xl font-semibold">{account?.account_name}</h1>
                         {/* <p className="text-sm text-muted-foreground">{account?.account_type} · {account?.account_currency} · Created {new Date(account?.created_at).toLocaleDateString()}</p> */}
