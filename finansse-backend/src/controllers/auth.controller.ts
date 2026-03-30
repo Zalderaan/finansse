@@ -1,7 +1,18 @@
-import { Response, Request } from 'express';
+import 'dotenv/config';
+import { Response, Request, type CookieOptions } from 'express';
 import { AuthModel } from "../models/auth.model";
 import { jwtUtil } from "../utils/jwt";
 import { AuthRequest } from '../utils/auth.middleware';
+
+const isProduction = process.env.NODE_ENV === "production";
+const refreshTokenOptions: CookieOptions = {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax',
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    path: "/"
+}
+
 export class AuthController {
     // POST /auth/register
     static async register(req: Request, res: Response) {
@@ -76,15 +87,8 @@ export class AuthController {
             const tokens = jwtUtil.generateTokenPair(tokenPayload);
 
             // Set http-only cookie for refresh token
-            res.cookie('refreshToken', tokens.refreshToken, {
-                // ! httpOnly cannot be accessed by browser JS if true
-                httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: 'lax',
-                maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-                domain: process.env.JWT_COOKIE_DOMAIN || undefined,
-                // maxAge: 60 * 1000
-            });
+            res.cookie('refreshToken', tokens.refreshToken, refreshTokenOptions);
+            
             return res.status(201).json({
                 success: true,
                 message: "User logged in successfully!",
@@ -109,11 +113,7 @@ export class AuthController {
     static async logout(req: Request, res: Response) {
         try {
             // clear cookies
-            res.clearCookie('refreshToken', {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: 'lax'
-            });
+            res.clearCookie('refreshToken', refreshTokenOptions);
 
             // * optional: implement token blacklisting
 
@@ -174,15 +174,7 @@ export class AuthController {
             // Refresh token rotation
             const tokens = jwtUtil.generateTokenPair(cleanPayload);
 
-            res.cookie('refreshToken', tokens.refreshToken, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
-                // secure: false,
-                sameSite: 'lax',
-                // sameSite: 'none',
-                maxAge: 7 * 24 * 60 * 60 * 1000,
-                // maxAge: 60 * 1000,
-            });
+            res.cookie('refreshToken', tokens.refreshToken, refreshTokenOptions);
 
             return res.status(200).json({
                 success: true,

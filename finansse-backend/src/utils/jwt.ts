@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import jwt from 'jsonwebtoken'
 
 export interface TokenPair {
@@ -9,6 +10,7 @@ export class jwtUtil {
     private static readonly SECRET_KEY = process.env.JWT_SECRET || 'finansse_jwt_secret';
     private static readonly token_expiry: string = process.env.JWT_EXPIRES_IN  || '30m';
     private static readonly refresh_expiry: string = '7d';
+
     // private static readonly token_expiry = '1m';
     // private static readonly refresh_expiry = '1m';
 
