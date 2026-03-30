@@ -29,7 +29,7 @@ export class jwtUtil {
         //     expiresIn: this.token_expiry
         // });
         const accessToken = jwt.sign(payload, this.SECRET_KEY, {
-            expiresIn: '30s' // ! hardcoded... using token_expiry has some errors
+            expiresIn: '30m' // ! hardcoded... using token_expiry has some errors
         })
         return accessToken;
     }
