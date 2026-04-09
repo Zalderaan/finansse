@@ -281,7 +281,6 @@ export function AddTransactionDialog({ showTrigger = true }: AddTransactionDialo
                                 )}
                             />
 
-                            {/* TODO: Include time (modify date-picker) */}
                             {/* TODO: Properly recalculate available balance in this form-- 
                             it's not properly updating, which means we're not calling an invalidateQueries for the account details */}
                             <FormField

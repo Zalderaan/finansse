@@ -15,6 +15,7 @@ import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useState } from "react";
+import { Spinner } from "@/components/ui/spinner";
 
 
 export function DeleteAccountDialog() {
@@ -62,7 +63,13 @@ export function DeleteAccountDialog() {
                         </DialogClose>
                         <Button variant={'destructive'} onClick={handleDelete} disabled={isDeleting}>
                             {
-                                isDeleting ? 'Deleting account...' : 'Delete'
+                                isDeleting ? (
+                                    <span className="flex flex-row items-cente space-x-4"> 
+                                        <Spinner /> 
+                                        <span>Deleting account... </span>
+                                    </span>
+                                )
+                                    : 'Delete'
                             }
                         </Button>
                     </DialogFooter>

@@ -29,6 +29,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { type ReactNode, useState } from 'react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Spinner } from '@/components/ui/spinner';
 
 const createAccountFormSchema = z.object({
     account_name: z.string()
@@ -217,7 +218,14 @@ export function CreateAccountDialog({ children, className, showTrigger = true, o
                                     </Button>
                                 </DialogClose>
                                 <Button type='submit' disabled={isCreating}>
-                                    {isCreating ? 'Creating account...' : 'Confirm'}
+                                    {isCreating ? (
+                                        <span className='flex flex-row items-center space-x-4'>
+                                            <Spinner />
+                                            <span>Creating account...</span>
+                                        </span>
+                                    )
+                                        : 'Confirm'
+                                    }
                                 </Button>
                             </DialogFooter>
                         </form>
