@@ -7,7 +7,6 @@ import { IncomeByCategory } from "@/features/reports/components/IncomeByCategory
 import { RecentTransactions } from "@/features/reports/components/RecentTransactions";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { DashboardQuickActions } from "@/features/dashboard/components/DashboardQuickActions";
-import { CreateAccountDialog } from "@/features/accounts/components/CreateAccountDialog";
 import { AddCategoryDialog } from "@/features/categories/components/AddCategoryDialog";
 import { AddTransactionDialog } from "@/features/transactions/components/AddTransactionDialog";
 
@@ -37,7 +36,6 @@ export function DashboardPage() {
             <DashboardQuickActions />
 
             {/* Dialog Render Area so that Quick Actions can access it*/}
-            <CreateAccountDialog showTrigger={false} />
             <AddCategoryDialog showTrigger={false} />
             <AddTransactionDialog showTrigger={false} />
 

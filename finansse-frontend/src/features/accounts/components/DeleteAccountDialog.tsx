@@ -12,14 +12,14 @@ import {
 import { Trash } from "lucide-react";
 import { useDeleteAccount } from "../hooks/useDeleteAccount";
 import { useParams } from "react-router-dom";
-import { useAccountUiStore } from '@/features/accounts/stores/accounts.uiStore';
 import { useNavigate } from "react-router-dom";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useState } from "react";
 
 
 export function DeleteAccountDialog() {
+    const [deleteAccountDialogOpen, setDeleteAccountDialogOpen] = useState<boolean>(false);
     const { accountId } = useParams();
-    const { deleteAccountDialogOpen, setDeleteAccountDialogOpen } = useAccountUiStore();
     const navigate = useNavigate();
     const { deleteAccAsync, isDeleting, isError, error } = useDeleteAccount();
     const handleDelete = async () => {

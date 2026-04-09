@@ -14,7 +14,6 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useCreateAccount } from '@/features/accounts/hooks/useCreateAccount';
 import type { CreateAccountRequest } from '@/features/accounts/types/accounts.type';
-import { useAccountUiStore } from '@/features/accounts/stores/accounts.uiStore';
 
 // Forms imports
 import {
@@ -28,7 +27,7 @@ import {
 import { z } from "zod";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import type { ReactNode } from 'react';
+import { type ReactNode, useState } from 'react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const createAccountFormSchema = z.object({
@@ -48,10 +47,14 @@ interface CreateAccountDialogProps {
     children?: ReactNode;
     className?: string;
     showTrigger?: boolean;
+    open?: boolean;
+    onOpenChange?: (open: boolean) => void;
 }
 
-export function CreateAccountDialog({ children, className, showTrigger = true }: CreateAccountDialogProps) {
-    const { createAccountDialogOpen, setCreateAccountDialogOpen } = useAccountUiStore();
+export function CreateAccountDialog({ children, className, showTrigger = true, open: externalOpen, onOpenChange: setExternalOpen }: CreateAccountDialogProps) {
+    const [internalOpen, setInternalOpen] = useState(false);
+    const open = externalOpen !== undefined ? externalOpen : internalOpen;
+    const setOpen = setExternalOpen || setInternalOpen;
 
     const createAccountForm = useForm<z.infer<typeof createAccountFormSchema>>({
         resolver: zodResolver(createAccountFormSchema),
@@ -76,7 +79,8 @@ export function CreateAccountDialog({ children, className, showTrigger = true }:
 
         try {
             await createAccAsync(finalValues);
-            setCreateAccountDialogOpen(false);
+            createAccountForm.reset();
+            setOpen(false);
         } catch (error) {
             console.error("Error creating account: ", error);
         }
@@ -101,7 +105,7 @@ export function CreateAccountDialog({ children, className, showTrigger = true }:
 
     return (
         <>
-            <Dialog open={createAccountDialogOpen} onOpenChange={setCreateAccountDialogOpen}>
+            <Dialog open={open} onOpenChange={setOpen}>
                 {showTrigger && (
                     <DialogTrigger asChild>
                         <Button className={className ?? 'flex flex-row items-center justify-center gap-2'}>
