@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useCreateAccount } from '@/features/accounts/hooks/useCreateAccount';
 import type { CreateAccountRequest } from '@/features/accounts/types/accounts.type';
+import { useAccountUiStore } from '@/features/accounts/stores/accounts.uistore';
 
 // Forms imports
 import {
@@ -27,9 +28,8 @@ import {
 import { z } from "zod";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { type ReactNode, useState } from 'react';
+import type { ReactNode } from 'react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Spinner } from '@/components/ui/spinner';
 
 const createAccountFormSchema = z.object({
     account_name: z.string()
@@ -48,14 +48,10 @@ interface CreateAccountDialogProps {
     children?: ReactNode;
     className?: string;
     showTrigger?: boolean;
-    open?: boolean;
-    onOpenChange?: (open: boolean) => void;
 }
 
-export function CreateAccountDialog({ children, className, showTrigger = true, open: externalOpen, onOpenChange: setExternalOpen }: CreateAccountDialogProps) {
-    const [internalOpen, setInternalOpen] = useState(false);
-    const open = externalOpen !== undefined ? externalOpen : internalOpen;
-    const setOpen = setExternalOpen || setInternalOpen;
+export function CreateAccountDialog({ children, className, showTrigger = true }: CreateAccountDialogProps) {
+    const { createAccountDialogOpen, setCreateAccountDialogOpen } = useAccountUiStore();
 
     const createAccountForm = useForm<z.infer<typeof createAccountFormSchema>>({
         resolver: zodResolver(createAccountFormSchema),
@@ -81,7 +77,7 @@ export function CreateAccountDialog({ children, className, showTrigger = true, o
         try {
             await createAccAsync(finalValues);
             createAccountForm.reset();
-            setOpen(false);
+            setCreateAccountDialogOpen(false);
         } catch (error) {
             console.error("Error creating account: ", error);
         }
@@ -106,18 +102,21 @@ export function CreateAccountDialog({ children, className, showTrigger = true, o
 
     return (
         <>
-            <Dialog open={open} onOpenChange={setOpen}>
+            <Dialog open={createAccountDialogOpen} onOpenChange={setCreateAccountDialogOpen}>
                 {showTrigger && (
                     <DialogTrigger asChild>
-                        <Button className={className ?? 'flex flex-row items-center justify-center gap-2'}>
-                            {children ?? (
-                                <>
-                                    <Plus /> Create
-                                </>
-                            )}
-                        </Button>
+                        {children ? (
+                            <Button asChild className={className ?? "flex flex-row items-center justify-center gap-2"}>
+                                {children}
+                            </Button>
+                        ) : (
+                            <Button className={className ?? 'flex flex-row items-center justify-center gap-2'}>
+                                <Plus /> Create
+                            </Button>
+                        )}
                     </DialogTrigger>
                 )}
+
                 <DialogContent>
                     <Form {...createAccountForm}>
                         <form onSubmit={createAccountForm.handleSubmit(onSubmit)} className='space-y-6'>
@@ -218,14 +217,7 @@ export function CreateAccountDialog({ children, className, showTrigger = true, o
                                     </Button>
                                 </DialogClose>
                                 <Button type='submit' disabled={isCreating}>
-                                    {isCreating ? (
-                                        <span className='flex flex-row items-center space-x-4'>
-                                            <Spinner />
-                                            <span>Creating account...</span>
-                                        </span>
-                                    )
-                                        : 'Confirm'
-                                    }
+                                    {isCreating ? 'Creating account...' : 'Confirm'}
                                 </Button>
                             </DialogFooter>
                         </form>

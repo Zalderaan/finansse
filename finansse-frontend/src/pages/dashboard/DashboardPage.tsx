@@ -9,6 +9,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { DashboardQuickActions } from "@/features/dashboard/components/DashboardQuickActions";
 import { AddCategoryDialog } from "@/features/categories/components/AddCategoryDialog";
 import { AddTransactionDialog } from "@/features/transactions/components/AddTransactionDialog";
+import { CreateAccountDialog } from "@/features/accounts/components/CreateAccountDialog";
 
 export function DashboardPage() {
 
@@ -38,6 +39,7 @@ export function DashboardPage() {
             {/* Dialog Render Area so that Quick Actions can access it*/}
             <AddCategoryDialog showTrigger={false} />
             <AddTransactionDialog showTrigger={false} />
+            <CreateAccountDialog showTrigger={false} />
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <DashboardCard color="green" title="Your income this month" value={totalIncome!} isLoading={isLoading} />

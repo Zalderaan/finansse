@@ -14,7 +14,7 @@ import { formatCurrency } from "@/lib/utils/format-currency"
 export function AccountCard({ account_id, account_name, account_type, account_currency, account_current_balance }: Account) {
     return (
         <>
-            <Link to={`/dashboard/accounts/${account_id}`}>
+            <Link to={`/dashboard/accounts/${account_id}`} className="cursor-pointer">
                 <Card>
                     <CardContent className="flex flex-col space-y-2.5">
                         {/* Top */}
