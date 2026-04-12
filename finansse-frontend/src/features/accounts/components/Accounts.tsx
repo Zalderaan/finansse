@@ -4,9 +4,8 @@ import { Loader } from "@/components/loader";
 import { CreateAccountDialog } from "@/features/accounts/components/CreateAccountDialog";
 import { PlusIcon, Wallet } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { useAccountUiStore } from "@/features/accounts/stores/accounts.uistore";
-import { Button } from "@/components/ui/button";
 
 export function Accounts() {
     const { accounts, isLoading, isError, error } = useGetAccounts();
@@ -60,15 +59,6 @@ export function Accounts() {
                         </div>
                     ))
                 }
-
-                {/* Add account card */}
-                {/* <Button onClick={() => setCreateAccountDialogOpen(true)} asChild>
-                    <div className="col-span-1">
-                        <Card className="w-full h-full justify-center items-center opacity-50">
-                            <PlusIcon />
-                        </Card>
-                    </div>
-                </Button> */}
 
                 <div className="col-span-1" onClick={() => setCreateAccountDialogOpen(true)}>
                     <Card className="w-full h-full justify-center items-center cursor-pointer opacity-50 hover:opacity-100 transition-opacity">
