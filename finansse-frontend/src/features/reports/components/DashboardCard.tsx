@@ -1,6 +1,7 @@
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { formatCurrency } from "@/lib/utils/format-currency";
 
 interface DashboardCardDetails {
     color: "green" | "red" | "blue" | "yellow";
@@ -73,7 +74,7 @@ export function DashboardCard({
                     {isLoading ? (
                         <Skeleton className="h-9 w-32 opacity-60" />
                     ) : (
-                        currencyFormatter.format(value)
+                        formatCurrency(value)
                     )}
                 </CardTitle>
             </CardHeader>

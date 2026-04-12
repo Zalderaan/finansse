@@ -2,9 +2,9 @@ import { AccountCard } from "./AccountCard";
 import { useGetAccounts } from "../hooks/useGetAccounts";
 import { Loader } from "@/components/loader";
 import { CreateAccountDialog } from "@/features/accounts/components/CreateAccountDialog";
-import { CustomPagination } from "@/components/custom-pagination";
-import { Wallet } from "lucide-react";
+import { PlusIcon, Wallet } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Card, CardContent } from "@/components/ui/card";
 
 export function Accounts() {
     const { accounts, isLoading, isError, error } = useGetAccounts();
@@ -47,37 +47,23 @@ export function Accounts() {
         )
     }
 
-
     return (
         <>
-            <div className="flex flex-col flex-1 space-y-4">
-                {accounts?.map(account => (
-                    <AccountCard key={account.account_id} {...account} />
-                ))}
-                {/* <Pagination>
-                    <PaginationContent>
-                        <PaginationItem>
-                            <PaginationPrevious to={`./?page=${1}`} />
-                        </PaginationItem>
+            <div className="grid grid-cols-4 gap-4">
+                {
+                    accounts?.map((acc) => (
+                        <div className="col-span-1">
+                            <AccountCard key={acc.account_id} {...acc} />
+                        </div>
+                    ))
+                }
 
-                        <PaginationItem>
-                            <PaginationLink to="#">1</PaginationLink>
-                        </PaginationItem>
-
-                        <PaginationItem>
-                            <PaginationLink to="#">2</PaginationLink>
-                        </PaginationItem>
-
-                        <PaginationItem>
-                            <PaginationLink to="#">3</PaginationLink>
-                        </PaginationItem>
-
-                        <PaginationEllipsis />
-                        <PaginationNext to="#" />
-
-                    </PaginationContent>
-                </Pagination> */}
-                <CustomPagination />
+                {/* Add account card */}
+                <div className="col-span-1">
+                    <Card className="w-full h-full items-center">
+                        <PlusIcon />
+                    </Card>
+                </div>
             </div>
         </>
     )

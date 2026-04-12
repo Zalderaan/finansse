@@ -17,6 +17,7 @@ import { EditAccountDialog } from "@/features/accounts/components/EditAccountDia
 import { TransactionSearchBar } from "@/features/accounts/components/TransactionSearchBar";
 import { DashboardCard } from "@/features/reports/components/DashboardCard";
 import { Spinner } from "@/components/ui/spinner";
+import { AccountDetailsSkeleton } from "@/features/accounts/components/AccountDetailsSkeleton";
 
 export function AccountDetails() {
     const { accountId } = useParams();
@@ -24,15 +25,17 @@ export function AccountDetails() {
     const { transactions, isLoading: isLoadingAccTransactions, isError: isErrorAccTransactions, error: errorAccTransactions } = useGetTransactionsByAcc(accountId);
     const { account, isLoading, isError, error } = useGetAccDetails(accountId);
     // console.log('account details: ', account);
-    const totalIncome = 1000;
-    const totalExpenses = 1000;
+    const curr_balance = account?.account_current_balance ?? 0;
+    const totalIncome = (transactions ?? [])
+        .filter(tx => tx.transaction_type === 'INCOME')
+        .reduce((sum, tx) => sum + tx.transaction_amount, 0);
+    const totalExpenses = (transactions ?? [])
+        .filter(tx => tx.transaction_type === 'EXPENSE')
+        .reduce((sum, tx) => sum + tx.transaction_amount, 0)
     const netFlow = 0;
+    
     if (isLoading) {
-        return (
-            <div>
-                Loading details...
-            </div>
-        )
+        return <AccountDetailsSkeleton />
     }
 
     if (isError) {
@@ -45,32 +48,26 @@ export function AccountDetails() {
 
     return (
         <div className="h-full flex flex-col space-y-2">
-            {/* ── Back nav ── */}
-            {/* <Button asChild className="w-fit" variant="ghost" size="sm">
-                <Link to="/dashboard/accounts"><ArrowLeft className="h-4 w-4" />Back to accounts</Link>
-            </Button> */}
-            <main className="min-h-0 flex flex-col flex-1 space-y-4 px-4">
-                {/* ── Account header ── */}
-                <section className="flex items-center justify-between sticky top-18 z-10 py-2 backdrop-blur-sm">
-                    <Button asChild className="w-fit" variant="default" size="sm">
+            {/* ── Account header ── */}
+            <header className="flex items-center justify-between sticky z-10 bg-sidebar border-b backdrop-blur-sm -m-4 h-(--header-height) top-0 px-4">
+                <div className="flex flex-row items-center space-x-2">
+                    <Button asChild className="w-fit" variant="ghost" size="sm">
                         <Link to="/dashboard/accounts">
                             <ArrowLeft className="h-4 w-4" />
-                            Back to accounts
                         </Link>
                     </Button>
-                    <div>
-                        <h1 className="text-3xl font-semibold">{account?.account_name}</h1>
-                        {/* <p className="text-sm text-muted-foreground">{account?.account_type} · {account?.account_currency} · Created {new Date(account?.created_at).toLocaleDateString()}</p> */}
-                    </div>
-                    <div className="flex gap-2">
-                        <EditAccountDialog />
-                        <DeleteAccountDialog />
-                    </div>
-                </section>
+                    <h1 className="text-3xl font-semibold">{account?.account_name}</h1>
+                </div>
+                <div className="flex gap-2">
+                    <EditAccountDialog />
+                    <DeleteAccountDialog />
+                </div>
+            </header>
+            <main className="min-h-0 flex flex-col flex-1 space-y-4 px-4 mt-(--header-height)">
 
                 {/* ── Stat cards: 4-column grid, stacks on mobile ── */}
                 <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <DashboardCard color="blue" title="Current Balance" value={account?.account_current_balance ?? 0} isLoading={false} />
+                    <DashboardCard color="blue" title="Current Balance" value={curr_balance} isLoading={false} />
                     <DashboardCard color="green" title="Total Income" value={totalIncome} isLoading={isLoading} />
                     <DashboardCard color="red" title="Total Expenses" value={totalExpenses} isLoading={isLoading} />
                     <DashboardCard color={netFlow >= 0 ? "green" : "red"} title="Net Flow" value={netFlow} isLoading={isLoading} />
