@@ -9,7 +9,7 @@ import { useAccountUiStore } from "@/features/accounts/stores/accounts.uistore";
 
 export function Accounts() {
     const { accounts, isLoading, isError, error } = useGetAccounts();
-    const { createAccountDialogOpen, setCreateAccountDialogOpen } = useAccountUiStore();
+    const { setCreateAccountDialogOpen } = useAccountUiStore();
     console.log(accounts);
 
     if (isLoading) {

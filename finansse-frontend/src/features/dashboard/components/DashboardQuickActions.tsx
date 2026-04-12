@@ -1,7 +1,5 @@
 import { LayoutGrid, PlusCircle, Wallet } from "lucide-react"
-import { useState } from "react"
 import { DashboardQuickActionItem } from "./DashboardQuickActionItem"
-import { CreateAccountDialog } from "@/features/accounts/components/CreateAccountDialog"
 import { useCategoryUiStore } from "@/features/categories/stores/categories.uiStore";
 import { useTransactionUiStore } from '@/features/transactions/stores/transactions.uiStore';
 import { useAccountUiStore } from "@/features/accounts/stores/accounts.uistore";

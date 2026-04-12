@@ -1,10 +1,7 @@
 import {
     Card,
-    CardHeader,
     CardTitle,
-    CardDescription,
     CardContent,
-    CardFooter,
 } from "@/components/ui/card";
 import { Link } from 'react-router-dom';
 import type { Account } from "../types/accounts.type";

@@ -5,7 +5,9 @@ import { useGetDashboardData } from '@/features/reports/hooks/useGetDashboardDat
 import { formatCurrency } from '@/lib/utils/format-currency';
 
 export function AccountPage() {
-    const { dashboard_card_data, isLoading, isError, error } = useGetDashboardData();
+    // const { dashboard_card_data, isLoading, isError, error } = useGetDashboardData();
+
+    const { dashboard_card_data } = useGetDashboardData();
     return (
         <div className='flex flex-col h-full w-full space-y-4'>
             

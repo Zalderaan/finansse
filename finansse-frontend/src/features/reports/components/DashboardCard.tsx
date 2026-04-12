@@ -12,12 +12,6 @@ interface DashboardCardDetails {
     changePercent?: number;
 }
 
-const currencyFormatter = new Intl.NumberFormat("en-PH", {
-    style: "currency",
-    currency: "PHP",
-    maximumFractionDigits: 2,
-});
-
 const toneStyles = {
     green: {
         card: "border-border bg-card",
